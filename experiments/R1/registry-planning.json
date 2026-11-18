@@ -1,0 +1,72 @@
+{
+  "query": {
+    "task_name": null,
+    "signature": "experiment",
+    "topic": null,
+    "status": null,
+    "include_unreviewed": false,
+    "limit": 10
+  },
+  "sorting": [
+    "call_frequency_desc",
+    "last_updated_desc",
+    "experience_id_asc"
+  ],
+  "count": 1,
+  "results": [
+    {
+      "experience_id": "exp-2026-006",
+      "task_name": "JARVIS Agentic 闭环实验计划设计",
+      "task_signature": "jarvis-agentic-experiment-plan",
+      "objective": "把 JARVIS 架构转化为分层、可确认、可验收的实验步骤。",
+      "project_scope": [
+        "JARVIS"
+      ],
+      "topics": [
+        "experiment-plan",
+        "agentic-ai",
+        "verification"
+      ],
+      "status": "已闭环",
+      "status_suggestion": {
+        "status": "已闭环",
+        "reason": "计划已落地到 Obsidian，状态机制、基线任务和 E0 结果已通过 G0。",
+        "evidence_refs": [
+          "note:JARVIS Agentic 闭环实验计划 v0.2"
+        ]
+      },
+      "human_review": "approved",
+      "review_notes": "2026-11-17 E1-02 人工复核通过。",
+      "call_frequency": 2,
+      "last_updated": "2026-11-17",
+      "last_verified": "2026-11-18",
+      "evidence_refs": [
+        "note:JARVIS Agentic 闭环实验计划 v0.2",
+        "note:2026-11-17 E0 闭环定义与基线",
+        "note:2026-11-18 G1 注册表阶段确认",
+        "note:2026-11-18 E2-02 Session主题与经验提取",
+        "note:2026-11-18 E2-04 人工复核决策"
+      ],
+      "applicability": [
+        "实验计划",
+        "闭环验收",
+        "确认门"
+      ],
+      "skill_links": [
+        {
+          "skill_id": "experiment-planning",
+          "skill_version": "0.1.0",
+          "applicability": [
+            "分层实验",
+            "状态管理",
+            "人工确认门"
+          ],
+          "match_confidence": 0.89
+        }
+      ],
+      "obsidian_path": "01_项目/JARVIS/40_任务经验注册表/样本/2026/exp-2026-006-jarvis-agentic-experiment-plan.md",
+      "loop_type": "direct",
+      "version": "0.1.0"
+    }
+  ]
+}

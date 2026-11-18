@@ -1,0 +1,52 @@
+{
+  "task_id": "JV-20261118-009",
+  "historical_evidence_files_unchanged": 6,
+  "preservation_unittests": {
+    "run": 4,
+    "passed": 4
+  },
+  "live_installation_checks": "two independent runs passed 7 checks each",
+  "static_consistency": "passed",
+  "scenarios": [
+    {
+      "scenario": "明确任务",
+      "decision": "四项就绪核对通过后直接执行，无统一审批关卡",
+      "kind": "静态规则推演"
+    },
+    {
+      "scenario": "关键问题未答",
+      "decision": "等待依赖该答案的工作；独立准备可推进，未回复不视为授权",
+      "kind": "静态规则推演"
+    },
+    {
+      "scenario": "执行中范围变化",
+      "decision": "递增契约修订、暂停受影响包；旧结果隔离并按新标准重验",
+      "kind": "静态规则推演"
+    },
+    {
+      "scenario": "失败后重派",
+      "decision": "沿用父任务 failure_key 已用及预留额度，不重置重试",
+      "kind": "静态规则推演"
+    },
+    {
+      "scenario": "无需人工验收",
+      "decision": "必要验收项均通过且确实无需人工验收时进入已交付无需验收",
+      "kind": "静态规则推演"
+    },
+    {
+      "scenario": "交付退回",
+      "decision": "回到执行中，保留旧交付及退回依据，原缺陷返修沿用失败账本",
+      "kind": "静态规则推演"
+    },
+    {
+      "scenario": "中断续作与未知副作用",
+      "decision": "按任务 ID 核对最新契约、产物、运行实例和检查点；先查未知结果，不重放",
+      "kind": "静态规则推演"
+    }
+  ],
+  "limitations": [
+    "场景为人工静态推演，非独立 Agent 行为测试",
+    "未验证跨会话加载、并发取消、真实用户退回或副作用恢复",
+    "预算、契约版本和失败账本仍依赖指令执行，无运行时强制锁"
+  ]
+}

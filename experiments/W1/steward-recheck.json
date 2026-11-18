@@ -1,0 +1,136 @@
+{
+  "date": "2026-11-18",
+  "checks": {
+    "normal_exit_zero": true,
+    "normal_audit_completed": true,
+    "missing_input_exit_nonzero": true,
+    "missing_input_reported_blocked": true,
+    "findings_have_valid_line_locations": true,
+    "input_and_original_hashes_unchanged": true
+  },
+  "ok": true,
+  "normal_exit_code": 0,
+  "missing_input_exit_code": 2,
+  "normal_stdout": "{\"status\": \"completed\", \"hashes_passed\": 4, \"dimensions_reviewed\": 6, \"findings\": 5, \"report\": \"D:\\\\codex-project\\\\JARVIS\\\\experiments\\\\W1\\\\worker-output\\\\steward-recheck\\\\normal\\\\audit-report.json\"}\n",
+  "missing_stderr": "{\"status\": \"blocked\", \"errors\": [{\"code\": \"MISSING_INPUT\", \"file\": \"task-template.md\", \"path\": \"D:\\\\codex-project\\\\JARVIS\\\\experiments\\\\W1\\\\worker-output\\\\steward-recheck\\\\missing-input\\\\task-template.md\", \"message\": \"Required frozen input missing; stop without knowledge-base fallback\"}], \"exit_code\": 2}\n",
+  "evidence_line_checks": [
+    {
+      "finding": "F1",
+      "file": "steward-entry.md",
+      "line": 15,
+      "line_exists": true,
+      "actual": "- Worker 工作包须含目标、验收、裁剪背景与来源、适用经验及不足、Skill 标识、预算与权限、返回要求；Worker 不直接查询 Obsidian 或图书管理员，知识缺口由管家补充。不得称此约定为已实现的系统访问隔离。"
+    },
+    {
+      "finding": "F1",
+      "file": "task-template.md",
+      "line": 8,
+      "line_exists": true,
+      "actual": "- 输入、经验与来源：路径及必要版本/哈希；无正式经验时注明。"
+    },
+    {
+      "finding": "F1",
+      "file": "task-template.md",
+      "line": 5,
+      "line_exists": true,
+      "actual": "- 交付与验收标准："
+    },
+    {
+      "finding": "F1",
+      "file": "architecture-excerpts.md",
+      "line": 53,
+      "line_exists": true,
+      "actual": "把经验摘要、不足和 Skill 版本写入 Context Pack"
+    },
+    {
+      "finding": "F2",
+      "file": "steward-entry.md",
+      "line": 15,
+      "line_exists": true,
+      "actual": "- Worker 工作包须含目标、验收、裁剪背景与来源、适用经验及不足、Skill 标识、预算与权限、返回要求；Worker 不直接查询 Obsidian 或图书管理员，知识缺口由管家补充。不得称此约定为已实现的系统访问隔离。"
+    },
+    {
+      "finding": "F2",
+      "file": "task-template.md",
+      "line": 6,
+      "line_exists": true,
+      "actual": "- 范围及不做事项："
+    },
+    {
+      "finding": "F2",
+      "file": "architecture-excerpts.md",
+      "line": 17,
+      "line_exists": true,
+      "actual": "不直接访问图书管理员或全量 Obsidian"
+    },
+    {
+      "finding": "F3",
+      "file": "task-template.md",
+      "line": 9,
+      "line_exists": true,
+      "actual": "- 本次预算：时间检查点、Worker 总数/并发、重试、分支、费用边界；计量能力和未知项。"
+    },
+    {
+      "finding": "F3",
+      "file": "steward-entry.md",
+      "line": 28,
+      "line_exists": true,
+      "actual": "- 采用 `jarvis/defaults.json` 的软默认值；用户明确预算优先。直接模式 Worker 为 0，需要时最多 2 个、并发最多 2 个；同类失败首次发生后最多额外重试 2 次；探索最多 2 个分支，约 20 分钟主动执行作一次收敛检查。"
+    },
+    {
+      "finding": "F3",
+      "file": "architecture-excerpts.md",
+      "line": 77,
+      "line_exists": true,
+      "actual": "拆解任务图、依赖、里程碑、预算和并发策略"
+    },
+    {
+      "finding": "F4",
+      "file": "steward-entry.md",
+      "line": 15,
+      "line_exists": true,
+      "actual": "- Worker 工作包须含目标、验收、裁剪背景与来源、适用经验及不足、Skill 标识、预算与权限、返回要求；Worker 不直接查询 Obsidian 或图书管理员，知识缺口由管家补充。不得称此约定为已实现的系统访问隔离。"
+    },
+    {
+      "finding": "F4",
+      "file": "task-template.md",
+      "line": 3,
+      "line_exists": true,
+      "actual": "- 状态：执行中 / 待用户决策 / 已交付待验收 / 已验收 / 失败或停止（选择一项）"
+    },
+    {
+      "finding": "F4",
+      "file": "architecture-excerpts.md",
+      "line": 85,
+      "line_exists": true,
+      "actual": "调度 Worker，记录状态、工具、结果、耗时和异常"
+    },
+    {
+      "finding": "F5",
+      "file": "steward-entry.md",
+      "line": 3,
+      "line_exists": true,
+      "actual": "版本 0.1，2026-11-18 用户授权落地，仅适用于本项目。你在此项目承担 JARVIS 管家角色，是任务闭环所有者与控制面，对最终成果负责。遵守更高层指令、宿主工具权限和用户当前要求；本文件不授予额外系统权限。"
+    },
+    {
+      "finding": "F5",
+      "file": "task-template.md",
+      "line": 18,
+      "line_exists": true,
+      "actual": "记录实际验证、产物路径、验收证据与未验证项；自检和用户验收分开。耗时/成本未采集时如实说明。"
+    },
+    {
+      "finding": "F5",
+      "file": "architecture-excerpts.md",
+      "line": 89,
+      "line_exists": true,
+      "actual": "检查产物、测试、引用和验收标准"
+    }
+  ],
+  "semantic_review": "Findings are model-authored judgments tied to the frozen pre-template snapshot, not automated proof of semantic sufficiency or human approval",
+  "limits": [
+    "Negative case tests audit script behavior, not full Agent recovery after tool failure",
+    "No comprehensive tool-access log or filesystem sandbox proof",
+    "No speed, cost or multi-worker benefit measured"
+  ]
+}

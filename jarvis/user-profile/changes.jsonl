@@ -1,0 +1,1 @@
+{"date": "2026-11-18", "action": "initial_release", "version": "0.1.0", "baseline_sha256": null, "baseline_state": "absent", "profile_sha256": "a87478f30fef13466d5068da51610a612932f660b16660ebcc6428b202159155", "approved_ids": ["P1", "P2", "P3"], "approval": "approval-0.1.0.json", "source_sha256": "cd9bc4fb79b5ed89e0f4d58f574affa19f30a0e598ecb7e62a121ae1bc6994e7"}

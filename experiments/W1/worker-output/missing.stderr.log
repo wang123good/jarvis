@@ -1,0 +1,1 @@
+{"status": "blocked", "errors": [{"code": "MISSING_INPUT", "file": "task-template.md", "path": "D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\missing-input-fixture\\task-template.md", "message": "Required frozen input missing; stop without knowledge-base fallback"}], "exit_code": 2}

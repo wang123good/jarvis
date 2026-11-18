@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+<rect width="1920" height="1080" fill="#F7FAFE"/>
+<text x="60" y="90" font-family="Microsoft YaHei, sans-serif" font-size="52" font-weight="700" fill="#18304D">JARVIS 如何帮你完成一项任务</text>
+<text x="62" y="141" font-family="Microsoft YaHei, sans-serif" font-size="29" font-weight="400" fill="#18304D">你提出目标，JARVIS 负责推进、检查与交付；关键决定由你掌握。</text>
+<text x="60" y="222" font-family="Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1455D9">日常工作流程</text>
+<rect x="60" y="250" width="310" height="220" rx="18" fill="#FFFFFF" stroke="#1455D9" stroke-width="2"/>
+<text x="80" y="299" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="700" fill="#1455D9">01  你提出需求</text>
+<text x="80" y="351" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#18304D">想解决什么问题？</text>
+<text x="80" y="390" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#18304D">希望拿到什么成果？</text>
+<text x="80" y="429" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#18304D">有哪些时间或范围限制？</text>
+<polyline points="375,360 423,360" fill="none" stroke="#1455D9" stroke-width="3"/>
+<polygon points="423,360 409.49329346470984,366.52448301166845 409.49329346470984,353.47551698833155" fill="#1455D9"/>
+<rect x="430" y="250" width="310" height="220" rx="18" fill="#FFFFFF" stroke="#1455D9" stroke-width="2"/>
+<text x="450" y="299" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="700" fill="#1455D9">02  明确目标与计划</text>
+<text x="450" y="351" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#18304D">确认交付物和验收标准</text>
+<text x="450" y="390" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#18304D">读取相关知识与协作偏好</text>
+<text x="450" y="429" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#18304D">简单任务直接开始</text>
+<polyline points="745,360 793,360" fill="none" stroke="#1455D9" stroke-width="3"/>
+<polygon points="793,360 779.4932934647098,366.52448301166845 779.4932934647098,353.47551698833155" fill="#1455D9"/>
+<rect x="800" y="250" width="310" height="220" rx="18" fill="#FFFFFF" stroke="#1455D9" stroke-width="2"/>
+<text x="820" y="299" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="700" fill="#1455D9">03  推进执行</text>
+<text x="820" y="351" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#18304D">优先直接处理</text>
+<text x="820" y="390" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#18304D">按需使用工具、Skill</text>
+<text x="820" y="429" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#18304D">确有收益时委派 Worker</text>
+<polyline points="1115,360 1163,360" fill="none" stroke="#1455D9" stroke-width="3"/>
+<polygon points="1163,360 1149.49329346471,366.52448301166845 1149.49329346471,353.47551698833155" fill="#1455D9"/>
+<rect x="1170" y="250" width="310" height="220" rx="18" fill="#FFFFFF" stroke="#1455D9" stroke-width="2"/>
+<text x="1190" y="299" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="700" fill="#1455D9">04  检查与修正</text>
+<text x="1190" y="351" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#18304D">核对成果与证据</text>
+<text x="1190" y="390" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#18304D">有依据时有限重试</text>
+<text x="1190" y="429" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#18304D">遇到阻碍说明缺口</text>
+<polyline points="1485,360 1533,360" fill="none" stroke="#1455D9" stroke-width="3"/>
+<polygon points="1533,360 1519.49329346471,366.52448301166845 1519.49329346471,353.47551698833155" fill="#1455D9"/>
+<rect x="1540" y="250" width="310" height="220" rx="18" fill="#FFFFFF" stroke="#1455D9" stroke-width="2"/>
+<text x="1560" y="299" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="700" fill="#1455D9">05  交付给你验收</text>
+<text x="1560" y="351" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#18304D">给出成果与验证结果</text>
+<text x="1560" y="390" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#18304D">说明限制和待决定事项</text>
+<text x="1560" y="429" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#18304D">按反馈修订并记录状态</text>
+<polyline points="1385,475 1385,515 955,515 955,475" fill="none" stroke="#1455D9" stroke-width="3" stroke-dasharray="11 9"/>
+<polygon points="955,475 961.5244830116685,488.50670653529016 948.4755169883315,488.50670653529016" fill="#1455D9"/>
+<text x="1020" y="550" font-family="Microsoft YaHei, sans-serif" font-size="23" font-weight="400" fill="#1455D9">需要修正：返回执行</text>
+<text x="62" y="514" font-family="Microsoft YaHei, sans-serif" font-size="23" font-weight="400" fill="#18304D">一般任务在已授权范围内连续推进，无需逐步确认。</text>
+<rect x="60" y="590" width="1790" height="104" rx="18" fill="#FFF8E9" stroke="#C18A24" stroke-width="2"/>
+<text x="85" y="637" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="700" fill="#92600D">何时需要你决定？</text>
+<text x="420" y="635" font-family="Microsoft YaHei, sans-serif" font-size="25" font-weight="400" fill="#18304D">目标或范围实质变化  ·  超预算  ·  未授权的对外或不可逆操作</text>
+<text x="420" y="672" font-family="Microsoft YaHei, sans-serif" font-size="23" font-weight="400" fill="#18304D">JARVIS 会带上已有成果、缺口与选项，集中请你判断。</text>
+<text x="60" y="762" font-family="Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#118C8C">持续支持与维护</text>
+<rect x="60" y="790" width="570" height="155" rx="18" fill="#EDF8F7" stroke="#118C8C" stroke-width="2"/>
+<text x="82" y="835" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="700" fill="#118C8C">工具与临时 Worker</text>
+<text x="82" y="880" font-family="Microsoft YaHei, sans-serif" font-size="23" font-weight="400" fill="#18304D">按任务需要调用，管家复核结果</text>
+<text x="82" y="916" font-family="Microsoft YaHei, sans-serif" font-size="23" font-weight="400" fill="#18304D">总目标与最终交付责任仍在 JARVIS</text>
+<rect x="670" y="790" width="570" height="155" rx="18" fill="#EDF8F7" stroke="#118C8C" stroke-width="2"/>
+<text x="692" y="835" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="700" fill="#118C8C">项目级协作画像</text>
+<text x="692" y="880" font-family="Microsoft YaHei, sans-serif" font-size="23" font-weight="400" fill="#18304D">按已确认偏好协作；当前要求优先</text>
+<text x="692" y="916" font-family="Microsoft YaHei, sans-serif" font-size="23" font-weight="400" fill="#18304D">新增或修订长期条目，经你确认发布</text>
+<rect x="1280" y="790" width="570" height="155" rx="18" fill="#EDF8F7" stroke="#118C8C" stroke-width="2"/>
+<text x="1302" y="835" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="700" fill="#118C8C">知识整理：由你手动触发</text>
+<text x="1302" y="880" font-family="Microsoft YaHei, sans-serif" font-size="23" font-weight="400" fill="#18304D">知识库管理员离线整理候选与提案</text>
+<text x="1302" y="916" font-family="Microsoft YaHei, sans-serif" font-size="23" font-weight="400" fill="#18304D">正式写入前按批准差异执行</text>
+<text x="60" y="1008" font-family="Microsoft YaHei, sans-serif" font-size="23" font-weight="400" fill="#18304D">当前形态：项目主会话角色；不是独立常驻服务。自检通过 ≠ 你已验收。</text>
+<text x="60" y="1047" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#62758B">JARVIS 项目工作流程  |  2026-11-18  |  实线：主流程    虚线：修正反馈</text>
+</svg>

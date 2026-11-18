@@ -1,0 +1,27 @@
+{
+  "date": "2026-11-18",
+  "frozen_inputs_unchanged": true,
+  "original_configuration_unchanged": true,
+  "architecture_unchanged": true,
+  "worker_files": [
+    "worker-output\\audit-conclusions.md",
+    "worker-output\\audit-report.json",
+    "worker-output\\audit_worker_contract.py",
+    "worker-output\\execution-checks.json",
+    "worker-output\\missing-input-fixture\\architecture-excerpts.md",
+    "worker-output\\missing-input-fixture\\steward-defaults.json",
+    "worker-output\\missing-input-fixture\\steward-entry.md",
+    "worker-output\\missing-input-result\\audit-report.json",
+    "worker-output\\missing.stderr.log",
+    "worker-output\\missing.stdout.log",
+    "worker-output\\normal.stderr.log",
+    "worker-output\\normal.stdout.log",
+    "worker-output\\steward-recheck\\missing-input\\architecture-excerpts.md",
+    "worker-output\\steward-recheck\\missing-input\\steward-defaults.json",
+    "worker-output\\steward-recheck\\missing-input\\steward-entry.md",
+    "worker-output\\steward-recheck\\missing\\audit-report.json",
+    "worker-output\\steward-recheck\\normal\\audit-conclusions.md",
+    "worker-output\\steward-recheck\\normal\\audit-report.json"
+  ],
+  "scope_note": "Hashes cover listed inputs and original configurations only; they are not a complete filesystem-access audit or security isolation proof"
+}

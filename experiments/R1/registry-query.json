@@ -1,0 +1,69 @@
+{
+  "query": {
+    "task_name": null,
+    "signature": null,
+    "topic": "architecture-review",
+    "status": null,
+    "include_unreviewed": false,
+    "limit": 5
+  },
+  "sorting": [
+    "call_frequency_desc",
+    "last_updated_desc",
+    "experience_id_asc"
+  ],
+  "count": 1,
+  "results": [
+    {
+      "experience_id": "exp-2026-001",
+      "task_name": "Codex 数字人方案可行性评审",
+      "task_signature": "codex-digital-human-feasibility-review",
+      "objective": "判断基于 Codex 的数字人分身方案是否可行，并识别落地风险。",
+      "project_scope": [
+        "JARVIS"
+      ],
+      "topics": [
+        "codex",
+        "digital-human",
+        "feasibility",
+        "architecture-review"
+      ],
+      "status": "有待完善",
+      "status_suggestion": {
+        "status": "有待完善",
+        "reason": "初次评审更偏向多 Agent 和治理风险，后续才明确为能力进化与用户认知进化两条闭环。",
+        "evidence_refs": [
+          "session:01a1e893-ce4d-7ff2-bf55-00845bf74786"
+        ]
+      },
+      "human_review": "approved",
+      "review_notes": "2026-11-17 E1-02 人工复核通过。",
+      "call_frequency": 1,
+      "last_updated": "2026-11-17",
+      "last_verified": "2026-11-17",
+      "evidence_refs": [
+        "session:01a1e893-ce4d-7ff2-bf55-00845bf74786",
+        "docx:JARVIS 管家 Worker Skill 与图书管理员架构设计 v1.5"
+      ],
+      "applicability": [
+        "本地 Codex",
+        "个人助手",
+        "架构可行性评审"
+      ],
+      "skill_links": [
+        {
+          "skill_id": "architecture-review",
+          "skill_version": "1.2.0",
+          "applicability": [
+            "可行性评审",
+            "风险识别"
+          ],
+          "match_confidence": 0.86
+        }
+      ],
+      "obsidian_path": "01_项目/JARVIS/40_任务经验注册表/样本/2026/exp-2026-001-codex-digital-human-feasibility.md",
+      "loop_type": "delegated",
+      "version": "0.1.0"
+    }
+  ]
+}

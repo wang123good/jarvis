@@ -1,0 +1,63 @@
+{
+  "curated_notes": [
+    "01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 F1 真实Skill核验与经验清理草稿.md"
+  ],
+  "files": {
+    "local:knowledge-index.md": "c8eda36e54e2d6cc226abace9dded29056884a3c498b3c6bbb70a7381d55c6f2",
+    "vault:01_项目/JARVIS/00_Codex记忆索引.md": "64d20ac8ec9bf3f10226a3a5c972fe9eaeeb5ab2eb9c749b148d1951c5554ca4",
+    "vault:01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 F1 真实Skill核验与经验清理草稿.md": "d47688a9ee818e1de2532b14bb93a2106e6ce3541ec83969661fa6353abeb15c",
+    "vault:04_归档/10_Codex原始对话/jarvis/2026/01a1e893-ce4d-7ff2-bf55-00845bf74786/aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608/coverage.json": "97be35a705e27552b3c74732608db5f9a55713bc98b76537b33899bee8aa27ef",
+    "vault:04_归档/10_Codex原始对话/jarvis/2026/01a1e893-ce4d-7ff2-bf55-00845bf74786/aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608/desktop.json": "edff20e78a3f9c2d9df5a0874730a5bf7e14b4261c2aca9cbfd7b947f2c19096",
+    "vault:04_归档/10_Codex原始对话/jarvis/2026/01a1e893-ce4d-7ff2-bf55-00845bf74786/aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608/source.jsonl": "045ce74cd813a708e2f8be9265a372cd13abd0d72347062e544618e60d9b72bd",
+    "vault:04_归档/10_Codex原始对话/jarvis/2026/01a1e893-ce4d-7ff2-bf55-00845bf74786/aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608/对话.md": "1db39c9f92efac6728b5bb12a98c0303ac1ebe4df2009e97233607d97550079c"
+  },
+  "project": {
+    "directory": "D:/codex-project/JARVIS",
+    "id": "jarvis",
+    "name": "JARVIS",
+    "root": "01_项目/JARVIS",
+    "threads": [
+      "01a1e893-ce4d-7ff2-bf55-00845bf74786"
+    ]
+  },
+  "project_id": "jarvis",
+  "threads": {
+    "01a1e893-ce4d-7ff2-bf55-00845bf74786": {
+      "captured_at": "2026-11-18T10:34:07+08:00",
+      "coverage": {
+        "attachments_metadata": 0,
+        "desktop_items": 1248,
+        "desktop_turns": 35,
+        "gaps": [
+          "External attachments/output files not copied or verified.",
+          "Independent source transactions; no cross-database atomicity.",
+          "Compacted/forked history may omit or inherit earlier messages."
+        ],
+        "record_types": {
+          "compacted": 1,
+          "event_msg": 1817,
+          "response_item": 1887,
+          "session_meta": 1,
+          "token_usage_record": 461,
+          "turn_context": 35,
+          "world_state": 4
+        },
+        "rollout_records": 4206,
+        "scope": "point-in-time rollout + desktop projection; not guaranteed lifetime-complete"
+      },
+      "raw_note": "04_归档/10_Codex原始对话/jarvis/2026/01a1e893-ce4d-7ff2-bf55-00845bf74786/aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608/对话.md",
+      "source_hash": "aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608",
+      "tasks": [
+        {
+          "note": "01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 F1 真实Skill核验与经验清理草稿.md",
+          "source_hash": "aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608",
+          "status": "draft",
+          "task_id": "jarvis-task-008"
+        }
+      ],
+      "versions": []
+    }
+  },
+  "vault": "D:\\个人知识库",
+  "version": 1
+}

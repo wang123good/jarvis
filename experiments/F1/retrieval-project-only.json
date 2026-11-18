@@ -1,0 +1,119 @@
+{
+  "config": "D:\\codex-project\\JARVIS\\.codex\\obsidian-kb.json",
+  "vault": "D:\\个人知识库",
+  "query": "真实 Skill 核验",
+  "layers": [
+    "domain",
+    "project",
+    "resource"
+  ],
+  "project_only": true,
+  "warnings": [],
+  "results": [
+    {
+      "title": "真实 Skill 核验与无效经验清理",
+      "path": "D:/个人知识库/01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 F1 真实Skill核验与经验清理草稿.md",
+      "relative_path": "01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 F1 真实Skill核验与经验清理草稿.md",
+      "layer": "project",
+      "status": "draft",
+      "type": "task-experience",
+      "project": "jarvis",
+      "tags": [
+        "project/jarvis",
+        "task-experience",
+        "draft"
+      ],
+      "excerpt": "> [!abstract] 草稿 > 7 条无对应 Skill 的旧样本已退出正式注册表；清理检查 9 项通过。当前整理为真实 Skill 关联草稿，尚未成为正式可复用经验。",
+      "outgoing": [
+        "01_项目/JARVIS/00_项目索引.md",
+        "01_项目/JARVIS/10_设计笔记/JARVIS 项目协作约定.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 R2 注册表清理与复用准备.md",
+        "04_归档/10_Codex原始对话/jarvis/2026/01a1e893-ce4d-7ff2-bf55-00845bf74786/aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608/对话.md"
+      ],
+      "backlinks": [
+        "01_项目/JARVIS/00_Codex记忆索引.md",
+        "01_项目/JARVIS/00_项目索引.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 F1 来源整理与检索补测.md"
+      ],
+      "unresolved_links": [],
+      "score": 41.7481
+    },
+    {
+      "title": "2026-11-18 F1 来源整理与检索补测",
+      "path": "D:/个人知识库/01_项目/JARVIS/30_实验记录/2026-11-18 F1 来源整理与检索补测.md",
+      "relative_path": "01_项目/JARVIS/30_实验记录/2026-11-18 F1 来源整理与检索补测.md",
+      "layer": "project",
+      "status": "pending-review",
+      "type": "experiment-run",
+      "project": "jarvis",
+      "tags": [
+        "project/jarvis",
+        "evidence",
+        "retrieval"
+      ],
+      "excerpt": "草稿：[[01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 F1 真实Skill核验与经验清理草稿|真实 Skill 核验与无效经验清理]]。",
+      "outgoing": [
+        "01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 F1 真实Skill核验与经验清理草稿.md"
+      ],
+      "backlinks": [
+        "01_项目/JARVIS/00_项目索引.md",
+        "01_项目/JARVIS/20_实验计划/JARVIS Agentic 闭环实验计划 v0.3.md"
+      ],
+      "unresolved_links": [],
+      "score": 10.1714
+    },
+    {
+      "title": "JARVIS 项目入口",
+      "path": "D:/个人知识库/01_项目/JARVIS/00_项目索引.md",
+      "relative_path": "01_项目/JARVIS/00_项目索引.md",
+      "layer": "project",
+      "status": "draft",
+      "type": "project",
+      "project": "jarvis",
+      "tags": [
+        "project/jarvis",
+        "agentic-ai"
+      ],
+      "excerpt": "- F1 补测：指定会话来源导出、模板草稿整理和项目内检索 5 项检查通过；正式经验仍为 0，新草稿待复核。 - [[01_项目/JARVIS/30_实验记录/2026-11-18 F1 来源整理与检索补测|F1 补测结果与边界]] - [[01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 F1 真实Skill核验与经验清理草稿|待复核：真实 Skill 核验与经验清理]]",
+      "outgoing": [
+        "01_项目/JARVIS/10_设计笔记/JARVIS Agentic 架构设计笔记.md",
+        "01_项目/JARVIS/10_设计笔记/JARVIS 项目协作约定.md",
+        "01_项目/JARVIS/20_实验计划/JARVIS Agentic 闭环实验计划 v0.3.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-17 E0 闭环定义与基线.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-17 E1-01 任务经验注册表结构.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-17 E1-02 首批任务经验样本.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-17 E1-03 状态建议与人工复核规范.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 E1-04 查询与频率排序验证.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 E1-05 注册表与Obsidian映射验证.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 E2-01 图书管理员运行边界.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 E2-02 Session主题与经验提取.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 E2-03 图书管理员状态建议.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 E2-04 人工复核决策.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 E2-05 注册表与Obsidian写回.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 E2-06 重复处理与增量验证.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 F1 来源整理与检索补测.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 G1 注册表阶段确认.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 R1 任务闭环实验卡.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 R2 注册表清理与复用准备.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 R3 协作适应实验卡.md",
+        "01_项目/JARVIS/40_任务经验注册表/00_映射与一致性规范.md",
+        "01_项目/JARVIS/40_任务经验注册表/00_查询与排序规范.md",
+        "01_项目/JARVIS/40_任务经验注册表/00_注册表规范.md",
+        "01_项目/JARVIS/40_任务经验注册表/00_状态建议与人工复核规范.md",
+        "01_项目/JARVIS/50_图书管理员/00_运行边界与触发规范.md",
+        "01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 F1 真实Skill核验与经验清理草稿.md",
+        "01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 lib-2026-001 状态建议.md",
+        "01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 lib-2026-001 经验候选.md",
+        "01_项目/JARVIS/50_图书管理员/runs/2026-11-18 lib-2026-001 run-report.md",
+        "01_项目/JARVIS/60_实验交付/2026-11-18 R1 JARVIS 实施就绪评审.md"
+      ],
+      "backlinks": [
+        "01_项目/JARVIS/20_实验计划/JARVIS Agentic 闭环实验计划 v0.1.md",
+        "01_项目/JARVIS/20_实验计划/JARVIS Agentic 闭环实验计划 v0.2.md",
+        "01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 F1 真实Skill核验与经验清理草稿.md"
+      ],
+      "unresolved_links": [],
+      "score": 8.3057
+    }
+  ]
+}

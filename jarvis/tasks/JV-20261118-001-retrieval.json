@@ -1,0 +1,89 @@
+{
+  "config": "D:\\codex-project\\JARVIS\\.codex\\obsidian-kb.json",
+  "vault": "D:\\个人知识库",
+  "query": "JARVIS 项目协作约定",
+  "layers": [
+    "domain",
+    "project",
+    "resource"
+  ],
+  "project_only": true,
+  "warnings": [],
+  "results": [
+    {
+      "title": "JARVIS 项目协作约定",
+      "path": "D:/个人知识库/01_项目/JARVIS/10_设计笔记/JARVIS 项目协作约定.md",
+      "relative_path": "01_项目/JARVIS/10_设计笔记/JARVIS 项目协作约定.md",
+      "layer": "project",
+      "status": "reviewed",
+      "type": "collaboration-agreement",
+      "project": "jarvis",
+      "tags": [
+        "project/jarvis",
+        "collaboration"
+      ],
+      "excerpt": "新的明确指令优先于旧约定；约定修订需保留来源和适用范围。专业背景、职位和无证据支持的工作流程暂不填写。这是项目级工作约定，不自动成为跨项目的全局人物画像。",
+      "outgoing": [
+        "01_项目/JARVIS/30_实验记录/2026-11-18 R3 协作适应实验卡.md"
+      ],
+      "backlinks": [
+        "01_项目/JARVIS/00_项目索引.md",
+        "01_项目/JARVIS/10_设计笔记/JARVIS 管家首版落地说明.md",
+        "01_项目/JARVIS/20_实验计划/JARVIS Agentic 闭环实验计划 v0.3.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 R3 协作适应实验卡.md",
+        "01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 F1 真实Skill核验与经验清理草稿.md"
+      ],
+      "unresolved_links": [],
+      "score": 219.0252
+    },
+    {
+      "title": "2026-11-18 R3 协作适应实验卡",
+      "path": "D:/个人知识库/01_项目/JARVIS/30_实验记录/2026-11-18 R3 协作适应实验卡.md",
+      "relative_path": "01_项目/JARVIS/30_实验记录/2026-11-18 R3 协作适应实验卡.md",
+      "layer": "project",
+      "status": "completed",
+      "type": "experiment-run",
+      "project": "jarvis",
+      "tags": [
+        "project/jarvis",
+        "experiment/r3"
+      ],
+      "excerpt": "三项内容已由 R3 确认并保存为 [[01_项目/JARVIS/10_设计笔记/JARVIS 项目协作约定|JARVIS 项目协作约定]]，在项目内生效，不扩大为全局人物画像。来源为当前会话可见的明确发言；尚未导出原始会话并标注记录号，不伪造 raw source 或来源哈希。",
+      "outgoing": [
+        "01_项目/JARVIS/10_设计笔记/JARVIS 项目协作约定.md",
+        "01_项目/JARVIS/20_实验计划/JARVIS Agentic 闭环实验计划 v0.3.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 R2 注册表清理与复用准备.md"
+      ],
+      "backlinks": [
+        "01_项目/JARVIS/00_项目索引.md",
+        "01_项目/JARVIS/10_设计笔记/JARVIS 项目协作约定.md",
+        "01_项目/JARVIS/20_实验计划/JARVIS Agentic 闭环实验计划 v0.3.md",
+        "01_项目/JARVIS/30_实验记录/2026-11-18 R2 注册表清理与复用准备.md"
+      ],
+      "unresolved_links": [],
+      "score": 39.7748
+    },
+    {
+      "title": "JARVIS 管家首版落地说明",
+      "path": "D:/个人知识库/01_项目/JARVIS/10_设计笔记/JARVIS 管家首版落地说明.md",
+      "relative_path": "01_项目/JARVIS/10_设计笔记/JARVIS 管家首版落地说明.md",
+      "layer": "project",
+      "status": "pending-review",
+      "type": "implementation-note",
+      "project": "jarvis",
+      "tags": [
+        "project/jarvis",
+        "steward-agent"
+      ],
+      "excerpt": "[[01_项目/JARVIS/10_设计笔记/JARVIS 项目协作约定|已确认项目约定]]继续适用。后续直接用真实任务反馈修正，不再增加细碎确认步骤。",
+      "outgoing": [
+        "01_项目/JARVIS/10_设计笔记/JARVIS 项目协作约定.md"
+      ],
+      "backlinks": [
+        "01_项目/JARVIS/00_项目索引.md"
+      ],
+      "unresolved_links": [],
+      "score": 25.5335
+    }
+  ]
+}

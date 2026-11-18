@@ -1,0 +1,21 @@
+{
+  "task_id": "JV-20261118-004",
+  "date": "2026-11-18",
+  "ok": true,
+  "checks": {
+    "role_and_template_exist": true,
+    "entry_connected": true,
+    "explicit_user_authorization": true,
+    "manual_draft_defaults": true,
+    "template_not_executable": true,
+    "approval_fields_present": true,
+    "role_requires_baseline_check": true,
+    "actual_support_skills_exist": true,
+    "no_default_children_or_parallel_writers": true,
+    "formal_registry_still_empty": true,
+    "rollback_files_present": true
+  },
+  "actual_knowledge_run_executed": false,
+  "formal_knowledge_changes_applied": false,
+  "scope": "configuration and referenced-file checks only"
+}

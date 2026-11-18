@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0",
+  "kind": "profile",
+  "project": "JARVIS",
+  "version": "0.1.0",
+  "entries": [
+    {
+      "id": "P1",
+      "category": "execution",
+      "statement": "按真实任务分轮推进，保留编号和状态；轮内自主执行，集中验收",
+      "scope": "JARVIS",
+      "conditions": [
+        "JARVIS 实验管理"
+      ],
+      "exceptions": [
+        "用户要求逐步操作、范围变化或关键审批时按当次要求执行"
+      ],
+      "source": {
+        "path": "D:/个人知识库/01_项目/JARVIS/10_设计笔记/JARVIS 项目协作约定.md",
+        "anchor": "P1",
+        "sha256": "cd9bc4fb79b5ed89e0f4d58f574affa19f30a0e598ecb7e62a121ae1bc6994e7"
+      },
+      "evidence_kind": "reviewed_agreement",
+      "status": "approved",
+      "approved_at": "2026-11-18",
+      "approved_by": "user",
+      "last_verified_at": "2026-11-18",
+      "review_after": null,
+      "supersedes": null
+    },
+    {
+      "id": "P2",
+      "category": "communication",
+      "statement": "方案建议说明收益、风险、未验证点和可选路径",
+      "scope": "JARVIS",
+      "conditions": [
+        "架构与方案决策"
+      ],
+      "exceptions": [
+        "简单状态确认保持简短"
+      ],
+      "source": {
+        "path": "D:/个人知识库/01_项目/JARVIS/10_设计笔记/JARVIS 项目协作约定.md",
+        "anchor": "P2",
+        "sha256": "cd9bc4fb79b5ed89e0f4d58f574affa19f30a0e598ecb7e62a121ae1bc6994e7"
+      },
+      "evidence_kind": "reviewed_agreement",
+      "status": "approved",
+      "approved_at": "2026-11-18",
+      "approved_by": "user",
+      "last_verified_at": "2026-11-18",
+      "review_after": null,
+      "supersedes": null
+    },
+    {
+      "id": "P3",
+      "category": "governance",
+      "statement": "正式任务经验必须关联真实存在的 Skill；无对应 Skill 的经验移出正式注册表",
+      "scope": "JARVIS",
+      "conditions": [
+        "当前 JARVIS 正式经验注册表"
+      ],
+      "exceptions": [
+        "不扩大为所有知识笔记都必须绑定 Skill",
+        "不恢复已隔离经验"
+      ],
+      "source": {
+        "path": "D:/个人知识库/01_项目/JARVIS/10_设计笔记/JARVIS 项目协作约定.md",
+        "anchor": "P3",
+        "sha256": "cd9bc4fb79b5ed89e0f4d58f574affa19f30a0e598ecb7e62a121ae1bc6994e7"
+      },
+      "evidence_kind": "reviewed_agreement",
+      "status": "approved",
+      "approved_at": "2026-11-18",
+      "approved_by": "user",
+      "last_verified_at": "2026-11-18",
+      "review_after": null,
+      "supersedes": null
+    }
+  ]
+}

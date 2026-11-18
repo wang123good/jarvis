@@ -1,0 +1,24 @@
+{
+  "status": "ok",
+  "config": "D:\\codex-project\\JARVIS\\.codex\\obsidian-kb.json",
+  "vault": "D:\\个人知识库",
+  "vault_exists": true,
+  "project": {
+    "id": "jarvis",
+    "name": "JARVIS",
+    "aliases": [],
+    "root": "01_项目/JARVIS"
+  },
+  "project_root": "D:\\个人知识库\\01_项目\\JARVIS",
+  "project_notes": 36,
+  "notes_indexed": 266,
+  "layer_counts": {
+    "archive": 58,
+    "domain": 29,
+    "inbox": 3,
+    "project": 144,
+    "resource": 32
+  },
+  "unresolved_links": 9,
+  "warnings": []
+}

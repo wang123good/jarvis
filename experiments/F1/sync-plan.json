@@ -1,0 +1,12 @@
+{
+  "vault": "D:/个人知识库",
+  "projects": [
+    {
+      "id": "jarvis",
+      "name": "JARVIS",
+      "directory": "D:/codex-project/JARVIS",
+      "root": "01_项目/JARVIS",
+      "threads": ["01a1e893-ce4d-7ff2-bf55-00845bf74786"]
+    }
+  ]
+}

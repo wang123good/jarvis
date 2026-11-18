@@ -1,0 +1,118 @@
+{
+  "audit_id": "W1-01",
+  "status": "completed",
+  "started_at_utc": "2026-11-18T11:23:24.3431095+08:00",
+  "ended_at_utc": "2026-11-18T11:23:24.6925405+08:00",
+  "scenario_execution_seconds": 0.349431,
+  "commands": [
+    "& 'C:/Users/10013463/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -B 'D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\audit_worker_contract.py'",
+    "& 'C:/Users/10013463/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -B 'D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\audit_worker_contract.py' --input-dir 'D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\missing-input-fixture' --report-dir 'D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\missing-input-result'"
+  ],
+  "normal": {
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "status": "completed",
+    "hash_count": 4,
+    "all_hashes_passed": true,
+    "configuration_consistent": true,
+    "dimensions": 6,
+    "findings": 5
+  },
+  "missing_input": {
+    "omitted_file": "task-template.md",
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "status": "blocked",
+    "semantic_audit_performed": false,
+    "errors": [
+      {
+        "code": "MISSING_INPUT",
+        "file": "task-template.md",
+        "path": "D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\missing-input-fixture\\task-template.md",
+        "message": "Required frozen input missing; stop without knowledge-base fallback"
+      }
+    ],
+    "fixture_method": "Copied exactly three allowed frozen files; originals untouched"
+  },
+  "frozen_inputs_and_manifest_unchanged": true,
+  "hashes_before": [
+    {
+      "path": "D:\\codex-project\\JARVIS\\experiments\\W1\\input-manifest.json",
+      "sha256": "b74eae1cca4c3462711980b4d23c41aa5b05f95596be456034298ef57aa42ac9"
+    },
+    {
+      "path": "D:\\codex-project\\JARVIS\\experiments\\W1\\inputs\\architecture-excerpts.md",
+      "sha256": "b1c1ed906ba7b991ff79810c27774462de56ace44315182917ae57a77205dcc1"
+    },
+    {
+      "path": "D:\\codex-project\\JARVIS\\experiments\\W1\\inputs\\steward-defaults.json",
+      "sha256": "a4807dc2552b89bed30ce444572e645f39200d09c0b6eae026f00c53bb1d464b"
+    },
+    {
+      "path": "D:\\codex-project\\JARVIS\\experiments\\W1\\inputs\\steward-entry.md",
+      "sha256": "9924a68b981c9a57caffad4e646a10515fc098a72a2f0be59a6cd0ccf1234fa5"
+    },
+    {
+      "path": "D:\\codex-project\\JARVIS\\experiments\\W1\\inputs\\task-template.md",
+      "sha256": "035cd46ed33a0f8230f246557ac002da2a8a1c9e6263ef372f9216a8f9f793ec"
+    }
+  ],
+  "hashes_after": [
+    {
+      "path": "D:\\codex-project\\JARVIS\\experiments\\W1\\input-manifest.json",
+      "sha256": "b74eae1cca4c3462711980b4d23c41aa5b05f95596be456034298ef57aa42ac9"
+    },
+    {
+      "path": "D:\\codex-project\\JARVIS\\experiments\\W1\\inputs\\architecture-excerpts.md",
+      "sha256": "b1c1ed906ba7b991ff79810c27774462de56ace44315182917ae57a77205dcc1"
+    },
+    {
+      "path": "D:\\codex-project\\JARVIS\\experiments\\W1\\inputs\\steward-defaults.json",
+      "sha256": "a4807dc2552b89bed30ce444572e645f39200d09c0b6eae026f00c53bb1d464b"
+    },
+    {
+      "path": "D:\\codex-project\\JARVIS\\experiments\\W1\\inputs\\steward-entry.md",
+      "sha256": "9924a68b981c9a57caffad4e646a10515fc098a72a2f0be59a6cd0ccf1234fa5"
+    },
+    {
+      "path": "D:\\codex-project\\JARVIS\\experiments\\W1\\inputs\\task-template.md",
+      "sha256": "035cd46ed33a0f8230f246557ac002da2a8a1c9e6263ef372f9216a8f9f793ec"
+    }
+  ],
+  "boundaries": {
+    "business_writes": "experiments/W1/worker-output/ only",
+    "input_scope": "Frozen inputs, manifest and work-package only",
+    "network_used": false,
+    "descendants_created": 0,
+    "obsidian_or_history_read": false,
+    "boundary_assurance": "Command/source evidence and input hashes; not system-enforced isolation or independent whole-project write monitoring"
+  },
+  "adopted_budget": {
+    "workers": 1,
+    "max_descendants": 0,
+    "checkpoint_minutes": 10,
+    "max_additional_retries_same_failure": 1,
+    "observed_failure_retries": 0,
+    "token_usage": null,
+    "cost": null,
+    "timing_scope": "Only these two scenario executions, not total task duration"
+  },
+  "review_state": "已交付待管家复核；Worker completed 不等于任务已验收",
+  "blockers": [],
+  "next_action": "管家复核证据并决定最小契约补充；未修改职责文档或批准发布",
+  "all_required_checks_passed": true,
+  "changed_files": [
+    "D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\audit_worker_contract.py",
+    "D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\audit-conclusions.md",
+    "D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\audit-report.json",
+    "D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\execution-checks.json",
+    "D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\missing-input-fixture\\architecture-excerpts.md",
+    "D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\missing-input-fixture\\steward-defaults.json",
+    "D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\missing-input-fixture\\steward-entry.md",
+    "D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\missing-input-result\\audit-report.json",
+    "D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\missing.stderr.log",
+    "D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\missing.stdout.log",
+    "D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\normal.stderr.log",
+    "D:\\codex-project\\JARVIS\\experiments\\W1\\worker-output\\normal.stdout.log"
+  ]
+}

@@ -1,0 +1,54 @@
+---
+title: 图书管理员与任务经验注册表评审
+type: task-experience-sample
+project: jarvis
+experience_id: exp-2026-004
+task_signature: librarian-experience-registry-review
+status: 已闭环
+human_review: approved
+call_frequency: 2
+created: 2026-11-17
+updated: 2026-11-18
+last_verified: 2026-11-18
+confidence: high
+tags:
+  - project/jarvis
+  - task-experience
+---
+
+# 图书管理员与任务经验注册表评审
+
+## 目标
+
+判断图书管理员是否需要独立 Agent，以及经验注册表如何服务管家规划。
+
+## 结果
+
+确定图书管理员为手动触发的离线 Agent，注册表作为管家间接输入，Worker 不直接访问。
+
+## 状态建议
+
+**已闭环**：角色边界、状态建议、人工复核、频率排序、证据和 Skill 版本已进入 v1.4，并被 v1.5 延续。
+
+## 可复用经验
+
+- 离线整理与在线检索分离。
+- 状态由管理员建议、人工确认。
+- 注册表需要稳定 ID、签名、证据和 Skill 版本。
+
+## 证据
+
+- session:01a1e893-ce4d-7ff2-bf55-00845bf74786
+- docx:JARVIS 管家 Worker Skill 与图书管理员架构设计 v1.5
+- note:2026-11-18 E1-05 注册表与Obsidian映射验证
+- run:lib-2026-001
+- note:2026-11-18 E2-04 人工复核决策
+
+## 适用边界
+
+适用于本地 Obsidian 知识库和单用户任务经验管理。
+
+## 复核
+
+- [x] 人工复核状态与证据
+

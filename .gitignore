@@ -1,0 +1,14 @@
+# Runtime caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+# Office lock files
+~$*
+# Accidental shell redirection artifact
+/$null
+# Local credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key

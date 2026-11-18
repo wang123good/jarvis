@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "vault": "D:\\个人知识库",
+  "project": {
+    "id": "jarvis",
+    "name": "JARVIS",
+    "aliases": [],
+    "root": "01_项目/JARVIS"
+  },
+  "layers": {
+    "project": [
+      "01_项目"
+    ],
+    "domain": [
+      "02_领域"
+    ],
+    "resource": [
+      "03_资源"
+    ],
+    "inbox": [
+      "00_收件箱"
+    ],
+    "archive": [
+      "04_归档"
+    ]
+  },
+  "default_search_layers": [
+    "project",
+    "domain",
+    "resource"
+  ]
+}

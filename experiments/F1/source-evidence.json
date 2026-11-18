@@ -1,0 +1,67 @@
+{
+  "thread": "01a1e893-ce4d-7ff2-bf55-00845bf74786",
+  "source_raw": "04_归档/10_Codex原始对话/jarvis/2026/01a1e893-ce4d-7ff2-bf55-00845bf74786/aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608/对话.md",
+  "source_hash": "aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608",
+  "source_jsonl": "D:\\个人知识库\\04_归档\\10_Codex原始对话\\jarvis\\2026\\01a1e893-ce4d-7ff2-bf55-00845bf74786\\aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608\\source.jsonl",
+  "coverage": {
+    "attachments_metadata": 0,
+    "desktop_items": 1248,
+    "desktop_turns": 35,
+    "gaps": [
+      "External attachments/output files not copied or verified.",
+      "Independent source transactions; no cross-database atomicity.",
+      "Compacted/forked history may omit or inherit earlier messages."
+    ],
+    "record_types": {
+      "compacted": 1,
+      "event_msg": 1817,
+      "response_item": 1887,
+      "session_meta": 1,
+      "token_usage_record": 461,
+      "turn_context": 35,
+      "world_state": 4
+    },
+    "rollout_records": 4206,
+    "scope": "point-in-time rollout + desktop projection; not guaranteed lifetime-complete"
+  },
+  "selected_user_records": [
+    {
+      "record": 3957,
+      "text": "按B方案修改实验计划，并继续实验\n"
+    },
+    {
+      "record": 4059,
+      "text": "注册表中未找到对应skill的经验，先去除，避免产生数据污染。建议可行\n"
+    }
+  ],
+  "skills": [
+    {
+      "skill_id": "report-analysis-loop",
+      "path": "C:\\Users\\10013463\\.codex\\skills\\report-analysis-loop\\SKILL.md",
+      "sha256": "4e8b3c512a9db3d21d9814362e278e98824321b7a680044c2e656465e29e9e71",
+      "version": null,
+      "version_method": "content-sha256; no semantic version inferred"
+    },
+    {
+      "skill_id": "codex-memory-sync",
+      "path": "C:\\Users\\10013463\\.codex\\skills\\codex-memory-sync\\SKILL.md",
+      "sha256": "2778f0ebc9f86972ab2606a460a292914ced745f6eb91de56a508e0e4c9126ea",
+      "version": null,
+      "version_method": "content-sha256; no semantic version inferred"
+    },
+    {
+      "skill_id": "obsidian-curator",
+      "path": "C:\\Users\\10013463\\.codex\\skills\\obsidian-curator\\SKILL.md",
+      "sha256": "bd4301a04132914156c2a2ed4626d3d86926db8a35cd2f6cce7975a736d778ba",
+      "version": null,
+      "version_method": "content-sha256; no semantic version inferred"
+    },
+    {
+      "skill_id": "obsidian-kb",
+      "path": "C:\\Users\\10013463\\.codex\\skills\\obsidian-kb\\SKILL.md",
+      "sha256": "1902a5d898443e7a2dcb6be9646e4b941cccc05ae19da78d5afbdb9f7f2006bf",
+      "version": null,
+      "version_method": "content-sha256; no semantic version inferred"
+    }
+  ]
+}

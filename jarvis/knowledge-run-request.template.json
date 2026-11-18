@@ -1,0 +1,36 @@
+{
+  "template_only": true,
+  "run_id": "FILL-UNIQUE-RUN-ID",
+  "project_id": "jarvis",
+  "project_root": "D:/codex-project/JARVIS",
+  "trigger": "explicit-user-request",
+  "user_instruction": "FILL-EXACT-USER-REQUEST",
+  "mode": "curate",
+  "objective": "FILL-ORGANIZATION-GOAL-AND-TOPICS",
+  "sources": {
+    "session_ids": [],
+    "artifact_paths": [],
+    "topic_filter": [],
+    "require_explicit_source_selection": true
+  },
+  "allowed_read_paths": [],
+  "allowed_write_paths": [],
+  "report_directory": "FILL-ABSOLUTE-PROJECT-RUN-DIRECTORY",
+  "candidate_directory": "D:/个人知识库/01_项目/JARVIS/50_图书管理员/candidates",
+  "allow_domain_resource_writes": false,
+  "budget": {
+    "max_sessions": 1,
+    "checkpoint_minutes": 20,
+    "max_new_semantic_drafts": 3,
+    "max_additional_retries_same_failure": 1,
+    "may_spawn_children": false,
+    "new_paid_services": false
+  },
+  "approval": {
+    "user_approval_evidence": null,
+    "approved_diff_path": null,
+    "expected_baseline_sha256": {},
+    "backup_directory": null
+  },
+  "formal_writes_allowed": false
+}

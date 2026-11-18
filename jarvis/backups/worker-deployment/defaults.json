@@ -1,0 +1,23 @@
+{
+  "role": "JARVIS",
+  "version": "0.1",
+  "deployment": "project-main-session",
+  "authorized_on": "2026-11-18",
+  "configuration_kind": "project-conventions-not-codex-native-config",
+  "enforcement": "instruction-level-soft-limits",
+  "default_mode": "direct",
+  "max_workers_total": 2,
+  "max_workers_concurrent": 2,
+  "max_additional_retries_same_failure": 2,
+  "max_exploration_branches": 2,
+  "active_work_review_minutes": 20,
+  "budget_review_fraction_when_measurable": 0.8,
+  "new_external_paid_services": "explicit-user-authorization-required",
+  "project_root": "D:/codex-project/JARVIS",
+  "knowledge_pointer": ".codex/obsidian-kb.json",
+  "registry": "D:/个人知识库/01_项目/JARVIS/40_任务经验注册表/experience-registry.json",
+  "task_template": "jarvis/task-template.md",
+  "task_directory": "jarvis/tasks",
+  "skill_roots": ["C:/Users/10013463/.codex/skills", "C:/Users/10013463/.agents/skills"],
+  "never_infer": ["hard-cost-enforcement", "worker-access-isolation", "cross-session-learning-success"]
+}

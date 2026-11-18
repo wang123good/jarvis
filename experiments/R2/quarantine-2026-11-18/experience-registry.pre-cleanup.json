@@ -1,0 +1,257 @@
+{
+  "schema_version": "0.1",
+  "updated_at": "2026-11-17",
+  "experiences": [
+    {
+      "experience_id": "exp-2026-001",
+      "task_name": "Codex 数字人方案可行性评审",
+      "task_signature": "codex-digital-human-feasibility-review",
+      "objective": "判断基于 Codex 的数字人分身方案是否可行，并识别落地风险。",
+      "project_scope": ["JARVIS"],
+      "topics": ["codex", "digital-human", "feasibility", "architecture-review"],
+      "status": "有待完善",
+      "status_suggestion": {
+        "status": "有待完善",
+        "reason": "初次评审更偏向多 Agent 和治理风险，后续才明确为能力进化与用户认知进化两条闭环。",
+        "evidence_refs": ["session:01a1e893-ce4d-7ff2-bf55-00845bf74786"]
+      },
+      "human_review": "approved",
+      "review_notes": "2026-11-17 E1-02 人工复核通过。",
+      "call_frequency": 1,
+      "last_updated": "2026-11-17",
+      "last_verified": "2026-11-17",
+      "evidence_refs": [
+        "session:01a1e893-ce4d-7ff2-bf55-00845bf74786",
+        "docx:JARVIS 管家 Worker Skill 与图书管理员架构设计 v1.5"
+      ],
+      "applicability": ["本地 Codex", "个人助手", "架构可行性评审"],
+      "skill_links": [
+        {
+          "skill_id": "architecture-review",
+          "skill_version": "1.2.0",
+          "applicability": ["可行性评审", "风险识别"],
+          "match_confidence": 0.86
+        }
+      ],
+      "obsidian_path": "01_项目/JARVIS/40_任务经验注册表/样本/2026/exp-2026-001-codex-digital-human-feasibility.md",
+      "loop_type": "delegated",
+      "version": "0.1.0"
+    },
+    {
+      "experience_id": "exp-2026-002",
+      "task_name": "Agent 自进化架构评审",
+      "task_signature": "agent-self-evolution-review",
+      "objective": "评审 Agent 自进化架构的可行性和主要风险。",
+      "project_scope": ["JARVIS"],
+      "topics": ["agent", "self-evolution", "memory", "user-model"],
+      "status": "有待完善",
+      "status_suggestion": {
+        "status": "有待完善",
+        "reason": "初期评审将重点放在防止 Agent 自改规则，用户随后纠正为任务经验沉淀和用户理解增强。",
+        "evidence_refs": ["session:01a1e893-ce4d-7ff2-bf55-00845bf74786"]
+      },
+      "human_review": "approved",
+      "review_notes": "2026-11-17 E1-02 人工复核通过。",
+      "call_frequency": 2,
+      "last_updated": "2026-11-17",
+      "last_verified": "2026-11-17",
+      "evidence_refs": [
+        "session:01a1e893-ce4d-7ff2-bf55-00845bf74786",
+        "note:JARVIS Agentic 架构设计笔记"
+      ],
+      "applicability": ["外部记忆 Agent", "Skill 演进", "用户画像"],
+      "skill_links": [
+        {
+          "skill_id": "agent-self-evolution-review",
+          "skill_version": "0.1.0",
+          "applicability": ["双层自进化评审", "记忆治理"],
+          "match_confidence": 0.78
+        }
+      ],
+      "obsidian_path": "01_项目/JARVIS/40_任务经验注册表/样本/2026/exp-2026-002-agent-self-evolution-review.md",
+      "loop_type": "delegated",
+      "version": "0.1.0"
+    },
+    {
+      "experience_id": "exp-2026-003",
+      "task_name": "Agentic AI 能力差距分析",
+      "task_signature": "agentic-ai-gap-analysis",
+      "objective": "对比 JARVIS 方案与 Agentic AI 常见能力模型，识别缺失环节。",
+      "project_scope": ["JARVIS"],
+      "topics": ["agentic-ai", "gap-analysis", "control-plane"],
+      "status": "已闭环",
+      "status_suggestion": {
+        "status": "已闭环",
+        "reason": "核心缺口已进入 v1.5，形成管家控制面、三档闭环、Loop Contract 和决策权限。",
+        "evidence_refs": ["docx:JARVIS 管家 Worker Skill 与图书管理员架构设计 v1.5"]
+      },
+      "human_review": "approved",
+      "review_notes": "2026-11-17 E1-02 人工复核通过。",
+      "call_frequency": 1,
+      "last_updated": "2026-11-17",
+      "last_verified": "2026-11-17",
+      "evidence_refs": [
+        "session:01a1e893-ce4d-7ff2-bf55-00845bf74786",
+        "docx:JARVIS 管家 Worker Skill 与图书管理员架构设计 v1.5"
+      ],
+      "applicability": ["Agentic 架构评审", "能力差距分析", "本地 Codex"],
+      "skill_links": [
+        {
+          "skill_id": "agentic-gap-analysis",
+          "skill_version": "0.1.0",
+          "applicability": ["能力模型对比", "实施可行性评审"],
+          "match_confidence": 0.88
+        }
+      ],
+      "obsidian_path": "01_项目/JARVIS/40_任务经验注册表/样本/2026/exp-2026-003-agentic-ai-gap-analysis.md",
+      "loop_type": "delegated",
+      "version": "0.1.0"
+    },
+    {
+      "experience_id": "exp-2026-004",
+      "task_name": "图书管理员与任务经验注册表评审",
+      "task_signature": "librarian-experience-registry-review",
+      "objective": "判断图书管理员是否需要独立 Agent，以及经验注册表如何服务管家规划。",
+      "project_scope": ["JARVIS"],
+      "topics": ["librarian", "task-experience", "registry", "obsidian"],
+      "status": "已闭环",
+      "status_suggestion": {
+        "status": "已闭环",
+        "reason": "角色边界、状态建议、人工复核、频率排序、证据和 Skill 版本已进入 v1.4，并被 v1.5 延续。",
+        "evidence_refs": ["docx:JARVIS 管家 Worker Skill 与图书管理员架构设计 v1.5"]
+      },
+      "human_review": "approved",
+      "review_notes": "2026-11-17 E1-02 人工复核通过。",
+      "call_frequency": 2,
+      "last_updated": "2026-11-17",
+      "last_verified": "2026-11-18",
+      "evidence_refs": [
+        "session:01a1e893-ce4d-7ff2-bf55-00845bf74786",
+        "docx:JARVIS 管家 Worker Skill 与图书管理员架构设计 v1.5",
+        "note:2026-11-18 E1-05 注册表与Obsidian映射验证",
+        "run:lib-2026-001",
+        "note:2026-11-18 E2-04 人工复核决策"
+      ],
+      "applicability": ["任务经验管理", "Obsidian 知识库", "单用户 Agent"],
+      "skill_links": [
+        {
+          "skill_id": "librarian-registry-design",
+          "skill_version": "0.1.0",
+          "applicability": ["注册表设计", "状态复核", "Skill 映射"],
+          "match_confidence": 0.91
+        }
+      ],
+      "obsidian_path": "01_项目/JARVIS/40_任务经验注册表/样本/2026/exp-2026-004-librarian-experience-registry-review.md",
+      "loop_type": "delegated",
+      "version": "0.1.0"
+    },
+    {
+      "experience_id": "exp-2026-005",
+      "task_name": "JARVIS 架构文档迭代修订",
+      "task_signature": "jarvis-architecture-revision",
+      "objective": "根据历次评审持续修订 JARVIS 架构设计。",
+      "project_scope": ["JARVIS"],
+      "topics": ["architecture", "document-revision", "design-control"],
+      "status": "已闭环",
+      "status_suggestion": {
+        "status": "已闭环",
+        "reason": "设计已形成连续版本和明确边界，v1.5 已通过 G0 支撑实验启动。",
+        "evidence_refs": ["attachment:JARVIS 管家 Worker Skill 与图书管理员架构设计 v1.5"]
+      },
+      "human_review": "approved",
+      "review_notes": "2026-11-17 E1-02 人工复核通过。",
+      "call_frequency": 3,
+      "last_updated": "2026-11-17",
+      "last_verified": "2026-11-17",
+      "evidence_refs": [
+        "session:01a1e893-ce4d-7ff2-bf55-00845bf74786",
+        "attachment:99_附件/项目/jarvis/JARVIS 管家 Worker Skill 与图书管理员架构设计 v1.5.docx"
+      ],
+      "applicability": ["架构文档迭代", "版本修订", "控制面设计"],
+      "skill_links": [
+        {
+          "skill_id": "architecture-document-revision",
+          "skill_version": "0.1.0",
+          "applicability": ["增量修订", "版本管理", "待验证技术点标注"],
+          "match_confidence": 0.9
+        }
+      ],
+      "obsidian_path": "01_项目/JARVIS/40_任务经验注册表/样本/2026/exp-2026-005-jarvis-architecture-revision.md",
+      "loop_type": "delegated",
+      "version": "0.1.0"
+    },
+    {
+      "experience_id": "exp-2026-006",
+      "task_name": "JARVIS Agentic 闭环实验计划设计",
+      "task_signature": "jarvis-agentic-experiment-plan",
+      "objective": "把 JARVIS 架构转化为分层、可确认、可验收的实验步骤。",
+      "project_scope": ["JARVIS"],
+      "topics": ["experiment-plan", "agentic-ai", "verification"],
+      "status": "已闭环",
+      "status_suggestion": {
+        "status": "已闭环",
+        "reason": "计划已落地到 Obsidian，状态机制、基线任务和 E0 结果已通过 G0。",
+        "evidence_refs": ["note:JARVIS Agentic 闭环实验计划 v0.2"]
+      },
+      "human_review": "approved",
+      "review_notes": "2026-11-17 E1-02 人工复核通过。",
+      "call_frequency": 2,
+      "last_updated": "2026-11-17",
+      "last_verified": "2026-11-18",
+      "evidence_refs": [
+        "note:JARVIS Agentic 闭环实验计划 v0.2",
+        "note:2026-11-17 E0 闭环定义与基线",
+        "note:2026-11-18 G1 注册表阶段确认",
+        "note:2026-11-18 E2-02 Session主题与经验提取",
+        "note:2026-11-18 E2-04 人工复核决策"
+      ],
+      "applicability": ["实验计划", "闭环验收", "确认门"],
+      "skill_links": [
+        {
+          "skill_id": "experiment-planning",
+          "skill_version": "0.1.0",
+          "applicability": ["分层实验", "状态管理", "人工确认门"],
+          "match_confidence": 0.89
+        }
+      ],
+      "obsidian_path": "01_项目/JARVIS/40_任务经验注册表/样本/2026/exp-2026-006-jarvis-agentic-experiment-plan.md",
+      "loop_type": "direct",
+      "version": "0.1.0"
+    },
+    {
+      "experience_id": "exp-2026-007",
+      "task_name": "Skill Subagent Agent集群与编排层边界",
+      "task_signature": "skill-subagent-cluster-orchestrator-boundary",
+      "objective": "澄清 Skill、Subagent、Agent 集群、Orchestrator 和 Scheduler 的关系。",
+      "project_scope": ["JARVIS"],
+      "topics": ["skill", "subagent", "agent-cluster", "orchestrator"],
+      "status": "已闭环",
+      "status_suggestion": {
+        "status": "已闭环",
+        "reason": "用户采纳 Worker 可直接协作、管家定义边界和检查点、Scheduler 延后的建议，并据此开始实验。",
+        "evidence_refs": ["session:01a1e893-ce4d-7ff2-bf55-00845bf74786"]
+      },
+      "human_review": "approved",
+      "review_notes": "2026-11-17 E1-02 人工复核通过。",
+      "call_frequency": 2,
+      "last_updated": "2026-11-17",
+      "last_verified": "2026-11-17",
+      "evidence_refs": [
+        "session:01a1e893-ce4d-7ff2-bf55-00845bf74786",
+        "docx:JARVIS 管家 Worker Skill 与图书管理员架构设计 v1.5"
+      ],
+      "applicability": ["多 Agent 协作", "编排层设计", "能力边界"],
+      "skill_links": [
+        {
+          "skill_id": "agent-boundary-analysis",
+          "skill_version": "0.1.0",
+          "applicability": ["Skill 与 Agent 划分", "编排层必要性", "集群协作"],
+          "match_confidence": 0.87
+        }
+      ],
+      "obsidian_path": "01_项目/JARVIS/40_任务经验注册表/样本/2026/exp-2026-007-skill-subagent-orchestrator-boundary.md",
+      "loop_type": "delegated",
+      "version": "0.1.0"
+    }
+  ]
+}

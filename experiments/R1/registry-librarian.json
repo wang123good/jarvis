@@ -1,0 +1,73 @@
+{
+  "query": {
+    "task_name": null,
+    "signature": "librarian-experience-registry-review",
+    "topic": null,
+    "status": null,
+    "include_unreviewed": false,
+    "limit": 10
+  },
+  "sorting": [
+    "call_frequency_desc",
+    "last_updated_desc",
+    "experience_id_asc"
+  ],
+  "count": 1,
+  "results": [
+    {
+      "experience_id": "exp-2026-004",
+      "task_name": "图书管理员与任务经验注册表评审",
+      "task_signature": "librarian-experience-registry-review",
+      "objective": "判断图书管理员是否需要独立 Agent，以及经验注册表如何服务管家规划。",
+      "project_scope": [
+        "JARVIS"
+      ],
+      "topics": [
+        "librarian",
+        "task-experience",
+        "registry",
+        "obsidian"
+      ],
+      "status": "已闭环",
+      "status_suggestion": {
+        "status": "已闭环",
+        "reason": "角色边界、状态建议、人工复核、频率排序、证据和 Skill 版本已进入 v1.4，并被 v1.5 延续。",
+        "evidence_refs": [
+          "docx:JARVIS 管家 Worker Skill 与图书管理员架构设计 v1.5"
+        ]
+      },
+      "human_review": "approved",
+      "review_notes": "2026-11-17 E1-02 人工复核通过。",
+      "call_frequency": 2,
+      "last_updated": "2026-11-17",
+      "last_verified": "2026-11-18",
+      "evidence_refs": [
+        "session:01a1e893-ce4d-7ff2-bf55-00845bf74786",
+        "docx:JARVIS 管家 Worker Skill 与图书管理员架构设计 v1.5",
+        "note:2026-11-18 E1-05 注册表与Obsidian映射验证",
+        "run:lib-2026-001",
+        "note:2026-11-18 E2-04 人工复核决策"
+      ],
+      "applicability": [
+        "任务经验管理",
+        "Obsidian 知识库",
+        "单用户 Agent"
+      ],
+      "skill_links": [
+        {
+          "skill_id": "librarian-registry-design",
+          "skill_version": "0.1.0",
+          "applicability": [
+            "注册表设计",
+            "状态复核",
+            "Skill 映射"
+          ],
+          "match_confidence": 0.91
+        }
+      ],
+      "obsidian_path": "01_项目/JARVIS/40_任务经验注册表/样本/2026/exp-2026-004-librarian-experience-registry-review.md",
+      "loop_type": "delegated",
+      "version": "0.1.0"
+    }
+  ]
+}

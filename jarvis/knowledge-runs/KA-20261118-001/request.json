@@ -1,0 +1,49 @@
+{
+  "template_only": false,
+  "run_id": "KA-20261118-001",
+  "project_id": "jarvis",
+  "project_root": "D:/codex-project/JARVIS",
+  "trigger": "explicit-user-request",
+  "user_instruction": "知识库管理员，请为我创建体系化的主题：移动影像软硬件方案设计",
+  "mode": "curate",
+  "objective": "创建三份相互链接的领域主题草稿：主题地图、方案设计工作台、资料与问题清单；引用已有相关领域主题，明确框架建议与已验证知识的区别。",
+  "sources": {
+    "session_ids": [],
+    "artifact_paths": [
+      "D:/个人知识库/02_领域/手机影像工程与调试/00_主题地图.md",
+      "D:/个人知识库/02_领域/屏下影像质量与验收/00_主题地图.md",
+      "D:/个人知识库/06_模板/Codex领域主题模板.md"
+    ],
+    "topic_filter": [
+      "移动影像软硬件方案设计"
+    ],
+    "require_explicit_source_selection": true
+  },
+  "allowed_read_paths": [
+    "D:/个人知识库/02_领域/手机影像工程与调试/00_主题地图.md",
+    "D:/个人知识库/02_领域/屏下影像质量与验收/00_主题地图.md",
+    "D:/个人知识库/06_模板/Codex领域主题模板.md"
+  ],
+  "allowed_write_paths": [
+    "D:/个人知识库/02_领域/移动影像软硬件方案设计",
+    "D:/codex-project/JARVIS/jarvis/knowledge-runs/KA-20261118-001"
+  ],
+  "report_directory": "D:/codex-project/JARVIS/jarvis/knowledge-runs/KA-20261118-001",
+  "candidate_directory": "D:/个人知识库/02_领域/移动影像软硬件方案设计",
+  "allow_domain_resource_writes": true,
+  "budget": {
+    "max_sessions": 1,
+    "checkpoint_minutes": 20,
+    "max_new_semantic_drafts": 3,
+    "max_additional_retries_same_failure": 1,
+    "may_spawn_children": false,
+    "new_paid_services": false
+  },
+  "approval": {
+    "user_approval_evidence": null,
+    "approved_diff_path": null,
+    "expected_baseline_sha256": {},
+    "backup_directory": null
+  },
+  "formal_writes_allowed": false
+}
