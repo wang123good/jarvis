@@ -1,0 +1,6 @@
+interface:
+  display_name: "Obsidian 知识整理员"
+  short_description: "整理会话证据或现有笔记，规范标签与知识链接，形成有来源的主题草稿"
+  default_prompt: "使用 $obsidian-curator 整理指定会话证据或现有笔记，提出标签、知识链接和有来源的主题草稿。"
+policy:
+  allow_implicit_invocation: true

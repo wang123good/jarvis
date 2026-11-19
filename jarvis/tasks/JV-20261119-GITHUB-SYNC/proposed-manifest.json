@@ -1,0 +1,199 @@
+{
+  "task_id": "JV-20261119-GITHUB-SYNC",
+  "contract_revision": 1,
+  "status": "awaiting_preflight_review",
+  "remote": "origin",
+  "branch": "main",
+  "entries": [
+    {
+      "source": "AGENTS.md",
+      "destination": "AGENTS.md",
+      "bytes": 11997,
+      "sha256": "a7b2409f6a3a7ea42375a6550a44c3b7b7d63cd5b498cc7d81e795b467939cb6"
+    },
+    {
+      "source": "jarvis/README.md",
+      "destination": "jarvis/README.md",
+      "bytes": 6111,
+      "sha256": "e7f4242348ac1f5c3bda72cbe6398582917540253932d68d6a13cc0bb943a22c"
+    },
+    {
+      "source": "jarvis/defaults.json",
+      "destination": "jarvis/defaults.json",
+      "bytes": 3313,
+      "sha256": "5faf0da8c35d7556e91a68c4428eb6f3ffea754593a8a63a05779f46d7dc468a"
+    },
+    {
+      "source": "jarvis/knowledge-administrator.md",
+      "destination": "jarvis/knowledge-administrator.md",
+      "bytes": 10257,
+      "sha256": "6c11a11ce7712cd1e6f348dc4c6962ed2f88f401e3d428b7e5b71d2f25865030"
+    },
+    {
+      "source": "jarvis/task-template.md",
+      "destination": "jarvis/task-template.md",
+      "bytes": 4006,
+      "sha256": "e401aed5c1ed6d3f3ea50521e80e94720966cd5187c94306e56ef6e931e9685b"
+    },
+    {
+      "source": "架构方案/JARVIS 管家Agent职责定义 v0.1.md",
+      "destination": "架构方案/JARVIS 管家Agent职责定义 v0.1.md",
+      "bytes": 20944,
+      "sha256": "94cacb5b5187237eff958c280f99672ec9183ba8f700e542bb5c28df3571c395"
+    },
+    {
+      "source": "jarvis/tasks/JV-20261119-KB-SKILL-UPDATE.md",
+      "destination": "jarvis/tasks/JV-20261119-KB-SKILL-UPDATE.md",
+      "bytes": 4384,
+      "sha256": "861ed4579945afc0164b8d2a0ede5451a0ef1f078d75ac24042f619aeac08215"
+    },
+    {
+      "source": "jarvis/tasks/JV-20261119-SYNC-FILTERED-EXPORT.md",
+      "destination": "jarvis/tasks/JV-20261119-SYNC-FILTERED-EXPORT.md",
+      "bytes": 5039,
+      "sha256": "5baf5854219725d4d6de42db565abc06d2778b4d9f37ab93c9f9cdab61d2287c"
+    },
+    {
+      "source": "jarvis/tasks/JV-20261119-TRANSCRIPT-POLICY.md",
+      "destination": "jarvis/tasks/JV-20261119-TRANSCRIPT-POLICY.md",
+      "bytes": 2114,
+      "sha256": "5e1ccde9e6f5afbe87e527a2fbc7e150175bdf7ddd0be8cd1abaa15e85d4e742"
+    },
+    {
+      "source": "jarvis/tasks/JV-20261119-KB-ORGANIZE.md",
+      "destination": "jarvis/tasks/JV-20261119-KB-ORGANIZE.md",
+      "bytes": 9849,
+      "sha256": "dcaf9c4330ab5c01ed227bd6ab692be1f652fb4960f8c1eb254e6270e96d3eda"
+    },
+    {
+      "source": "jarvis/tasks/JV-20261119-OBSIDIAN-SKILLS.md",
+      "destination": "jarvis/tasks/JV-20261119-OBSIDIAN-SKILLS.md",
+      "bytes": 3875,
+      "sha256": "bfffc3c9a9b9f0b549651b808de767d82b0b9e22c884a692e20a32e675a07ea0"
+    },
+    {
+      "source": "jarvis/skill-runs/KB-SKILL-20261119-001/published-files.json",
+      "destination": "jarvis/skill-runs/KB-SKILL-20261119-001/published-files.json",
+      "bytes": 958,
+      "sha256": "595898082e580b8fea18cbc49c353b52aa4aef506acf2183c99b30ef0bae8b53"
+    },
+    {
+      "source": "jarvis/skill-runs/KB-SKILL-20261119-001/validation.json",
+      "destination": "jarvis/skill-runs/KB-SKILL-20261119-001/validation.json",
+      "bytes": 811,
+      "sha256": "5cd4c0c7fd4cc8c8e4cd849cff387314f9a1977ffdc50bad1232df4bed5fc3af"
+    },
+    {
+      "source": "jarvis/skill-runs/KB-SKILL-20261119-001/run-report.md",
+      "destination": "jarvis/skill-runs/KB-SKILL-20261119-001/run-report.md",
+      "bytes": 2152,
+      "sha256": "38c5dfca603e75228f569b8fab3b504607f50c061ca699eac5945bff1599d424"
+    },
+    {
+      "source": "jarvis/skill-runs/KB-SKILL-20261119-001/scenario-review.md",
+      "destination": "jarvis/skill-runs/KB-SKILL-20261119-001/scenario-review.md",
+      "bytes": 2055,
+      "sha256": "3e65498f1f3d304e8e51b687e544ee1500d13a137993b80623f5e983116e3d9f"
+    },
+    {
+      "source": "jarvis/skill-runs/SYNC-FILTERED-20261119-001/published-files.json",
+      "destination": "jarvis/skill-runs/SYNC-FILTERED-20261119-001/published-files.json",
+      "bytes": 2880,
+      "sha256": "cf5b62c62bcbfee3d41aedaee063ad332d45b6b8d89889ddc6aa7d825baad4e9"
+    },
+    {
+      "source": "jarvis/skill-runs/SYNC-FILTERED-20261119-001/test-results.txt",
+      "destination": "jarvis/skill-runs/SYNC-FILTERED-20261119-001/test-results.txt",
+      "bytes": 2700,
+      "sha256": "4eb20e09157a388d23af37ff7e422f63d40a504e23524aea827a09634e9cc920"
+    },
+    {
+      "source": "jarvis/skill-runs/SYNC-FILTERED-20261119-001/skill-validation.json",
+      "destination": "jarvis/skill-runs/SYNC-FILTERED-20261119-001/skill-validation.json",
+      "bytes": 208,
+      "sha256": "ac2f43b170cceac32ae8ba82db75c7c8c3b2d007c709e6677e89701933a43a39"
+    },
+    {
+      "source": "jarvis/skill-runs/SYNC-FILTERED-20261119-001/frozen-replay-validation.json",
+      "destination": "jarvis/skill-runs/SYNC-FILTERED-20261119-001/frozen-replay-validation.json",
+      "bytes": 1384,
+      "sha256": "3882346e505c928815390f08bf195080c5dfc029e30b7d6da43f218a2f06894e"
+    },
+    {
+      "source": "jarvis/skill-runs/SYNC-FILTERED-20261119-001/run-report.md",
+      "destination": "jarvis/skill-runs/SYNC-FILTERED-20261119-001/run-report.md",
+      "bytes": 4803,
+      "sha256": "9cc0615ad1c069c5986330992cf5e41903f680f34b94da9f0fd2f208e0512379"
+    },
+    {
+      "source": "jarvis/skill-runs/TRANSCRIPT-POLICY-20261119-001/published-files.json",
+      "destination": "jarvis/skill-runs/TRANSCRIPT-POLICY-20261119-001/published-files.json",
+      "bytes": 724,
+      "sha256": "d391879f443e1ac68ed34d6269807c45561f427e322cc616c40b6b6fa820ec7e"
+    },
+    {
+      "source": "C:\\Users\\10013463\\.codex\\skills\\codex-memory-sync\\agents\\openai.yaml",
+      "destination": "skills/codex-memory-sync/agents/openai.yaml",
+      "bytes": 353,
+      "sha256": "f6b57ef56c0d112d101abfe6d417543578f9a91bbc990b2a984952cf69db02af"
+    },
+    {
+      "source": "C:\\Users\\10013463\\.codex\\skills\\codex-memory-sync\\references\\transcript-retention.md",
+      "destination": "skills/codex-memory-sync/references/transcript-retention.md",
+      "bytes": 6377,
+      "sha256": "bd192c59cf5ba2ee9197fd07f086792f24e596346bdbb3c7d5ed95387ca9d38d"
+    },
+    {
+      "source": "C:\\Users\\10013463\\.codex\\skills\\codex-memory-sync\\scripts\\sync.py",
+      "destination": "skills/codex-memory-sync/scripts/sync.py",
+      "bytes": 38947,
+      "sha256": "fe29d5908b41a1560093c340e042538798bc07a1a45e92c7e3727e33c8f6d742"
+    },
+    {
+      "source": "C:\\Users\\10013463\\.codex\\skills\\codex-memory-sync\\SKILL.md",
+      "destination": "skills/codex-memory-sync/SKILL.md",
+      "bytes": 6804,
+      "sha256": "375c88e6c8f6d116d4040e1c8c9f0fe01a935af00c245d4fb2158f6f6940fea2"
+    },
+    {
+      "source": "C:\\Users\\10013463\\.codex\\skills\\codex-memory-sync\\tests\\test_sync.py",
+      "destination": "skills/codex-memory-sync/tests/test_sync.py",
+      "bytes": 14435,
+      "sha256": "c448d2240a32c16a70cbabcf917579567053d62c8b9c851d053ef23462ec8971"
+    },
+    {
+      "source": "C:\\Users\\10013463\\.codex\\skills\\obsidian-curator\\agents\\openai.yaml",
+      "destination": "skills/obsidian-curator/agents/openai.yaml",
+      "bytes": 361,
+      "sha256": "39f9ca1888b7cc4d1a31790b62afe13f38ddbc7fa5f09881622c6e292215fde0"
+    },
+    {
+      "source": "C:\\Users\\10013463\\.codex\\skills\\obsidian-curator\\references\\vault-maintenance.md",
+      "destination": "skills/obsidian-curator/references/vault-maintenance.md",
+      "bytes": 8567,
+      "sha256": "faa17bddf8fea7ba9d7cd42528e3179d675b066cbb21273b2a0cedc70dd3933f"
+    },
+    {
+      "source": "C:\\Users\\10013463\\.codex\\skills\\obsidian-curator\\scripts\\curate.py",
+      "destination": "skills/obsidian-curator/scripts/curate.py",
+      "bytes": 7425,
+      "sha256": "706f858f7d68b175fa04a50312f8dcebaa676d5b7a2d35194b197668abb8883e"
+    },
+    {
+      "source": "C:\\Users\\10013463\\.codex\\skills\\obsidian-curator\\SKILL.md",
+      "destination": "skills/obsidian-curator/SKILL.md",
+      "bytes": 4918,
+      "sha256": "30e1ad540a365f2ebadf922d22002a53b57dacb139cd4686b5fb099653a10b42"
+    }
+  ],
+  "excluded": [
+    "Obsidian vault content and local indexes",
+    ".codex/knowledge-index.md",
+    ".codex/obsidian-links.json",
+    "phone/APK/native/model/photo/log evidence",
+    "AWB and other business task assets",
+    "raw conversations and replay vault/database fixtures",
+    "backups and caches"
+  ],
+  "note": "Proposed inventory only. No staging, commit, push or installed skill changes yet."
+}

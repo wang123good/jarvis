@@ -1,0 +1,15 @@
+{
+  "task_id": "JV-20261119-GITHUB-SYNC",
+  "contract_revision": 1,
+  "utc": "2026-11-19T09:28:26.600982+00:00",
+  "checks": {
+    "30_source_hashes_match": true,
+    "9_skill_snapshots_match": true,
+    "3_python_files_parse": true,
+    "7_json_files_parse": true,
+    "20_isolated_tests_pass": true,
+    "credential_pattern_scan_no_matches": true
+  },
+  "user_acceptance": "not implied by technical checks",
+  "remote_verification": "pending push; see remote-verification.json after publication"
+}

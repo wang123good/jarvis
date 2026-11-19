@@ -1,0 +1,46 @@
+{
+  "business_note": "D:\\codex-project\\JARVIS\\jarvis\\skill-runs\\SYNC-FILTERED-20261119-001\\frozen-replay\\vault\\04_归档\\11_Codex业务对话\\replay\\01a1f1bf-37d0-7d92-927f-c66d4e50fca9\\3c9384e8e9a1f7e227a4d6a870994fb8360844c2f793b09ce94c61f437010fd6\\对话.md",
+  "business_note_lines": 356,
+  "export": [
+    {
+      "kept_messages": 16,
+      "mode": "business",
+      "result": "exported",
+      "thread": "01a1f1bf-37d0-7d92-927f-c66d4e50fca9"
+    }
+  ],
+  "host_message_omissions": 8,
+  "kept_records": 16,
+  "limits": [
+    "One authorized frozen source; synthetic databases only",
+    "No fresh technical fact checking, tool-evidence review or GUI rendering"
+  ],
+  "no_full_log_copies": true,
+  "original_note_lines": 943,
+  "prepared": {
+    "pending": 16,
+    "review_path": "D:\\codex-project\\JARVIS\\jarvis\\skill-runs\\SYNC-FILTERED-20261119-001\\frozen-replay\\review.json",
+    "threads": 1
+  },
+  "real_sources_and_controls_unchanged": true,
+  "repeat_noop": true,
+  "semantic_omissions": 6,
+  "verify": {
+    "checked_at": "2026-11-19T16:01:03+08:00",
+    "errors": [],
+    "ok": true,
+    "reports": [
+      {
+        "checked_at": "2026-11-19T16:01:03+08:00",
+        "counts": {
+          "files": 5,
+          "projects": 1,
+          "threads": 1
+        },
+        "errors": [],
+        "mode": "business",
+        "ok": true
+      }
+    ]
+  }
+}

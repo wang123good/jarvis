@@ -1,0 +1,6 @@
+interface:
+  display_name: "Codex 对话记忆同步"
+  short_description: "筛选指定对话的业务内容与必要证据，省略运行噪声并校验知识库回链"
+  default_prompt: "使用 $codex-memory-sync 筛选指定对话，复核保留内容并导出业务笔记，保留来源和验证边界。"
+policy:
+  allow_implicit_invocation: true

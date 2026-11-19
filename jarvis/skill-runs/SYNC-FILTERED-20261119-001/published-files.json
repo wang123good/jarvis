@@ -1,0 +1,47 @@
+{
+  "task_id": "JV-20261119-SYNC-FILTERED-EXPORT",
+  "files": [
+    {
+      "path": "C:\\Users\\10013463\\.codex\\skills\\codex-memory-sync\\scripts\\sync.py",
+      "before_sha256": "8dfae7fb3e65eb1ff887cd6b8d52a73442ff331946ff5a55ad06d3806ec7b186",
+      "after_sha256": "fe29d5908b41a1560093c340e042538798bc07a1a45e92c7e3727e33c8f6d742",
+      "snapshot": "D:\\codex-project\\JARVIS\\jarvis\\skill-runs\\SYNC-FILTERED-20261119-001\\after\\0\\sync.py"
+    },
+    {
+      "path": "C:\\Users\\10013463\\.codex\\skills\\codex-memory-sync\\SKILL.md",
+      "before_sha256": "547f9e26238ca118e9f55659efae6b5a6cfbee647e09672a22353e05fb129026",
+      "after_sha256": "375c88e6c8f6d116d4040e1c8c9f0fe01a935af00c245d4fb2158f6f6940fea2",
+      "snapshot": "D:\\codex-project\\JARVIS\\jarvis\\skill-runs\\SYNC-FILTERED-20261119-001\\after\\1\\SKILL.md"
+    },
+    {
+      "path": "C:\\Users\\10013463\\.codex\\skills\\codex-memory-sync\\references\\transcript-retention.md",
+      "before_sha256": "cf76dee36ecb978b16b077f6e9fc20755eb0b00166d9513d35cfbaf0ab46a915",
+      "after_sha256": "bd192c59cf5ba2ee9197fd07f086792f24e596346bdbb3c7d5ed95387ca9d38d",
+      "snapshot": "D:\\codex-project\\JARVIS\\jarvis\\skill-runs\\SYNC-FILTERED-20261119-001\\after\\2\\transcript-retention.md"
+    },
+    {
+      "path": "C:\\Users\\10013463\\.codex\\skills\\codex-memory-sync\\agents\\openai.yaml",
+      "before_sha256": "0cdaf50f845e4abce70b1e9596df3cd383b70a78361c5da67b8872c1aead2a55",
+      "after_sha256": "f6b57ef56c0d112d101abfe6d417543578f9a91bbc990b2a984952cf69db02af",
+      "snapshot": "D:\\codex-project\\JARVIS\\jarvis\\skill-runs\\SYNC-FILTERED-20261119-001\\after\\3\\openai.yaml"
+    },
+    {
+      "path": "C:\\Users\\10013463\\.codex\\skills\\obsidian-curator\\SKILL.md",
+      "before_sha256": "6397fe77687be58e6d8531a94eb728d115c14669094f38f22aeaf2f0b9d1dfd8",
+      "after_sha256": "30e1ad540a365f2ebadf922d22002a53b57dacb139cd4686b5fb099653a10b42",
+      "snapshot": "D:\\codex-project\\JARVIS\\jarvis\\skill-runs\\SYNC-FILTERED-20261119-001\\after\\4\\SKILL.md"
+    },
+    {
+      "path": "D:\\codex-project\\JARVIS\\jarvis\\knowledge-administrator.md",
+      "before_sha256": "3e71f9aeaece9eeebafc80535da0b593a4c834c18b9d89496bcc939feb72162c",
+      "after_sha256": "6c11a11ce7712cd1e6f348dc4c6962ed2f88f401e3d428b7e5b71d2f25865030",
+      "snapshot": "D:\\codex-project\\JARVIS\\jarvis\\skill-runs\\SYNC-FILTERED-20261119-001\\after\\5\\knowledge-administrator.md"
+    },
+    {
+      "path": "C:\\Users\\10013463\\.codex\\skills\\codex-memory-sync\\tests\\test_sync.py",
+      "before_sha256": null,
+      "after_sha256": "c448d2240a32c16a70cbabcf917579567053d62c8b9c851d053ef23462ec8971",
+      "snapshot": "D:\\codex-project\\JARVIS\\jarvis\\skill-runs\\SYNC-FILTERED-20261119-001\\after\\tests\\test_sync.py"
+    }
+  ]
+}

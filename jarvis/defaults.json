@@ -72,6 +72,16 @@
     "cross_project": false,
     "runtime_enforcement": "read-time-integrity-and-instruction-level-application"
   },
-  "control_plane_revision": "2026-11-18-closure-1",
-  "verification_directory": "jarvis/verification-runs"
+  "control_plane_revision": "2026-11-19-preflight-review-1",
+  "verification_directory": "jarvis/verification-runs",
+  "preflight_review": {
+    "enabled": true,
+    "authorized_on": "2026-11-19",
+    "scope": "substantive-tasks",
+    "requires_complexity_and_loop_rationale": true,
+    "human_review_before_dependent_execution": true,
+    "silence_is_approval": false,
+    "worker_selection": "separate-benefit-based-decision",
+    "enforcement": "instruction-only-not-host-approval"
+  }
 }
