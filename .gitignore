@@ -12,3 +12,7 @@ __pycache__/
 !.env.example
 *.pem
 *.key
+
+# Local user profile
+/up.json
+/up.json.*.tmp

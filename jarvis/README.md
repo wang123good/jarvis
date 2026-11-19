@@ -26,7 +26,7 @@
 
 ## 文件分工
 
-- `jarvis/user-profile/`：2026-11-18 已获批准的项目级协作画像试点，含 P1—P3 来源引用、候选、发布记录及只读校验工具；使用与修订见该目录 README。跨会话应用效果待真实任务验证。
+- `up.json`：本机用户画像（不提交 Git）；首次询问昵称，后续按确认规则积累偏好。空白模板为 `up.example.json`，读取和维护规则见 `jarvis/user-profile/README.md`；旧画像文件仅作历史证据。
 
 - `jarvis/knowledge-administrator.md`：已启用的知识库管理员职责、预检、整理与批准变更流程。
 - `jarvis/knowledge-run-request.template.json`：每次手动运行的请求模板，填入明确来源、目标、读写范围和预算后使用；模板本身不可直接执行。

@@ -66,11 +66,13 @@
     "enabled_by_user": true,
     "authorized_on": "2026-11-18",
     "scope": "JARVIS",
-    "path": "jarvis/user-profile/profile.json",
+    "path": "up.json",
     "reader": "jarvis/user-profile/read_profile.py",
     "candidate_auto_apply": false,
     "cross_project": false,
-    "runtime_enforcement": "read-time-integrity-and-instruction-level-application"
+    "runtime_enforcement": "local-schema-validation-and-instruction-level-confirmation",
+    "template": "up.example.json",
+    "initialization": "ask-nickname-on-first-use"
   },
   "control_plane_revision": "2026-11-19-preflight-review-1",
   "verification_directory": "jarvis/verification-runs",
