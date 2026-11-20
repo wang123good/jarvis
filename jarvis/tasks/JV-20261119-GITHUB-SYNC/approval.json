@@ -1,9 +1,0 @@
-{
-  "contract_revision": 1,
-  "user_message": "确认r1",
-  "recorded_utc": "2026-11-19T09:27:45.015599+00:00",
-  "proposed_manifest_sha256": "6e913e2fb5765347ea804c4c3b1c3119678d488e5a7a5f7623cce32c519516ad",
-  "baseline_verified": true,
-  "remote_base": "64358e1527d7a413a5a08733ea63bacd2f59eb51",
-  "remote_change": "Fast-forwarded existing README commit; no overlapping paths."
-}

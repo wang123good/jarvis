@@ -1,23 +1,27 @@
 {
   "curated_notes": [
-    "01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 F1 真实Skill核验与经验清理草稿.md"
+    "01 草稿/JARVIS/2026-11-18 F1 真实Skill核验与经验清理草稿.md",
+    "01 草稿/JARVIS/2026-11-19 Agentic AI与AI Agent概念草稿.md",
+    "01 草稿/JARVIS/2026-11-19 JARVIS事前契约与闭环工程决策草稿.md",
+    "01 草稿/JARVIS/2026-11-19 聊天三主题整理入口草稿.md"
   ],
   "files": {
-    "local:knowledge-index.md": "c8eda36e54e2d6cc226abace9dded29056884a3c498b3c6bbb70a7381d55c6f2",
-    "vault:01_项目/JARVIS/00_Codex记忆索引.md": "64d20ac8ec9bf3f10226a3a5c972fe9eaeeb5ab2eb9c749b148d1951c5554ca4",
-    "vault:01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 F1 真实Skill核验与经验清理草稿.md": "d47688a9ee818e1de2532b14bb93a2106e6ce3541ec83969661fa6353abeb15c",
-    "vault:04_归档/10_Codex原始对话/jarvis/2026/01a1e893-ce4d-7ff2-bf55-00845bf74786/aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608/coverage.json": "97be35a705e27552b3c74732608db5f9a55713bc98b76537b33899bee8aa27ef",
-    "vault:04_归档/10_Codex原始对话/jarvis/2026/01a1e893-ce4d-7ff2-bf55-00845bf74786/aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608/desktop.json": "edff20e78a3f9c2d9df5a0874730a5bf7e14b4261c2aca9cbfd7b947f2c19096",
-    "vault:04_归档/10_Codex原始对话/jarvis/2026/01a1e893-ce4d-7ff2-bf55-00845bf74786/aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608/source.jsonl": "045ce74cd813a708e2f8be9265a372cd13abd0d72347062e544618e60d9b72bd",
-    "vault:04_归档/10_Codex原始对话/jarvis/2026/01a1e893-ce4d-7ff2-bf55-00845bf74786/aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608/对话.md": "1db39c9f92efac6728b5bb12a98c0303ac1ebe4df2009e97233607d97550079c"
+    "local:knowledge-index.md": "8116bfb395cdafcf988e5a578f5b2194cda7e06141994e44c4f378a029ca443f",
+    "vault:02 工作记录/任务总结/JARVIS/00_Codex记忆索引.md": "bc3a8f63e771bfd4bedeee0af81b4ea53058143ad837b57e8489a31f4e663fbc",
+    "vault:01 草稿/JARVIS/2026-11-18 F1 真实Skill核验与经验清理草稿.md": "ff90bf1f00363b7ab76ea9889826147ab0cf14db12fc05a8312f369446512314",
+    "vault:01 草稿/JARVIS/2026-11-19 Agentic AI与AI Agent概念草稿.md": "e3581c16082b4a86a10323993e1033baa8ac98c797c0c02077dd8d00b9df2c7e",
+    "vault:01 草稿/JARVIS/2026-11-19 JARVIS事前契约与闭环工程决策草稿.md": "7bcfe7a1871e260403b7aa69f904e334409209f286d6b05647bc055479d1c00c",
+    "vault:01 草稿/JARVIS/2026-11-19 聊天三主题整理入口草稿.md": "103e102f76a94cf45e3ea4c2f989920c7eb202603ee7ac80f11a7cf6fe91e9d8",
+    "vault:06 归档/2026-11-17_JARVIS架构可行性评审_对话.md": "c196a4a58d9ca8cac123c98a065087fd8c7c2996d8a7c068cc6cc5dfae5add1a",
+    "vault:06 归档/2026-11-19_高通AWB资料技术总结_对话.md": "acb7d169cc67c76012674662d7a4c6c671fadc6b45e6b14e3ec74e187c6f336b"
   },
   "project": {
     "directory": "D:/codex-project/JARVIS",
     "id": "jarvis",
     "name": "JARVIS",
-    "root": "01_项目/JARVIS",
+    "root": "02 工作记录/任务总结/JARVIS",
     "threads": [
-      "01a1e893-ce4d-7ff2-bf55-00845bf74786"
+      "01a1f1bf-37d0-7d92-927f-c66d4e50fca9"
     ]
   },
   "project_id": "jarvis",
@@ -45,19 +49,56 @@
         "rollout_records": 4206,
         "scope": "point-in-time rollout + desktop projection; not guaranteed lifetime-complete"
       },
-      "raw_note": "04_归档/10_Codex原始对话/jarvis/2026/01a1e893-ce4d-7ff2-bf55-00845bf74786/aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608/对话.md",
+      "raw_note": "06 归档/2026-11-17_JARVIS架构可行性评审_对话.md",
       "source_hash": "aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608",
       "tasks": [
         {
-          "note": "01_项目/JARVIS/50_图书管理员/candidates/2026-11-18 F1 真实Skill核验与经验清理草稿.md",
+          "note": "01 草稿/JARVIS/2026-11-18 F1 真实Skill核验与经验清理草稿.md",
           "source_hash": "aea38af95f63ee2ab5e560e6c56f3fc1571e826e5cd1ce133b8d8ec61f7a9608",
           "status": "draft",
           "task_id": "jarvis-task-008"
         }
       ],
       "versions": []
+    },
+    "01a1f1bf-37d0-7d92-927f-c66d4e50fca9": {
+      "captured_at": "2026-11-19T14:11:10+08:00",
+      "coverage": {
+        "attachments_metadata": 0,
+        "desktop_items": 77,
+        "desktop_turns": 6,
+        "gaps": [
+          "External attachments/output files not copied or verified.",
+          "Independent source transactions; no cross-database atomicity.",
+          "Compacted/forked history may omit or inherit earlier messages."
+        ],
+        "record_types": {
+          "event_msg": 126,
+          "response_item": 107,
+          "session_meta": 1,
+          "token_usage_record": 33,
+          "turn_context": 6,
+          "world_state": 3
+        },
+        "rollout_records": 276,
+        "scope": "point-in-time rollout + desktop projection; not guaranteed lifetime-complete"
+      },
+      "raw_note": "06 归档/2026-11-19_高通AWB资料技术总结_对话.md",
+      "source_hash": "25ed3ad92de77eb3c0ab42f14e6336290b8fbf9436da7e393a5ec38d63899ab1",
+      "tasks": [],
+      "versions": []
     }
   },
   "vault": "D:\\个人知识库",
-  "version": 1
+  "version": 1,
+  "migration": {
+    "date": "2026-11-20",
+    "status": "legacy-export-retired-use-flat-markdown",
+    "baseline_manifest": "D:/codex-archives/JARVIS/2026-11-20/project/jarvis/knowledge-runs/VAULT-20261120/legacy-obsidian-links.json",
+    "path_and_content_journal": "D:/codex-archives/JARVIS/2026-11-20/project/jarvis/knowledge-runs/VAULT-20261120/journal.jsonl",
+    "note": "source_hash retains historical source identity; files hashes describe migrated outputs only.",
+    "actual_transcript_check": "D:/codex-archives/JARVIS/2026-11-20/project/jarvis/knowledge-runs/VAULT-20261120/actual-transcript-check.json",
+    "evidence_relocated_at": "2026-11-20",
+    "evidence_relocation_note": "Historical evidence moved outside repository; source identities and output hashes unchanged."
+  }
 }

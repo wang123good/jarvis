@@ -5,23 +5,24 @@
     "id": "jarvis",
     "name": "JARVIS",
     "aliases": [],
-    "root": "01_项目/JARVIS"
+    "root": "02 工作记录/任务总结/JARVIS"
   },
   "layers": {
     "project": [
-      "01_项目"
+      "02 工作记录/任务总结",
+      "05 规则"
     ],
     "domain": [
-      "02_领域"
+      "03 wiki/主题"
     ],
     "resource": [
-      "03_资源"
+      "03 wiki/参考资料"
     ],
     "inbox": [
-      "00_收件箱"
+      "01 草稿"
     ],
     "archive": [
-      "04_归档"
+      "06 归档"
     ]
   },
   "default_search_layers": [

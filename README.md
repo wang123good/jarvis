@@ -12,7 +12,7 @@ Obsidian 承担本地中长期记忆大脑：保存项目知识、主题笔记�
 
 ![JARVIS 工作闭环：管家组织任务，知识库管理员按需整理，Obsidian 保存本地中长期记忆](docs/images/jarvis-workflow.png)
 
-当前发布版本：**V1.0.6**（2026-11-20）。版本信息以 [AGENTS.md](AGENTS.md) 为准。
+当前发布版本：**V1.1.0**（2026-11-20）。版本信息以 [AGENTS.md](AGENTS.md) 为准。
 
 ## 为什么做 JARVIS
 
@@ -51,9 +51,9 @@ Obsidian 承担本地中长期记忆大脑：保存项目知识、主题笔记�
 
 **沉淀路径**：用户指定整理范围 → 知识库管理员核验来源与整理内容 → 生成候选和变更提案 → 人工集中复核 → 按已批准差异入库 → 后续任务按需复用。
 
-知识按项目、领域和资源分层组织。主题笔记记录定义、结论、决策、边界与未解问题；正式任务经验还需关联真实 Skill，并记录适用条件、验证证据和具体不足。知识库管理员负责离线整理，实时检索由管家承担。
+知识按草稿、工作记录和 wiki 组织，规则、模板、对话归档及附件分别存放。主题笔记记录定义、结论、决策、边界与未解问题；正式任务经验还需关联真实 Skill，并记录适用条件、验证证据和具体不足。知识库管理员负责离线整理，实时检索由管家承担。
 
-后续聊天按项目、领域、资源三层笔记留存，核验覆盖、来源、索引和链接后，再按已复核范围清理 Codex 聊天。明确不用整理笔记时跳过；永久删除须有明确授权，并分别核对应用列表与涉及的磁盘记录。
+后续聊天以扁平 Markdown 文件保存在 `06 归档`，任务总结与日报周报位于 `02 工作记录`，通用主题进入 `03 wiki`；核验覆盖、来源、索引和链接后，再按已复核范围清理 Codex 聊天。明确不用整理笔记时跳过；永久删除须有明确授权，并分别核对应用列表与涉及的磁盘记录。
 
 这里的“记忆”通过本地文件、索引和按需检索实现。知识库的持久保存不意味着每次对话都会自动加载全部内容；整理与正式发布也需要明确触发和批准。
 
@@ -75,9 +75,9 @@ cd jarvis
 仓库保留了原部署环境的路径。迁移到新电脑时，先检查：
 
 - [知识库入口](.codex/obsidian-kb.json)：Obsidian 库位置、项目目录与知识分层。
-- [默认配置](jarvis/defaults.json)：项目根目录、正式经验注册表、Skill 路径与执行护栏。
-- [项目协作画像说明](jarvis/user-profile/README.md)：已批准条目的项目范围、来源及读取条件。
-- [知识库管理员指令](jarvis/knowledge-administrator.md)：本机实际可用的来源导出和知识整理工具。
+- [默认配置](config/defaults.json)：项目根目录、正式经验注册表、Skill 路径与执行护栏。
+- [项目协作画像说明](docs/user-profile.md)：已批准条目的项目范围、来源及读取条件。
+- [知识库管理员指令](agents/knowledge-administrator.md)：本机实际可用的来源导出和知识整理工具。
 
 这些配置需要与本机文件和工具一致。用户画像独立保存在项目根目录 `up.json`，首次使用由 JARVIS 询问昵称后创建，不依赖 Obsidian 路径；用户可跳过。公开仓库仅提供 [空白模板](up.example.json)，个人画像不提交 Git。明确要求记住的偏好可直接保存，观察候选需经确认后生效。
 
@@ -98,24 +98,28 @@ cd jarvis
 完成本机路径与工具配置后，可在仓库根目录运行：
 
 ```bash
-python jarvis/verify_installation.py
+python scripts/verify_installation.py
 ```
 
 脚本为每次运行生成独立检查目录，核对资源、注册表与限定知识检索。它依赖本机知识库及外部 Skill，不是开箱即用的独立测试；通过也仅说明所检查的接入项可用。
 
+源码、角色、模板和文档保留在仓库；任务附件、运行证据和个人画像仅在本地保存。历史文件已迁至库外，位置及路径映射见 [归档索引](docs/archive-index.md)。
+
 ## 仓库导航
+
+目录职责与后续扩展约定见 [目录说明](docs/directory-layout.md)。角色、配置、模板、脚本和测试分别位于 `agents/`、`config/`、`templates/`、`scripts/`、`tests/`；运行数据统一放在不提交 Git 的 `.local/`。
 
 | 文件 / 目录 | 用途 |
 | --- | --- |
 | [AGENTS.md](AGENTS.md) | 管家身份、任务入口、协作与权限规则 |
-| [jarvis/README.md](jarvis/README.md) | 当前实现的使用说明 |
-| [jarvis/defaults.json](jarvis/defaults.json) | 执行模式与软默认值 |
-| [jarvis/task-template.md](jarvis/task-template.md) | 任务契约、检查点和验收记录模板 |
-| [jarvis/worker.md](jarvis/worker.md) | 临时 Worker 角色与派发规程 |
-| [jarvis/worker-work-package-template.md](jarvis/worker-work-package-template.md) | 委派目标、上下文、范围、预算和返回要求 |
-| [jarvis/knowledge-administrator.md](jarvis/knowledge-administrator.md) | 知识库管理员的整理与批准变更流程 |
-| [jarvis/knowledge-run-request.template.json](jarvis/knowledge-run-request.template.json) | 一次知识整理的来源、目标与授权范围 |
-| [jarvis/user-profile/README.md](jarvis/user-profile/README.md) | 项目协作画像的读取、复核与版本规则 |
+| [docs/operations.md](docs/operations.md) | 当前实现的使用说明 |
+| [config/defaults.json](config/defaults.json) | 执行模式与软默认值 |
+| [templates/task.md](templates/task.md) | 任务契约、检查点和验收记录模板 |
+| [agents/worker.md](agents/worker.md) | 临时 Worker 角色与派发规程 |
+| [templates/worker-work-package.md](templates/worker-work-package.md) | 委派目标、上下文、范围、预算和返回要求 |
+| [agents/knowledge-administrator.md](agents/knowledge-administrator.md) | 知识库管理员的整理与批准变更流程 |
+| [templates/knowledge-run-request.json](templates/knowledge-run-request.json) | 一次知识整理的来源、目标与授权范围 |
+| [docs/user-profile.md](docs/user-profile.md) | 项目协作画像的读取、复核与版本规则 |
 | [.codex/obsidian-kb.json](.codex/obsidian-kb.json) | 本地知识库连接配置 |
 | [架构方案](%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88/) | 架构设计与角色职责文档 |
 
