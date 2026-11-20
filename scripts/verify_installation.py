@@ -1,5 +1,6 @@
 """Read-only resource checks plus scoped retrieval for JARVIS's initial trial."""
 import argparse
+import importlib.util
 from datetime import datetime, timezone
 import re
 from uuid import uuid4
@@ -43,37 +44,75 @@ def write_json(path, value):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--run-id')
+    parser.add_argument('--environment-only', action='store_true', help='Check portable resources and local paths without a registry or external retrieval Skill')
+    parser.add_argument('--connector-vault', help='Actual root reported by the connected Obsidian tool')
     args = parser.parse_args()
     run_id = args.run_id or datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ-') + uuid4().hex[:12]
     out = create_run_directory(RUNS, run_id)
     write_json(out / 'started.json', {'run_id': run_id, 'started_at_utc': datetime.now(timezone.utc).isoformat()})
     try:
-        run_checks(out, run_id)
+        run_checks(out, run_id, args.connector_vault, args.environment_only)
     except Exception as exc:
         write_json(out / 'error.json', {'run_id': run_id, 'status': 'failed', 'error_type': type(exc).__name__, 'message': str(exc)})
         raise
 
 
-def run_checks(out, run_id):
+def run_checks(out, run_id, connector_vault=None, environment_only=False):
+    spec = importlib.util.spec_from_file_location('environment_reader', Path(__file__).with_name('resolve_environment.py'))
+    reader = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(reader)
+    resolved = reader.resolve_environment(ROOT, connector_vault)
     defaults = json.loads((ROOT / 'config/defaults.json').read_text(encoding='utf-8'))
-    pointer = json.loads((ROOT / defaults['knowledge_pointer']).read_text(encoding='utf-8'))
-    registry = Path(defaults['registry'])
+    resources = ['agents/worker.md', 'templates/worker-work-package.md', 'scripts/verify_installation.py', 'AGENTS.md', 'config/defaults.json', 'config/environment.example.json', 'scripts/resolve_environment.py', 'templates/task.md', 'docs/operations.md', defaults['knowledge_pointer'], '架构方案/JARVIS 管家Agent职责定义 v0.1.md', 'scripts/read_profile.py', 'scripts/init_vault.py', 'docs/archive-index.md']
+    resources += ['templates/vault/' + name + '.md' for name in
+                  ['规则', '草稿', '日报', '周报', '决策', '任务总结', '任务契约', '业务对话', 'wiki主题']]
+    environment_checks = {
+        'declared_local_resources_exist': all((ROOT / p).is_file() for p in resources),
+        'vault_exists': resolved['vault_exists'],
+        'vault_project_root_exists': Path(resolved['project_knowledge_root']).is_dir(),
+    }
+    if resolved['connector_checked']:
+        environment_checks['connected_vault_matches'] = resolved['connector_matches']
+    environment_report = {
+        'run_id': run_id, 'scope': 'environment-only', 'ok': all(environment_checks.values()),
+        'checks': environment_checks, 'connector_checked': resolved['connector_checked'],
+        'write_ready': resolved['write_ready'], 'vault_root': resolved['vault_root'],
+        'registry_exists': Path(resolved['registry']).is_file(),
+        'limitations': ['Environment validation does not prove registry or knowledge retrieval availability',
+                        'An omitted connector path is not a connection verification; vault writes remain disallowed'],
+    }
+    write_json(out / 'environment-verification.json', environment_report)
+    if environment_only:
+        write_json(out / 'verification.json', environment_report)
+        print(json.dumps({**environment_report, 'run_directory': str(out)}, ensure_ascii=False))
+        if not environment_report['ok']:
+            raise SystemExit(1)
+        return
+    reader.require_write_ready(resolved)
+    registry = Path(resolved['registry'])
+    if not registry.is_file():
+        raise RuntimeError('Formal experience registry is missing; only environment validation completed. No registry was fabricated.')
     before = registry.read_bytes()
     registry_data = json.loads(before)
-    kb = Path(defaults['skill_roots'][0]) / 'obsidian-kb/scripts/kb.py'
+    candidates = [Path(path) / 'obsidian-kb/scripts/kb.py' for path in resolved['skill_roots']]
+    kb = next((path for path in candidates if path.is_file()), None)
+    if kb is None:
+        raise RuntimeError('No installed obsidian-kb retrieval Skill found in local skill_roots')
+    help_result = subprocess.run([sys.executable, str(kb), '--help'], cwd=ROOT,
+                                 capture_output=True, encoding='utf-8',
+                                 env=dict(os.environ, PYTHONIOENCODING='utf-8'))
+    if help_result.returncode or '--config' not in help_result.stdout:
+        raise RuntimeError('Installed obsidian-kb must support an explicit global --config option; refusing implicit shared-path fallback')
+    runtime_pointer = reader.write_runtime_pointer(resolved)
     query_script = registry.parent / 'query_experience.py'
-    doctor = invoke(kb, 'doctor', '--json')
-    retrieved = invoke(kb, 'search', 'JARVIS 项目协作约定', '--project-only', '--limit', '3', '--json')
+    doctor = invoke(kb, '--config', runtime_pointer, 'doctor', '--json')
+    retrieved = invoke(kb, '--config', runtime_pointer, 'search', 'JARVIS 项目协作约定', '--project-only', '--limit', '3', '--json')
     experiences = invoke(query_script, '--limit', '5')
     write_json(out / 'retrieval.json', retrieved)
     write_json(out / 'experiences.json', experiences)
     write_json(out / 'kb-doctor.json', doctor)
-    resources = ['agents/worker.md', 'templates/worker-work-package.md', 'scripts/verify_installation.py', 'AGENTS.md', 'config/defaults.json', 'templates/task.md', 'docs/operations.md', defaults['knowledge_pointer'], '架构方案/JARVIS 管家Agent职责定义 v0.1.md', 'scripts/read_profile.py', 'scripts/init_vault.py', 'docs/archive-index.md']
-    resources += ['templates/vault/' + name + '.md' for name in
-                  ['规则', '草稿', '日报', '周报', '决策', '任务总结', '任务契约', '业务对话', 'wiki主题']]
     checks = {
-        'declared_local_resources_exist': all((ROOT / p).is_file() for p in resources),
-        'vault_project_root_exists': (Path(pointer['vault']) / pointer['project']['root']).is_dir(),
+        **environment_checks,
         'registry_parses_and_query_runs': isinstance(registry_data.get('experiences'), list) and experiences['count'] == len(experiences['results']),
         'confirmed_agreement_retrieved': 'JARVIS 项目协作约定.md' in json.dumps(retrieved, ensure_ascii=False),
         'actual_retrieval_skill_exists': kb.is_file() and (kb.parents[1] / 'SKILL.md').is_file(),

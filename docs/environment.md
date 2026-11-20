@@ -6,7 +6,54 @@
 
 1. 下载并解压项目，或按 [README](../README.md#开始使用) 克隆仓库。在 Codex 中打开包含 `AGENTS.md` 的目录，然后呼叫「JARVIS」。
 2. Python 用于读取本地用户画像和运行安装检查。昵称保存在项目根目录的 `up.json`，首次交流可以跳过称呼设置。需要浏览和编辑知识库时，使用 [Obsidian](https://obsidian.md/download)。JARVIS 还需要可用的本地检索工具来查找笔记。临时 Worker 取决于宿主提供的 Agent 工具。
-3. 手动接入知识库时，核对库路径、经验注册表和 Skill 路径，使其指向本机资源。环境检查脚本依赖现有注册表和检索工具，适合在完成配置后检查接入情况。[知识库配置](../.codex/obsidian-kb.json) · [项目默认配置](../config/defaults.json) · [检查脚本](../scripts/verify_installation.py)
+3. 手动接入知识库时，按下节创建本机配置。仓库不保存活动知识库的绝对路径；目录层级和相对规则共享，本机位置单独保存。先检查环境，再按需检查注册表和检索接入。[共享层级](../.codex/obsidian-kb.json) · [本机配置示例](../config/environment.example.json) · [检查脚本](../scripts/verify_installation.py)
+
+## 共享配置与本机路径
+
+唯一的本机路径入口为 `.local/environment.json`，整个 `.local/` 已被 Git 忽略。仓库分发 `config/environment.example.json`，示例中的占位值必须替换，不能直接用于执行。首次创建（已有配置不覆盖）：
+
+```powershell
+New-Item -ItemType Directory -Force .local | Out-Null
+if (-not (Test-Path -LiteralPath .local/environment.json)) {
+    Copy-Item config/environment.example.json .local/environment.json
+}
+```
+
+编辑本机文件的 `vault_root`，填写已创建并接入 Obsidian 的知识库绝对路径。以下路径仅为示例，不是默认位置：
+
+```json
+{
+  "version": 1,
+  "vault_root": "C:/path/to/your/vault",
+  "skill_roots": []
+}
+```
+
+`skill_roots` 留空时从当前用户目录推导 `.codex/skills`、`.agents/skills`；有实际安装在其他位置的 Skill 时，只在本机文件填写其绝对目录。项目根目录由脚本自身位置确定，不依赖终端当前目录。
+
+- `.codex/obsidian-kb.json`：共享项目目录和知识分层，库内路径相对于 `vault_root`。
+- `config/defaults.json`：`registry`、`agreement` 相对于知识库；其他项目资源路径相对于仓库根。
+- `scripts/resolve_environment.py`：读取共享和本机配置，拼接实际路径，校验库内路径不越界；缺失或无效配置不猜测、不自动覆盖。
+
+先由当前 Obsidian 连接工具读取实际库根目录（例如 `obsidian_info` 返回的 `vaultRoot`），再将该值传入校验。不能从本机配置抄出一个值冒充连接结果：
+
+```powershell
+python scripts/resolve_environment.py
+python scripts/resolve_environment.py --connector-vault "工具报告的知识库绝对路径" --require-write-ready
+python scripts/verify_installation.py --environment-only --connector-vault "工具报告的知识库绝对路径"
+```
+
+第一条只解析配置，未核验连接时输出 `write_ready: false`。写库前须通过第二条；目标不存在或两侧路径不同会返回失败。校验只代表当次检查，写入前仍需核对目标；它不是系统锁，也不改变宿主工具权限。初始化命令内置同一校验；其他知识库工具由管家按 AGENTS.md I01 执行写前检查。
+
+需要旧版 `obsidian-kb` 格式时，可加 `--write-runtime-pointer`，在 `.local/obsidian-kb.resolved.json` 生成本机解析结果，不改共享配置。外部检索工具必须明确支持传入这份配置；仓库完整检查仅适配支持全局 `--config` 参数的工具，不支持时停止，不静默回退到旧路径。
+
+完整接入检查仍需真实注册表、其查询脚本及已安装的检索 Skill：
+
+```powershell
+python scripts/verify_installation.py --connector-vault "工具报告的知识库绝对路径"
+```
+
+环境检查通过不表示经验注册表存在或完整检索可用。`.codex/obsidian-links.json`、`.codex/knowledge-index.md` 及归档文档中的旧绝对路径是已停用的历史来源记录，不作为本机配置，不批量改写或重新启用其操作文字。换电脑只需配置新机器的 `.local/environment.json` 及宿主连接；无需修改共享目录规划，也不自动搬迁笔记。
 
 ## 首次呼叫与自动准备（设计）
 
@@ -34,13 +81,13 @@
 | `06 归档` | 仅可读业务对话 Markdown，直接放文件，不建项目、年份、会话 ID 或哈希子目录 |
 | `99 附件` | 笔记实际引用的附件；对话归档不自动复制附件 |
 
-安装 Obsidian 并确认知识库位置后，在仓库根目录执行（替换为用户已确认的完整路径）：
+先在 Obsidian 创建或接入目标库，完成本机配置并取得连接工具报告的路径后，在仓库根目录执行：
 
 ```powershell
-python scripts/init_vault.py --vault "D:\JARVIS知识库"
+python scripts/init_vault.py --connector-vault "工具报告的知识库绝对路径"
 ```
 
-模板源位于 [templates/vault](../templates/vault/)，随 ZIP 或仓库一起分发。脚本只补缺失目录、模板、首页和导航笔记；使用排他创建保护已有同名文件，重复运行报告保留项，不自动迁移已有库、不改插件配置、不生成假日报。Obsidian 内可将核心模板功能的模板目录设为 `04 模板`；不依赖第三方模板插件。模板中的日期、标题可由核心模板替换，其余说明按实际任务填写。
+模板源位于 [templates/vault](../templates/vault/)，随 ZIP 或仓库一起分发。脚本校验本机与连接路径一致后，只补缺失目录、模板、首页和导航笔记；使用排他创建保护已有同名文件，重复运行报告保留项，不自动迁移已有库、不改插件配置、不生成假日报。Obsidian 内可将核心模板功能的模板目录设为 `04 模板`；不依赖第三方模板插件。模板中的日期、标题可由核心模板替换，其余说明按实际任务填写。
 
 任务跨天时更新同一篇总结，记录完成日期；日报按北京时间命名 `YYYY-MM-DD_日报.md`，没有工作记录时不生成空日报。周报按周一至周日，使用 ISO 周所属年与周号 `YYYY-Www_周报.md`，正文必须标具体起止日期；跨年归入 ISO 周所属年目录。日报、周报均由用户明确触发，不自动设置定时任务或扫描其他项目。
 
@@ -48,4 +95,4 @@ python scripts/init_vault.py --vault "D:\JARVIS知识库"
 
 旧库迁移须先盘点文件、固定哈希、生成路径映射，保护状态与人工内容，更新笔记链接、检索配置及必要插件路径。旧第二层任务经验进入任务总结；旧领域知识及参考资料进入 wiki；未复核候选仍保持草稿。迁移验证包括覆盖、冲突、内容保留、链接和检索；回退材料置于知识库外，不混入归档。历史记录里描述旧目录的文字属于历史事实，不机械改写为新规则。
 
-初始化验收覆盖首次创建、重复运行和用户文件保护；检索另在完成本机配置后实测。自动下载安装、首次呼叫与安装恢复全流程仍须另行实现验证。
+初始化验收覆盖目录模板首次创建、重复运行、用户文件保护及错误连接阻止写入；检索另在完成本机配置后实测。自动下载安装、首次呼叫与安装恢复全流程仍须另行实现验证。

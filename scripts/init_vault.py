@@ -54,7 +54,26 @@ def initialize(vault):
             preserved.append(str(target))
     return {'vault': str(vault), 'created': created, 'preserved': preserved}
 
-if __name__ == '__main__':
+def main(argv=None, project_root=None):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location('environment_reader', Path(__file__).with_name('resolve_environment.py'))
+    reader = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(reader)
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--vault', required=True, help='Explicit target vault path')
-    print(json.dumps(initialize(parser.parse_args().vault), ensure_ascii=False, indent=2))
+    parser.add_argument('--vault', help='Optional explicit target; must match the local configuration')
+    parser.add_argument('--connector-vault', help='Actual root reported by the connected Obsidian tool')
+    args = parser.parse_args(argv)
+    try:
+        resolved = reader.resolve_environment(project_root or Path(__file__).resolve().parents[1], args.connector_vault)
+        reader.require_write_ready(resolved)
+        if args.vault is not None and reader.absolute_path(args.vault, '--vault') != Path(resolved['vault_root']):
+            raise reader.EnvironmentConfigError('--vault differs from the configured and connected vault; nothing written')
+    except reader.EnvironmentConfigError as exc:
+        print(json.dumps({'ok': False, 'error': str(exc)}, ensure_ascii=False))
+        return 2
+    print(json.dumps(initialize(resolved['vault_root']), ensure_ascii=False, indent=2))
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

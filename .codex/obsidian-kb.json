@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "vault": "D:\\个人知识库",
+  "version": 2,
+  "environment_file": ".local/environment.json",
   "project": {
     "id": "jarvis",
     "name": "JARVIS",

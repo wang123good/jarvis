@@ -13,17 +13,18 @@
 | `skills/` | 随项目维护的技能资产 |
 | `docs/` | 操作、环境、画像、目录和归档说明；`images/`、`diagrams/` 保存图示 |
 | `架构方案/` | 架构设计、职责依据和历史设计文档 |
-| `.local/` | 任务卡、工作包、运行请求、报告及临时文件；不提交 Git |
+| `.local/` | 本机环境配置、解析指针、任务卡、工作包、运行请求、报告及临时文件；不提交 Git |
 | `up.json` | 唯一活动用户画像；不提交 Git |
 
-新增功能沿用上述职责；只有形成独立模块时再增加子目录，不为每个功能复制一套顶层结构。脚本以自身位置定位仓库资源，配置中的相对路径以仓库根为基准。新运行使用独立 ID，不覆盖已有证据。
+新增功能沿用上述职责；只有形成独立模块时再增加子目录，不为每个功能复制一套顶层结构。脚本以自身位置定位仓库资源，项目资源相对路径以仓库根为基准；`registry`、`agreement` 和知识层级相对于本机配置的 `vault_root`。绝对库路径及 Skill 目录只保存在 `.local/environment.json`，由 `scripts/resolve_environment.py` 统一解析。新运行使用独立 ID，不覆盖已有证据。
 
 常用入口：
 
 ```powershell
 python scripts/read_profile.py
-python scripts/init_vault.py --vault "D:\JARVIS知识库"
-python scripts/verify_installation.py
+python scripts/resolve_environment.py
+python scripts/init_vault.py --connector-vault "工具报告的知识库绝对路径"
+python scripts/verify_installation.py --environment-only --connector-vault "工具报告的知识库绝对路径"
 python -B -m unittest discover -s tests
 ```
 

@@ -12,7 +12,7 @@ Obsidian 承担本地中长期记忆大脑：保存项目知识、主题笔记�
 
 ![JARVIS 工作闭环：管家组织任务，知识库管理员按需整理，Obsidian 保存本地中长期记忆](docs/images/jarvis-workflow.png)
 
-当前发布版本：**V1.1.0**（2026-11-20）。版本信息以 [AGENTS.md](AGENTS.md) 为准。
+当前发布版本：**V1.1.2**（2026-11-20）。版本信息以 [AGENTS.md](AGENTS.md) 为准。
 
 ## 为什么做 JARVIS
 
@@ -72,10 +72,12 @@ cd jarvis
 
 ### 2. 对齐本机配置
 
-仓库保留了原部署环境的路径。迁移到新电脑时，先检查：
+本机绝对路径统一放在不提交 Git 的 `.local/environment.json`。首次使用时复制 [本机配置示例](config/environment.example.json)，填写实际 `vault_root`；完整步骤及写前连接校验见 [环境说明](docs/environment.md#共享配置与本机路径)。换电脑只改本机配置及宿主连接，不改共享目录层级。
 
-- [知识库入口](.codex/obsidian-kb.json)：Obsidian 库位置、项目目录与知识分层。
-- [默认配置](config/defaults.json)：项目根目录、正式经验注册表、Skill 路径与执行护栏。
+共享配置分工：
+
+- [知识库入口](.codex/obsidian-kb.json)：本机配置引用、项目相对目录与知识分层。
+- [默认配置](config/defaults.json)：项目相对资源、库内注册表相对路径与执行护栏；项目根和 Skill 根由解析器确定。
 - [项目协作画像说明](docs/user-profile.md)：已批准条目的项目范围、来源及读取条件。
 - [知识库管理员指令](agents/knowledge-administrator.md)：本机实际可用的来源导出和知识整理工具。
 
@@ -98,10 +100,10 @@ cd jarvis
 完成本机路径与工具配置后，可在仓库根目录运行：
 
 ```bash
-python scripts/verify_installation.py
+python scripts/verify_installation.py --environment-only --connector-vault "工具报告的知识库绝对路径"
 ```
 
-脚本为每次运行生成独立检查目录，核对资源、注册表与限定知识检索。它依赖本机知识库及外部 Skill，不是开箱即用的独立测试；通过也仅说明所检查的接入项可用。
+先由连接工具读取实际库路径，再运行上述环境检查；脚本为每次运行生成独立证据目录。省略 `--environment-only` 才检查真实注册表及限定检索，另需支持显式 `--config` 的外部 Skill。环境检查不冒充完整接入验证。
 
 源码、角色、模板和文档保留在仓库；任务附件、运行证据和个人画像仅在本地保存。历史文件已迁至库外，位置及路径映射见 [归档索引](docs/archive-index.md)。
 
@@ -120,7 +122,9 @@ python scripts/verify_installation.py
 | [agents/knowledge-administrator.md](agents/knowledge-administrator.md) | 知识库管理员的整理与批准变更流程 |
 | [templates/knowledge-run-request.json](templates/knowledge-run-request.json) | 一次知识整理的来源、目标与授权范围 |
 | [docs/user-profile.md](docs/user-profile.md) | 项目协作画像的读取、复核与版本规则 |
-| [.codex/obsidian-kb.json](.codex/obsidian-kb.json) | 本地知识库连接配置 |
+| [.codex/obsidian-kb.json](.codex/obsidian-kb.json) | 共享知识层级与本机配置引用 |
+| [config/environment.example.json](config/environment.example.json) | 本机环境空白示例；实际 `.local/environment.json` 不提交 |
+| [scripts/resolve_environment.py](scripts/resolve_environment.py) | 统一路径解析与写前连接核验 |
 | [架构方案](%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88/) | 架构设计与角色职责文档 |
 
 ## 当前实现与验证边界

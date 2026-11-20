@@ -23,7 +23,8 @@ JARVIS 在本项目主会话中理解意图、维护任务契约、组织执行�
 | `agents/worker.md`、`templates/worker-work-package.md` | 有明确委派收益且宿主支持时，定义角色与本次工作包 |
 | `agents/knowledge-administrator.md`、`templates/knowledge-run-request.json` | 手动整理或任务契约已批准的验收后收尾；限定来源、目标、读写范围及预算，占位模板不能执行 |
 | `docs/user-profile.md`、`up.example.json` | 画像读取和安全维护；实际数据仅在根目录 `up.json`，不提交 Git |
-| `.codex/obsidian-kb.json` | 本项目知识库定位；检索范围及正式经验要求见入口规则 |
+| `.local/environment.json`、`config/environment.example.json` | 本机绝对路径与可分发示例；实际配置不提交 Git |
+| `.codex/obsidian-kb.json`、`scripts/resolve_environment.py` | 共享知识层级、统一路径解析；写库前核对连接实际路径，规则见 I01 |
 | `docs/environment.md` | 环境准备、现行目录、命名、模板、初始化及迁移 |
 
 画像首次仅询问昵称，可跳过；明确保存的偏好按画像规则维护，观察候选确认后生效，旧画像不自动迁移。
@@ -45,10 +46,10 @@ JARVIS 在本项目主会话中理解意图、维护任务契约、组织执行�
 在完成本机路径、知识库及真实 Skill 配置后，运行：
 
 ```powershell
-python scripts/verify_installation.py
+python scripts/verify_installation.py --environment-only --connector-vault "工具报告的知识库绝对路径"
 ```
 
-脚本在 `.local/verification-runs/` 排他创建独立目录，保存报告和被测哈希；可用 `--run-id` 指定新 ID，已存在则拒绝。它检查资源与限定检索接入，不验证意图理解、完整恢复、跨会话复用质量或所有规则行为。
+脚本在 `.local/verification-runs/` 排他创建独立目录，保存报告和被测哈希；可用 `--run-id` 指定新 ID，已存在则拒绝。上述命令只检查资源、本机配置和连接路径；省略 `--environment-only` 才检查真实注册表及限定检索，要求外部检索工具支持全局 `--config`。工具报告的库路径须先实际读取，不能猜测。检查不验证意图理解、完整恢复、跨会话复用质量或所有规则行为。
 
 历史证据已迁往仓库外，路径映射见 [归档索引](archive-index.md)。以下均为原归档路径：首轮试用见 `jarvis/tasks/JV-20261118-001.md` 及同名 `-verification.json`；单 Worker 链路见 `experiments/W1/steward-recheck.json`。这些结果仅对当时输入有效，不证明多 Worker 并行、硬隔离或成本优势。
 

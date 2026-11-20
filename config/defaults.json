@@ -13,9 +13,13 @@
   "active_work_review_minutes": 20,
   "budget_review_fraction_when_measurable": 0.8,
   "new_external_paid_services": "explicit-user-authorization-required",
-  "project_root": "D:/Codex-Projects/Jarvis",
+  "project_root": ".",
   "knowledge_pointer": ".codex/obsidian-kb.json",
-  "registry": "D:/个人知识库/05 规则/JARVIS/任务经验注册表/experience-registry.json",
+  "environment_file": ".local/environment.json",
+  "environment_example": "config/environment.example.json",
+  "environment_reader": "scripts/resolve_environment.py",
+  "registry": "05 规则/JARVIS/任务经验注册表/experience-registry.json",
+  "agreement": "05 规则/JARVIS/JARVIS 项目协作约定.md",
   "task_template": "templates/task.md",
   "task_directory": ".local/tasks",
   "worker": {
@@ -32,10 +36,6 @@
     "review_owner": "JARVIS",
     "close_after_handoff": true
   },
-  "skill_roots": [
-    "C:/Users/wang1/.codex/skills",
-    "C:/Users/wang1/.agents/skills"
-  ],
   "knowledge_administrator": {
     "enabled_by_user": true,
     "authorized_on": "2026-11-18",
