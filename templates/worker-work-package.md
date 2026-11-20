@@ -10,6 +10,7 @@
 |---|---|
 | worker_id / task_id | 管家分配的实例/工作包标识 |
 | parent_task_id / contract_revision / work_package_id / agent_id | 父任务及契约修订、稳定工作包 ID、实际宿主实例 ID；未创建不虚构 |
+| plan_revision / step_ids / value_review | 绑定计划修订与步骤；每步目的、对应验收、产出使用者及管家价值审查结论；无收益不派发 |
 | goal | 本包目标与交付用途 |
 | revision_change_policy | 契约变化暂停受影响工作并交回管家；旧结果重验后才可复用 |
 | inputs | 每个文件的 path、required、version_or_hash；未提供的资料不得自行补读 |
@@ -24,6 +25,7 @@
 | budget_owner / retry_scope | 管家维护父任务 failure_key 账本；提供已用/预留/剩余额度，子包额度不超过总剩余；换包/返修不清零 |
 | acceptance | 每项 criterion、verification、evidence_path；不填虚构测试路径 |
 | review_owner / handoff_state | 管家复核；Worker completed 只代表执行完成 |
+| recovery / action_records | 记录位置、输入基线、step_id/attempt_id、执行前意图、动作状态、产物/回执/验证、旧执行状态、已用/剩余额度、下一安全动作；未知副作用不重放，恢复不重置额度 |
 
 返回结构按 `agents/worker.md` 的“返回格式”，包含父任务、契约修订、工作包及实际实例标识、failure_events、actions、结果、产物、检查证据和剩余事项。
 

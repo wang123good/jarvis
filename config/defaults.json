@@ -13,7 +13,7 @@
   "active_work_review_minutes": 20,
   "budget_review_fraction_when_measurable": 0.8,
   "new_external_paid_services": "explicit-user-authorization-required",
-  "project_root": "D:/codex-project/JARVIS",
+  "project_root": "D:/Codex-Projects/Jarvis",
   "knowledge_pointer": ".codex/obsidian-kb.json",
   "registry": "D:/个人知识库/05 规则/JARVIS/任务经验注册表/experience-registry.json",
   "task_template": "templates/task.md",
@@ -33,13 +33,13 @@
     "close_after_handoff": true
   },
   "skill_roots": [
-    "C:/Users/10013463/.codex/skills",
-    "C:/Users/10013463/.agents/skills"
+    "C:/Users/wang1/.codex/skills",
+    "C:/Users/wang1/.agents/skills"
   ],
   "knowledge_administrator": {
     "enabled_by_user": true,
     "authorized_on": "2026-11-18",
-    "deployment": "manual-offline-role-on-temporary-instance",
+    "deployment": "on-demand-offline-role",
     "instructions": "agents/knowledge-administrator.md",
     "request_template": "templates/knowledge-run-request.json",
     "run_directory": ".local/knowledge-runs",
@@ -55,7 +55,8 @@
     "may_spawn_children": false,
     "max_concurrent_writers": 1,
     "concurrency_enforcement": "instruction-only-no-system-lock",
-    "close_after_handoff": true
+    "close_after_handoff": true,
+    "task_closure_trigger": "explicit-acceptance-and-approved-task-policy"
   },
   "never_infer": [
     "hard-cost-enforcement",
@@ -74,7 +75,7 @@
     "template": "up.example.json",
     "initialization": "ask-nickname-on-first-use"
   },
-  "control_plane_revision": "2026-11-19-preflight-review-1",
+  "control_plane_revision": "2026-11-20-task-lifecycle-1",
   "verification_directory": ".local/verification-runs",
   "preflight_review": {
     "enabled": true,
@@ -85,5 +86,38 @@
     "silence_is_approval": false,
     "worker_selection": "separate-benefit-based-decision",
     "enforcement": "instruction-only-not-host-approval"
+  },
+  "task_lifecycle": {
+    "instructions": "docs/task-lifecycle.md",
+    "intent_question": "only-when-ambiguous",
+    "persistent_card_when_tracking_or_recovery_needed": true,
+    "rename_session_after_contract_approval": true,
+    "plan_revision_required": true,
+    "purpose_review_required": true,
+    "recovery_trigger": "explicit-human-request",
+    "reconcile_actual_state_before_resume": true,
+    "replay_unknown_side_effects": false,
+    "reset_budget_on_resume": false,
+    "state_storage": "task-card-and-append-only-key-events",
+    "enforcement": "instructions-and-local-files-not-runtime-engine",
+    "closure": {
+      "trigger": "explicit-user-acceptance",
+      "default_mode": "ask-note-choice-after-acceptance",
+      "local_directory": ".local/tasks/<task_id>/closure",
+      "vault_writes_require_task_allowlist_approval": true,
+      "formal_changes_require_approved_diff": true,
+      "skip_when_user_declines_notes": true,
+      "skill_decision": "confirmed-user-context-and-reuse-value-not-mandatory-sop",
+      "ask_skill_creation": "when-worthwhile",
+      "close_chat_automatically": false,
+      "note_choices": [
+        "skip",
+        "local-summary",
+        "knowledge-vault"
+      ],
+      "unanswered_note_choice": "await-choice-no-note-generation",
+      "existing_explicit_task_choice": "reuse-without-reasking",
+      "execution_evidence_requires_note_opt_in": false
+    }
   }
 }

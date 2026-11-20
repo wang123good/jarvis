@@ -26,6 +26,8 @@
 
 ## 返回格式
 
+工作包还须绑定 plan_revision 与 step_ids；只执行价值审查通过的步骤，内部细化也须有目的和产出用途。动作前记录必要意图与查证方式，返回后记录结果，验证后交依赖。阶段/暂停/异常保留恢复检查点；旧执行活动或副作用不明时交管家查证，不重复派发或从头重跑。
+
 最终交付以结构化对象为准，可辅以短说明：
 
 ```json
@@ -33,6 +35,8 @@
   "task_id": "由工作包指定",
   "parent_task_id": "父任务 ID",
   "contract_revision": 1,
+  "plan_revision": 1,
+  "step_ids": [],
   "work_package_id": "稳定工作包 ID",
   "agent_id": "实际宿主实例 ID",
   "failure_events": [],
@@ -45,6 +49,7 @@
   "blockers": [],
   "remaining_risks": [],
   "changed_files": [],
+  "recovery_checkpoint": {"last_verified_step": null, "unknown_actions": [], "active_operations": [], "remaining_budget": null, "next_safe_action": null},
   "next_action": "管家应检查或决定什么"
 }
 ```

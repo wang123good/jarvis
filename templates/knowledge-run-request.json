@@ -2,8 +2,8 @@
   "template_only": true,
   "run_id": "FILL-UNIQUE-RUN-ID",
   "project_id": "jarvis",
-  "project_root": "D:/codex-project/JARVIS",
-  "trigger": "explicit-user-request",
+  "project_root": "FILL-ABSOLUTE-PROJECT-ROOT",
+  "trigger": "FILL-explicit-user-request-OR-approved-task-closure",
   "user_instruction": "FILL-EXACT-USER-REQUEST",
   "mode": "curate",
   "objective": "FILL-ORGANIZATION-GOAL-AND-TOPICS",
@@ -16,7 +16,7 @@
   "allowed_read_paths": [],
   "allowed_write_paths": [],
   "report_directory": "FILL-ABSOLUTE-PROJECT-RUN-DIRECTORY",
-  "candidate_directory": "D:/个人知识库/01_项目/JARVIS/50_图书管理员/candidates",
+  "candidate_directory": "FILL-ABSOLUTE-TASK-LOCAL-CLOSURE-OR-APPROVED-CANDIDATE-PATH",
   "allow_domain_resource_writes": false,
   "budget": {
     "max_sessions": 1,
@@ -32,5 +32,18 @@
     "expected_baseline_sha256": {},
     "backup_directory": null
   },
-  "formal_writes_allowed": false
+  "formal_writes_allowed": false,
+  "parent_task_id": "FILL-TASK-ID",
+  "contract_revision": null,
+  "closure_authorization": {
+    "task_card_path": null,
+    "explicit_acceptance_evidence": null,
+    "policy_approval_evidence": null,
+    "source_allowlist": [],
+    "target_allowlist": [],
+    "allowed_fields_or_create_only": null,
+    "conflict_policy": "stop-on-existing-target-or-baseline-drift",
+    "vault_writes_allowed": false,
+    "skip_if_user_declined_notes": true
+  }
 }
