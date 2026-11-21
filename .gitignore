@@ -16,6 +16,7 @@ __pycache__/
 # Local user profile
 /up.json
 /up.json.*.tmp
+/up.json.lock
 
 # Local evidence, business inputs and historical runs
 /.local/
