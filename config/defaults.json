@@ -91,7 +91,6 @@
     "instructions": "docs/task-lifecycle.md",
     "intent_question": "only-when-ambiguous",
     "persistent_card_when_tracking_or_recovery_needed": true,
-    "rename_session_after_contract_approval": true,
     "plan_revision_required": true,
     "purpose_review_required": true,
     "recovery_trigger": "explicit-human-request",
@@ -118,6 +117,27 @@
       "unanswered_note_choice": "await-choice-no-note-generation",
       "existing_explicit_task_choice": "reuse-without-reasking",
       "execution_evidence_requires_note_opt_in": false
+    },
+    "session_binding": {
+      "trigger": "explicit-real-new-task-first-card",
+      "create_dedicated_thread": true,
+      "title": "task-name",
+      "project": "same-project-local",
+      "reuse_existing_task_thread": true,
+      "handoff_template": "templates/task-session-handoff.md",
+      "handoff_reception": "resume-existing-task-never-create-again",
+      "verify": [
+        "thread-id",
+        "title",
+        "project",
+        "receiver-context-readback"
+      ],
+      "side_panel_visual_verification": "separate-when-available",
+      "execution_requires_existing_preflight_review": true,
+      "unknown_creation_result": "reconcile-before-any-retry",
+      "repair_existing_thread_before_recreate": true,
+      "source_thread_auto_archive": false,
+      "enforcement": "instruction-and-native-tools-not-background-service"
     }
   }
 }

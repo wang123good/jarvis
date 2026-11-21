@@ -40,7 +40,7 @@ def load(path=None):
     path = Path(path) if path is not None else ROOT / 'up.json'
     if not path.exists():
         return {'status': 'needs_initialization', 'nickname': '', 'preferences': []}
-    document = validate(json.loads(path.read_text(encoding='utf-8')))
+    document = validate(json.loads(path.read_text(encoding='utf-8-sig')))
     if not document.get('enabled', True):
         return {'status': 'disabled', 'nickname': '', 'preferences': []}
     return {
