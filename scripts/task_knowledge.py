@@ -7,7 +7,8 @@ import os
 from pathlib import Path
 import re
 
-from resolve_environment import ROOT, relative_to, resolve_environment
+import experience_registry
+from resolve_environment import ROOT, read_object, relative_to, resolve_environment
 
 
 def note_scope(environment, layer, folder):
@@ -122,13 +123,29 @@ def main(argv=None, project_root=ROOT):
     search.add_argument('terms', nargs='+', help='Literal terms that must all match')
     skill = operations.add_parser('skill')
     skill.add_argument('name')
+    experience = operations.add_parser('experience')
+    experience.add_argument('terms', nargs='*')
+    experience.add_argument('--limit', type=int, choices=range(1, 21), default=5)
+    initialize = operations.add_parser('experience-init')
+    initialize.add_argument('--connector-vault', required=True)
+    register = operations.add_parser('experience-register')
+    register.add_argument('entry', type=Path)
+    register.add_argument('--baseline', required=True)
+    register.add_argument('--connector-vault', required=True)
     args = parser.parse_args(argv)
     try:
-        environment = resolve_environment(project_root)
+        environment = resolve_environment(project_root, getattr(args, 'connector_vault', None))
         if args.operation == 'search':
             result = search_notes(environment, args.layer, args.folder, args.terms, args.limit)
-        else:
+        elif args.operation == 'skill':
             result = inspect_skill(Path(project_root), environment['skill_roots'], args.name)
+        elif args.operation == 'experience':
+            result = experience_registry.query(environment, args.terms, args.limit, inspect_skill)
+        elif args.operation == 'experience-init':
+            result = experience_registry.initialize(environment)
+        else:
+            result = experience_registry.register(
+                environment, read_object(args.entry), args.baseline, inspect_skill)
     except (OSError, ValueError) as exc:
         print(json.dumps({'error': str(exc)}, ensure_ascii=False))
         return 2

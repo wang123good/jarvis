@@ -45,9 +45,9 @@ python scripts/verify_installation.py --environment-only --connector-vault "工�
 
 第一条只解析配置，未核验连接时输出 `write_ready: false`。写库前须通过第二条；目标不存在或两侧路径不同会返回失败。校验只代表当次检查，写入前仍需核对目标；它不是系统锁，也不改变宿主工具权限。初始化命令内置同一校验；其他知识库工具由管家按 AGENTS.md I01 执行写前检查。
 
-需要旧版 `obsidian-kb` 格式时，可加 `--write-runtime-pointer`，在 `.local/obsidian-kb.resolved.json` 生成本机解析结果，不改共享配置。外部检索工具必须明确支持传入这份配置；仓库完整检查仅适配支持全局 `--config` 参数的工具，不支持时停止，不静默回退到旧路径。
+需要旧版 `obsidian-kb` 格式时，可加 `--write-runtime-pointer`，在 `.local/obsidian-kb.resolved.json` 生成本机解析结果，不改共享配置。外部检索工具必须明确支持传入这份配置。
 
-完整接入检查仍需真实注册表、其查询脚本及已安装的检索 Skill：
+完整接入检查使用仓库查询入口验证真实注册表及项目约定的检索：
 
 ```powershell
 python scripts/verify_installation.py --connector-vault "工具报告的知识库绝对路径"

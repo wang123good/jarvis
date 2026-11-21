@@ -121,7 +121,7 @@
     "session_binding": {
       "trigger": "explicit-real-new-task-first-card",
       "create_dedicated_thread": true,
-      "title": "task-name",
+      "title": "task-name-and-current-status",
       "project": "same-project-local",
       "reuse_existing_task_thread": true,
       "handoff_template": "templates/task-session-handoff.md",

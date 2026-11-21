@@ -3,7 +3,7 @@
 - 状态：待澄清 / 待复核 / 执行中 / 待用户决策 / 已暂停 / 已交付待验收 / 已交付无需验收 / 已验收 / 已取消 / 失败或停止（选择一项）
 - task_id / contract_revision：稳定任务 ID / 从 1 递增；修订保留快照或精确差异及授权依据。
 - plan_revision：计划修订独立递增。
-- 对话绑定：source_thread_id（来源）、task_thread_id（专属对话）、project_id、task_thread_title；旧 session_ids 如保留，只作关联历史，不代表专属绑定。
+- 对话绑定：source_thread_id（来源）、task_thread_id（专属对话）、project_id、task_thread_title（任务名称【当前状态】）；旧 session_ids 如保留，只作关联历史，不代表专属绑定。
 - session_binding_status：待创建 / 创建中 / 已创建待核验 / 已绑定 / 阻塞 / 结果未知（选择一项）；creation_attempt_id、创建回执、标题/项目独立回读、接收确认及替代关系：
 - 分流依据：用户明确建立真实新任务后首次建卡即创建专属对话；既有绑定任务复用。接收交接为续作，模板/测试/补录不触发；创建结果未知先查证，命名或关联失败修复已有对话。
 - 交接包：按 templates/task-session-handoff.md 填写任务卡绝对路径、任务 ID、需求摘要、契约/计划修订、授权状态、待确认项、下一步及可读来源。建会话不构成执行批准，原对话保留。

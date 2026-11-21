@@ -94,39 +94,47 @@ def run_checks(out, run_id, connector_vault=None, environment_only=False):
         raise RuntimeError('Formal experience registry is missing; only environment validation completed. No registry was fabricated.')
     before = registry.read_bytes()
     registry_data = json.loads(before)
-    candidates = [Path(path) / 'obsidian-kb/scripts/kb.py' for path in resolved['skill_roots']]
-    kb = next((path for path in candidates if path.is_file()), None)
-    if kb is None:
-        raise RuntimeError('No installed obsidian-kb retrieval Skill found in local skill_roots')
-    help_result = subprocess.run([sys.executable, str(kb), '--help'], cwd=ROOT,
-                                 capture_output=True, encoding='utf-8',
-                                 env=dict(os.environ, PYTHONIOENCODING='utf-8'))
-    if help_result.returncode or '--config' not in help_result.stdout:
-        raise RuntimeError('Installed obsidian-kb must support an explicit global --config option; refusing implicit shared-path fallback')
-    runtime_pointer = reader.write_runtime_pointer(resolved)
-    query_script = registry.parent / 'query_experience.py'
-    doctor = invoke(kb, '--config', runtime_pointer, 'doctor', '--json')
-    retrieved = invoke(kb, '--config', runtime_pointer, 'search', 'JARVIS 项目协作约定', '--project-only', '--limit', '3', '--json')
-    experiences = invoke(query_script, '--limit', '5')
+    query_script = ROOT / 'scripts/task_knowledge.py'
+    agreement = Path(resolved['agreement'])
+    agreement_present = agreement.is_file()
+    probe = agreement if agreement_present else next(
+        (path for path in sorted(Path(resolved['project_knowledge_root']).glob('*.md'))
+         if path.is_file() and path.resolve() == path), None)
+    if probe is None:
+        raise RuntimeError('No project note available to verify scoped retrieval')
+    retrieved = invoke(query_script, 'search', '--layer', 'project', '--limit', '20', probe.name)
+    experiences = invoke(query_script, 'experience', '--limit', '5')
     write_json(out / 'retrieval.json', retrieved)
     write_json(out / 'experiences.json', experiences)
-    write_json(out / 'kb-doctor.json', doctor)
     checks = {
         **environment_checks,
-        'registry_parses_and_query_runs': isinstance(registry_data.get('experiences'), list) and experiences['count'] == len(experiences['results']),
-        'confirmed_agreement_retrieved': 'JARVIS 项目协作约定.md' in json.dumps(retrieved, ensure_ascii=False),
-        'actual_retrieval_skill_exists': kb.is_file() and (kb.parents[1] / 'SKILL.md').is_file(),
+        'registry_parses_and_query_runs': experiences['status'] == 'ready'
+            and experiences['registered'] == len(registry_data['experiences'])
+            and experiences['registry_sha256'] == hashlib.sha256(before).hexdigest()
+            and not experiences['excluded'],
+        'project_note_retrieved': any(
+            match['path'] == probe.relative_to(Path(resolved['vault_root'])).as_posix()
+            and match['sha256'] == hashlib.sha256(probe.read_bytes()).hexdigest()
+            for match in retrieved['matches']),
         'registry_bytes_unchanged': registry.read_bytes() == before,
-        'entry_matches_soft_defaults': all(text in (ROOT / 'AGENTS.md').read_text(encoding='utf-8') for text in ['2 次', '20 分钟', '--project-only', '图书管理员']),
+        'entry_matches_soft_defaults': all(
+            text in (ROOT / path).read_text(encoding='utf-8') for path, text in (
+                ('docs/rules/task.md', '2 次'),
+                ('docs/rules/task.md', '20 分钟'),
+                ('docs/rules/knowledge.md', '--project-only'),
+                ('docs/rules/retention.md', '图书管理员'),
+            )
+        ),
     }
     report = {'run_id': run_id, 'completed_at_utc': datetime.now(timezone.utc).isoformat(), 'deployment': 'project-main-session', 'ok': all(checks.values()), 'checks': checks,
+              'configured_agreement_present': agreement_present,
               'formal_experience_count': len(registry_data['experiences']),
               'registry_sha256': hashlib.sha256(before).hexdigest(),
               'resource_sha256': {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in resources},
               'actual_mode': 'direct', 'workers_spawned': 0,
               'limitations': ['Existing session explicitly reread AGENTS.md; new-session automatic loading not tested', 'No hard budget, Worker isolation, semantic reuse quality or global user-model validation', 'No new formal experience, skill, named subagent or background service created']}
     write_json(out / 'verification.json', report)
-    print(json.dumps({'ok': report['ok'], 'checks': checks, 'formal_experience_count': report['formal_experience_count'], 'run_directory': str(out)}, ensure_ascii=False))
+    print(json.dumps({'ok': report['ok'], 'checks': checks, 'formal_experience_count': report['formal_experience_count'], 'configured_agreement_present': agreement_present, 'run_directory': str(out)}, ensure_ascii=False))
     if not report['ok']:
         raise SystemExit(1)
 

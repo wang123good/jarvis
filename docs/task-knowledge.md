@@ -10,9 +10,14 @@
 6. 从本次实测结果提取候选，保留任务 ID、可核对证据、适用范围、失效条件与未验证项。按任务收尾授权决定是否写 Obsidian。普通笔记可由后续任务按来源重新判断；正式经验还需人工复核并绑定真实 Skill。核准的新笔记按批准目标写入并回读，发现同名或内容冲突时交回管家处理。是否成功复用由另一任务的实际结果验证。
 
 ```powershell
+python -X utf8 scripts/task_knowledge.py experience "任务经验注册表" "治理机制"
 python scripts/task_knowledge.py search --layer project "知识库" "初始化"
 python scripts/task_knowledge.py search --layer domain --folder "03 wiki/主题" "部署"
 python scripts/task_knowledge.py skill obsidian-kb
 ```
 
-查询只返回候选路径、内容指纹和短摘录，按字面匹配。项目层只读本项目总结及规则。自定义文件夹须在相应层范围内。相比目录统计，返回的未读范围和跳过项更能说明本次查询覆盖。该脚本不实现正式经验排序，也不写库、安装 Skill 或自动判断是否采用。
+每项明确的新实质任务在拟定契约时运行 `experience`。从任务名称、签名、目标和范围中提取 2–5 个有区分度的词，分别传入。查询按规范化文本的相等或包含关系匹配，也支持登记的同义关键词。只呈现通过状态、证据文件指纹和唯一 Skill 指纹检查的条目，按调用次数、更新时间、ID 排序。JARVIS 阅读原文、判断适用性，并记录采用与否。空库或无命中时按本规程查项目笔记；注册表缺失或无效时记录实际状态，继续只读查适用笔记。
+
+`search` 返回候选路径、内容指纹和短摘录。项目层仅检索本项目总结及规则。自定义文件夹须在相应层范围内。
+
+确获授权后可用 `experience-init --connector-vault <实际路径>` 排他创建空注册表。登记使用 `experience-register <条目JSON> --baseline <当前注册表SHA256> --connector-vault <实际路径>`，批准须覆盖条目与基线。条目包括 `id`、`name`、`signature`、`goal`、`scope`、带时区的 `updated_at`、`status`、`approval`、`shortcoming`、库内项目证据路径 `evidence` 及 `evidence_sha256`、`skill` 及 `skill_sha256`。可附 `keywords` 和实测 `use_count`。查询不增加调用次数。入口由 JARVIS 随新任务执行。
