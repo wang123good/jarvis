@@ -1,0 +1,15 @@
+filters:
+  and:
+    - file.ext == "md"
+    - status == "active"
+    - review_after < today()
+views:
+  - type: table
+    name: 需要复审
+    order:
+      - file.name
+      - type
+      - topics
+      - review_after
+      - updated
+      - source

@@ -1,0 +1,17 @@
+filters:
+  and:
+    - file.ext == "md"
+    - status == "active"
+    - type != "template"
+    - type != "index"
+    - confidence == "unknown"
+views:
+  - type: table
+    name: 证据缺口
+    order:
+      - file.name
+      - type
+      - topics
+      - source
+      - evidence
+      - updated

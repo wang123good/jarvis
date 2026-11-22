@@ -1,0 +1,18 @@
+filters:
+  and:
+    - file.ext == "md"
+    - type != "template"
+    - status != "archived"
+    - status != "rejected"
+views:
+  - type: table
+    name: 主题地图
+    groupBy:
+      property: topics
+      direction: ASC
+    order:
+      - file.name
+      - type
+      - status
+      - confidence
+      - updated

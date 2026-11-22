@@ -7,7 +7,7 @@
 | `AGENTS.md` | 项目主会话入口与读取路由 |
 | `agents/` | Worker、知识库管理员等角色定义 |
 | `config/` | 项目默认配置；宿主相关配置仍在 `.codex/` |
-| `templates/` | 任务、工作包、整理请求及 `vault/` 知识库模板 |
+| `templates/` | 任务、工作包、整理请求，以及 `vault/` 业务模板和 `brain/` Brain v1 种子资产 |
 | `scripts/` | 初始化、画像读取、接入检查、制图等辅助程序 |
 | `tests/` | 辅助程序测试 |
 | `skills/` | 随项目维护的技能资产 |

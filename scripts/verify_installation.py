@@ -63,9 +63,27 @@ def run_checks(out, run_id, connector_vault=None, environment_only=False):
     spec.loader.exec_module(reader)
     resolved = reader.resolve_environment(ROOT, connector_vault)
     defaults = json.loads((ROOT / 'config/defaults.json').read_text(encoding='utf-8'))
-    resources = ['agents/worker.md', 'templates/worker-work-package.md', 'scripts/verify_installation.py', 'AGENTS.md', 'config/defaults.json', 'config/environment.example.json', 'scripts/resolve_environment.py', 'templates/task.md', 'docs/operations.md', defaults['knowledge_pointer'], '架构方案/JARVIS 管家Agent职责定义 v0.1.md', 'scripts/read_profile.py', 'scripts/init_vault.py', 'docs/archive-index.md']
+    resources = ['agents/worker.md', 'templates/worker-work-package.md', 'scripts/verify_installation.py', 'AGENTS.md', 'config/defaults.json', 'config/environment.example.json', 'scripts/resolve_environment.py', 'templates/task.md', 'docs/operations.md', defaults['knowledge_pointer'], '架构方案/JARVIS 管家Agent职责定义 v0.1.md', 'scripts/read_profile.py', 'scripts/init_vault.py', 'scripts/brain_health.py', 'scripts/brain_eval.py', 'scripts/brain_qa_eval.py', 'docs/archive-index.md']
     resources += ['templates/vault/' + name + '.md' for name in
                   ['规则', '草稿', '日报', '周报', '决策', '任务总结', '任务契约', '业务对话', 'wiki主题']]
+    resources += [
+        'templates/brain/README.md',
+        'templates/brain/首页.md',
+        'templates/brain/01 草稿/草稿说明.md',
+        'templates/brain/02 工作记录/工作记录.md',
+        'templates/brain/02 工作记录/Brain运行日志/index.md',
+        'templates/brain/02 工作记录/Brain运行日志/log.md',
+        'templates/brain/03 wiki/wiki索引.md',
+        'templates/brain/03 wiki/索引/Brain v1索引.md',
+        'templates/brain/03 wiki/视图/视图说明.md',
+        'templates/brain/03 wiki/视图/待复核.base',
+        'templates/brain/03 wiki/视图/需要复审.base',
+        'templates/brain/03 wiki/视图/主题地图.base',
+        'templates/brain/03 wiki/视图/证据缺口.base',
+        'templates/brain/05 规则/JARVIS/Brain v1 运行规程.md',
+        'templates/brain/05 规则/JARVIS/Brain v1 治理规范.md',
+        'templates/brain/05 规则/知识库使用规则.md',
+    ]
     environment_checks = {
         'declared_local_resources_exist': all((ROOT / p).is_file() for p in resources),
         'vault_exists': resolved['vault_exists'],

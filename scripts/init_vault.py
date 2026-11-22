@@ -1,58 +1,99 @@
-"""Create missing vault folders/templates without overwriting user files."""
+"""Create the Brain v1 vault skeleton without overwriting user files."""
+
 import argparse
+from datetime import date
 import json
 from pathlib import Path
 
-FOLDERS = ['01 草稿', '02 工作记录/任务总结', '02 工作记录/日报',
-           '02 工作记录/周报', '03 wiki', '04 模板', '05 规则', '06 归档', '99 附件']
+
+FOLDERS = [
+    '01 草稿',
+    '01 草稿/历史收件箱',
+    '01 草稿/迁移待分类',
+    '02 工作记录',
+    '02 工作记录/任务总结',
+    '02 工作记录/任务总结/JARVIS',
+    '02 工作记录/任务总结/历史项目',
+    '02 工作记录/Brain运行日志',
+    '02 工作记录/日报',
+    '02 工作记录/周报',
+    '03 wiki',
+    '03 wiki/主题',
+    '03 wiki/主题/AI-Agent',
+    '03 wiki/主题/Loop-Engineering',
+    '03 wiki/主题/Obsidian使用技巧',
+    '03 wiki/参考资料',
+    '03 wiki/参考资料/AI-Agent',
+    '03 wiki/参考资料/Loop-Engineering',
+    '03 wiki/参考资料/Obsidian使用技巧',
+    '03 wiki/综合',
+    '03 wiki/索引',
+    '03 wiki/视图',
+    '04 模板',
+    '04 模板/历史模板',
+    '05 规则',
+    '05 规则/JARVIS',
+    '05 规则/决策',
+    '06 归档',
+    '99 附件',
+]
+
+BRAIN_FILE_SUFFIXES = {'.md', '.base'}
+
+
+def create_file_exclusive(source: Path, target: Path, created: list[str], preserved: list[str]) -> None:
+    """Create one target file without replacing an existing path."""
+    target.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with target.open('xb') as stream:
+            stream.write(source.read_bytes())
+        created.append(str(target))
+    except (FileExistsError, IsADirectoryError):
+        preserved.append(str(target))
+
 
 def initialize(vault):
     vault = Path(vault).expanduser().resolve()
     vault.mkdir(parents=True, exist_ok=True)
-    for folder in FOLDERS:
-        (vault / folder).mkdir(parents=True, exist_ok=True)
+
+    created_dirs = []
+    folders = [*FOLDERS, f'02 工作记录/日报/{date.today().year}',
+               f'02 工作记录/周报/{date.today().year}']
+    for folder in folders:
+        target = vault / folder
+        if not target.exists():
+            created_dirs.append(str(target))
+        target.mkdir(parents=True, exist_ok=True)
+
     created, preserved = [], []
-    assets = Path(__file__).resolve().parents[1] / 'templates/vault'
-    for source in sorted(assets.glob('*.md')):
-        target = vault / '04 模板' / source.name
-        try:
-            with target.open('xb') as stream:
-                stream.write(source.read_bytes())
-            created.append(str(target))
-        except FileExistsError:
-            preserved.append(str(target))
-    home = vault / '首页.md'
-    try:
-        with home.open('x', encoding='utf-8') as stream:
-            stream.write('# 知识库首页\n\n'
-                         '- [[01 草稿/草稿说明|草稿入口]]\n'
-                         '- [[02 工作记录/工作记录|工作记录]]\n'
-                         '- [[03 wiki/wiki索引|wiki]]\n'
-                         '- [[05 规则/知识库使用规则|使用规则]]\n\n'
-                         '待处理资料进入草稿；任务形成总结；通用知识整理到 wiki；'
-                         '业务对话单文件保存在归档。模板位于 04 模板。\n')
-        created.append(str(home))
-    except FileExistsError:
-        preserved.append(str(home))
-    seeds = {
-        '01 草稿/草稿说明.md': '# 草稿\n\n待整理资料与未确认内容；保留来源和待决问题。\n',
-        '02 工作记录/工作记录.md': '# 工作记录\n\n任务总结、日报与周报分别存放；按需生成，不自动填造工作成果。\n',
-        '03 wiki/wiki索引.md': '# wiki\n\n组织跨任务复用的主题知识，链接来源，保留状态与不确定性。\n',
-        '05 规则/知识库使用规则.md': '# 知识库使用规则\n\n草稿 → 工作记录 → wiki；业务对话保存在 06 归档。\n\n'
-        '归档命名：年月日_任务名称_对话名.md，日期按北京时间；同名追加 _02。'
-        '仅保存可读业务对话，不复制来源 JSON、运行日志或附件。\n\n'
-        '日报按北京时间，周报按周一至周日、ISO 周编号并标起止日期。'
-        '模板复制不覆盖已有文件；生成和迁移须有明确范围与授权。\n',
+    project_root = Path(__file__).resolve().parents[1]
+    template_root = project_root / 'templates/vault'
+    templates = sorted(template_root.glob('*.md'))
+    if not templates:
+        raise RuntimeError(f'No vault templates found in: {template_root}')
+    for source in templates:
+        create_file_exclusive(source, vault / '04 模板' / source.name, created, preserved)
+
+    seed_root = project_root / 'templates/brain'
+    if not seed_root.is_dir():
+        raise RuntimeError(f'Missing Brain v1 seed directory: {seed_root}')
+    seeds = sorted(
+        (path for path in seed_root.rglob('*') if path.is_file()
+         and path.suffix.lower() in BRAIN_FILE_SUFFIXES),
+        key=lambda path: path.relative_to(seed_root).as_posix(),
+    )
+    if not seeds:
+        raise RuntimeError(f'No Brain v1 seed files found in: {seed_root}')
+    for source in seeds:
+        relative = source.relative_to(seed_root)
+        create_file_exclusive(source, vault / relative, created, preserved)
+
+    return {
+        'vault': str(vault),
+        'created_dirs': created_dirs,
+        'created': created,
+        'preserved': preserved,
     }
-    for rel, content in seeds.items():
-        target = vault / rel
-        try:
-            with target.open('x', encoding='utf-8') as stream:
-                stream.write(content)
-            created.append(str(target))
-        except FileExistsError:
-            preserved.append(str(target))
-    return {'vault': str(vault), 'created': created, 'preserved': preserved}
 
 def main(argv=None, project_root=None):
     import importlib.util
