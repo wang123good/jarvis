@@ -1,7 +1,7 @@
 ## 项目版本与 GitHub
 
-- **C01** 本地版本：`V1.2.4`；版本上传日期：2026-11-22（Asia/Shanghai）。
-- **C02** 本次修改说明：修复 Brain v1 初始化一致性，统一模板属性，补齐完整目录、Markdown 种子、四个 Bases、健康检查入口、环境和设计文档。
+- **C01** 本地版本：`V1.2.5`；版本上传日期：2026-11-22（Asia/Shanghai）。
+- **C02** 本次修改说明：在 GitHub README 中补充 Brain v1 的工作流程、知识库目录、四个 Bases、实际用途和验证状态。
 - **C03** 项目发布版本与角色入口版本独立。本地修改不递增发布版本。
 - **C04** 仓库：https://github.com/wang123good/jarvis；`origin` → `https://github.com/wang123good/jarvis.git`；主分支 `main`；项目根目录由脚本位置解析。
 
