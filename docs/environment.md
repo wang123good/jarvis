@@ -100,3 +100,22 @@ python scripts/init_vault.py --connector-vault "工具报告的知识库绝对�
 旧库迁移须先盘点文件、固定哈希、生成路径映射，保护状态与人工内容，更新笔记链接、检索配置及必要插件路径。旧第二层任务经验进入任务总结；旧领域知识及参考资料进入 wiki；未复核候选仍保持草稿。迁移验证包括覆盖、冲突、内容保留、链接和检索；回退材料置于知识库外，不混入归档。历史记录里描述旧目录的文字属于历史事实，不机械改写为新规则。
 
 初始化验收覆盖完整 Brain v1 目录与种子、模板属性、四个 Bases 文件、重复运行、用户文件保护及错误连接阻止写入；基础库应通过 `scripts/brain_health.py` 的核心属性和链接检查。检索质量、Bases GUI 和自动下载安装另在完成本机配置后实测。首次呼叫与安装恢复全流程仍须另行实现验证。
+
+## 生成日报与周报
+
+在 JARVIS 会话中说「生成昨天的日报」或「生成本周周报」，也可以从仓库根目录预览。省略 `--date` 时使用北京时间当天，周报覆盖指定日期所在的 ISO 周。
+
+```powershell
+python -X utf8 scripts/work_report.py daily --date 2026-11-21
+python -X utf8 scripts/work_report.py weekly --date 2026-11-22
+```
+
+日报按项目任务总结的 `completed_on` 或 `date` 汇总，优先使用 `completed_on`。跨天任务在结束时补记 `completed_on`，格式为 `YYYY-MM-DD`。没有有效业务日期的笔记在预览的 `undated` 中列出。周报也链接周期内标明同一项目的日报。生成结果用源笔记链接和简短摘录保留任务脉络。
+
+预览返回目标文件、来源、Markdown 和 `baseline`。取得该报表的写入授权后，从连接工具确认实际 Obsidian 库根路径，把预览的 `baseline` 传给 `--write`，并在写入后回读文件。
+
+```powershell
+python -X utf8 scripts/work_report.py daily --date 2026-11-21 --connector-vault '<连接工具报告的实际库路径>' --write '<已批准预览的 baseline>'
+```
+
+已有同名报表时保留原件，返回 `exists`。周期无可用记录时预览返回 `no_records`。来源或预览变化后需重新预览。
