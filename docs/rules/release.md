@@ -1,7 +1,7 @@
 ## 项目版本与 GitHub
 
-- **C01** 本地版本：`V1.2.6`；版本上传日期：2026-11-22（Asia/Shanghai）。
-- **C02** 本次修改说明：接通 JARVIS 日报和周报的手动生成流程，支持预览、核对来源、写入 Obsidian 及保护已有报表。
+- **C01** 本地版本：`V1.2.7`；版本上传日期：2026-11-22（Asia/Shanghai）。
+- **C02** 本次修改说明：补充 GitHub 项目简介、Topics、README 的任务恢复示例、MIT 许可证和 Release 入口。
 - **C03** 项目发布版本与角色入口版本独立。本地修改不递增发布版本。
 - **C04** 仓库：https://github.com/wang123good/jarvis；`origin` → `https://github.com/wang123good/jarvis.git`；主分支 `main`；项目根目录由脚本位置解析。
 
