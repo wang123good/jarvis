@@ -22,4 +22,5 @@ __pycache__/
 /.local/
 /experiments/
 /AWB/
+/workspace/
 /*.zip
