@@ -97,6 +97,44 @@ class WorkReportTests(unittest.TestCase):
         self.assertEqual(result['status'], 'no_records')
         self.assertFalse((self.vault / result['target']).parent.exists())
 
+    def test_filename_date_fallback_is_explicit(self):
+        source = self.summaries / '2026-11-21_旧任务总结.md'
+        source.write_text(
+            '---\nproject: JARVIS\ntype: task-summary\nstatus: archived\n'
+            '---\n## 结果与验证\n\n- 兼容旧数据。\n',
+            encoding='utf-8',
+        )
+        preview = self.run_report('daily', '--date', '2026-11-21')
+        relative = source.relative_to(self.vault).as_posix()
+        self.assertEqual(preview['status'], 'preview')
+        self.assertEqual(preview['sources'], [relative])
+        self.assertEqual(preview['date_fallbacks'], [relative])
+        self.assertIn('日期取自文件名', preview['markdown'])
+        self.assertIn('兼容旧数据。', preview['markdown'])
+
+    def test_weekly_finds_legacy_daily_name_by_frontmatter(self):
+        source = self.note('周任务', 'date: 2026-11-20')
+        daily_folder = self.vault / '02 工作记录/日报/2026'
+        daily_folder.mkdir(parents=True)
+        legacy = daily_folder / '2026-11-20 日报.md'
+        legacy.write_text(
+            '---\ntitle: "2026-11-20 日报"\ndate: 2026-11-20\ntype: daily-report\n'
+            'status: active\ntags:\n  - "project/jarvis"\n  - "日报"\n---\n# 日报\n',
+            encoding='utf-8',
+        )
+        other = daily_folder / '2026-11-20_其他项目日报.md'
+        other.write_text(
+            '---\ndate: 2026-11-20\ntype: daily-report\nstatus: active\n'
+            'project: Other\n---\n# 其他项目\n',
+            encoding='utf-8',
+        )
+        preview = self.run_report('weekly', '--date', '2026-11-20')
+        self.assertEqual(preview['status'], 'preview')
+        self.assertIn(source.relative_to(self.vault).as_posix(), preview['sources'])
+        self.assertIn(legacy.relative_to(self.vault).as_posix(), preview['sources'])
+        self.assertNotIn(other.relative_to(self.vault).as_posix(), preview['sources'])
+        self.assertIn(legacy.relative_to(self.vault).with_suffix('').as_posix(), preview['markdown'])
+
 
 if __name__ == '__main__':
     unittest.main()

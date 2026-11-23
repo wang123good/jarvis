@@ -25,6 +25,7 @@ KINDS = {'daily': ('日报', 'daily-report'), 'weekly': ('周报', 'weekly-repor
 OUTCOME_HEADINGS = {'结果与验证', '结果及验证', '成果与验证', '已验证成果', '结果'}
 FOLLOWUP_HEADINGS = {'问题、经验与后续行动', '后续可复用做法', '下一步', '待办', '问题与风险'}
 PLACEHOLDER = '区分实际验证、助手报告和用户验收。'
+FILENAME_DATE = re.compile(r'^(\d{4}-\d{2}-\d{2})(?:[_\-\s]|$)')
 
 
 @dataclass(frozen=True)
@@ -35,6 +36,7 @@ class Summary:
     outcome: list[str]
     followup: list[str]
     digest: str
+    date_source: str
 
 
 def period(kind, requested):
@@ -48,6 +50,39 @@ def period(kind, requested):
 def output_name(kind, label):
     folder, _ = KINDS[kind]
     return WORK_LOG / folder / label.split('-')[0] / f'{label}_{folder}.md'
+
+
+def iso_date(value):
+    if not isinstance(value, str):
+        return None
+    try:
+        return date.fromisoformat(value.strip())
+    except ValueError:
+        return None
+
+
+def summary_date(path, fields):
+    for field in ('completed_on', 'date'):
+        recorded = iso_date(fields.get(field))
+        if recorded is not None:
+            return recorded, field
+    match = FILENAME_DATE.match(path.name)
+    if match:
+        recorded = iso_date(match.group(1))
+        if recorded is not None:
+            return recorded, 'filename'
+    return None, None
+
+
+def project_matches(fields, project):
+    configured = fields.get('project')
+    if isinstance(configured, str) and configured.casefold() == project.casefold():
+        return True
+    tags = fields.get('tags') or []
+    if isinstance(tags, str):
+        tags = [tags]
+    project_tag = f'project/{project}'.casefold()
+    return any(isinstance(tag, str) and tag.strip().casefold() == project_tag for tag in tags)
 
 
 def vault_path(vault, relative):
@@ -104,15 +139,14 @@ def load_summaries(environment, vault, start, end):
         project = fields.get('project')
         if project and (not isinstance(project, str) or project.casefold() != configured['name'].casefold()):
             continue
-        try:
-            recorded = date.fromisoformat(fields.get('completed_on') or fields.get('date') or '')
-        except (TypeError, ValueError):
+        recorded, date_source = summary_date(path, fields)
+        if recorded is None:
             undated.append(relative.as_posix())
             continue
         if start <= recorded <= end:
             outcomes, followups = source_lines(body)
             summaries.append(Summary(relative, recorded, fields.get('status') or '',
-                                     outcomes, followups, sha256(data).hexdigest()))
+                                     outcomes, followups, sha256(data).hexdigest(), date_source))
 
     return sorted(summaries, key=lambda note: (note.date, note.path)), undated, sorted(skipped)
 
@@ -126,18 +160,30 @@ def note_link(path):
 
 
 def daily_links(vault, project, start, end):
-    sources = []
-    for offset in range((end - start).days + 1):
-        day = start + offset * DAY
-        relative = output_name('daily', day.isoformat())
-        path = vault_path(vault, relative)
-        if not path.is_file():
+    folder = vault_path(vault, WORK_LOG / '日报')
+    if not folder.is_dir():
+        return [], []
+    skipped, matches = [], []
+    for path in markdown_files(folder, skipped, vault):
+        if path.resolve() != path or not path.is_file():
             continue
-        data = path.read_bytes()
-        fields, _ = split_frontmatter(data.decode('utf-8-sig'))
-        if fields.get('type') == 'daily-report' and fields.get('project') == project:
-            sources.append((relative, sha256(data).hexdigest()))
-    return sources
+        relative = path.relative_to(vault)
+        try:
+            data = path.read_bytes()
+            fields, _ = split_frontmatter(data.decode('utf-8-sig'))
+        except (OSError, UnicodeError):
+            skipped.append(relative.as_posix())
+            continue
+        if fields.get('type') != 'daily-report' or fields.get('status') == 'rejected':
+            continue
+        if not project_matches(fields, project):
+            continue
+        recorded = iso_date(fields.get('period_start') or fields.get('date'))
+        if recorded is None or not start <= recorded <= end:
+            continue
+        matches.append((recorded, relative, sha256(data).hexdigest()))
+    matches.sort(key=lambda item: (item[0], item[1].as_posix()))
+    return [(relative, digest) for _, relative, digest in matches], sorted(skipped)
 
 
 def render(kind, label, project, start, end, today, summaries, daily):
@@ -153,7 +199,8 @@ def render(kind, label, project, start, end, today, summaries, daily):
         lines += ['## 工作记录与验证', '']
         for note in summaries:
             status = f'，笔记状态为 {note.status}' if note.status else ''
-            lines += [f'- {note.date} {note_link(note.path)}{status}']
+            date_source = '，日期取自文件名' if note.date_source == 'filename' else ''
+            lines += [f'- {note.date} {note_link(note.path)}{status}{date_source}']
             lines.extend(f'  - {excerpt}' for excerpt in note.outcome)
         lines.append('')
     followups = [note for note in summaries if note.followup]
@@ -197,10 +244,12 @@ def generate(environment, kind, requested, today, baseline=None):
 
     summaries, undated, skipped = load_summaries(environment, vault, start, end)
     project = environment['resolved_pointer']['project']['name']
-    daily = daily_links(vault, project, start, end) if kind == 'weekly' else []
+    daily, daily_skipped = daily_links(vault, project, start, end) if kind == 'weekly' else ([], [])
+    date_fallbacks = [note.path.as_posix() for note in summaries if note.date_source == 'filename']
     sources = [(note.path.as_posix(), note.digest) for note in summaries]
     sources += [(path.as_posix(), digest) for path, digest in daily]
-    result.update(sources=[path for path, _ in sources], undated=undated, unreadable=skipped)
+    result.update(sources=[path for path, _ in sources], undated=undated, date_fallbacks=date_fallbacks,
+                  unreadable=sorted(set(skipped + daily_skipped)))
     if not sources:
         if baseline is not None:
             raise ValueError('The approved sources are no longer available. Generate a fresh preview.')

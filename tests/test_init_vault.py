@@ -32,7 +32,8 @@ class InitializationTests(unittest.TestCase):
                 header = source.read_text(encoding='utf-8').split('---', 2)[1]
                 self.assertIn('type: "template"', header)
                 self.assertIn('status: "active"', header)
-                self.assertIn('updated: "2026-11-22"', header)
+                expected_updated = '2026-11-23' if source.name == '任务总结.md' else '2026-11-22'
+                self.assertIn(f'updated: "{expected_updated}"', header)
             for source in brain_sources:
                 relative = source.relative_to(ROOT / 'templates/brain')
                 self.assertEqual(source.read_bytes(), (vault / relative).read_bytes())

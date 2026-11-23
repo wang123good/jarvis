@@ -110,7 +110,7 @@ python -X utf8 scripts/work_report.py daily --date 2026-11-21
 python -X utf8 scripts/work_report.py weekly --date 2026-11-22
 ```
 
-日报按项目任务总结的 `completed_on` 或 `date` 汇总，优先使用 `completed_on`。跨天任务在结束时补记 `completed_on`，格式为 `YYYY-MM-DD`。没有有效业务日期的笔记在预览的 `undated` 中列出。周报也链接周期内标明同一项目的日报。生成结果用源笔记链接和简短摘录保留任务脉络。
+日报按项目任务总结的业务日期汇总，优先使用 `completed_on`，其次使用 `date`。跨天任务在结束时补记 `completed_on`，格式为 `YYYY-MM-DD`。旧笔记缺少这两个字段时，仅兼容文件名开头的 `YYYY-MM-DD`；此类记录进入预览的 `date_fallbacks`，报表正文明确标注“日期取自文件名”。无法从字段或文件名确定日期的笔记进入 `undated`，不根据正文、目录名或文件修改时间猜测。周报也按 frontmatter 的 `period_start` 或 `date` 发现周期内同一项目的日报，兼容 `YYYY-MM-DD 日报.md` 等旧命名，并通过 `project` 或 `project/<项目名小写>` 标签核对项目。
 
 预览返回目标文件、来源、Markdown 和 `baseline`。取得该报表的写入授权后，从连接工具确认实际 Obsidian 库根路径，把预览的 `baseline` 传给 `--write`，并在写入后回读文件。
 

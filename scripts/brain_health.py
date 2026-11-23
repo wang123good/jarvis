@@ -57,12 +57,21 @@ def split_frontmatter(text: str) -> tuple[dict, str]:
     if body_start < len(normalized) and normalized[body_start : body_start + 1] == "\n":
         body_start += 1
     data = {}
+    current_key = None
     for line in header.splitlines():
         if line.startswith((" ", "\t")):
+            item = re.match(r"^\s+-\s*(.*?)\s*$", line)
+            if current_key and item:
+                value = parse_scalar(item.group(1))
+                if data.get(current_key) is None:
+                    data[current_key] = []
+                if isinstance(data[current_key], list):
+                    data[current_key].append(value)
             continue
         match = KEY_RE.match(line)
         if match:
-            data[match.group(1)] = parse_scalar(match.group(2))
+            current_key = match.group(1)
+            data[current_key] = parse_scalar(match.group(2))
     return data, normalized[body_start:]
 
 
