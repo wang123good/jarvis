@@ -1,7 +1,7 @@
 ## 项目版本与 GitHub
 
-- **C01** 本地版本：`V1.2.7`；版本上传日期：2026-11-22（Asia/Shanghai）。
-- **C02** 本次修改说明：补充 GitHub 项目简介、Topics、README 的任务恢复示例、MIT 许可证和 Release 入口。
+- **C01** 本地版本：`V1.2.8`；版本上传日期：2026-11-23（Asia/Shanghai）。
+- **C02** 本次修改说明：完善 Brain 笔记预览与创建工具、健康检查和测试，补充技术方案可评审性及历史回顾提示规则。
 - **C03** 项目发布版本与角色入口版本独立。本地修改不递增发布版本。
 - **C04** 仓库：https://github.com/wang123good/jarvis；`origin` → `https://github.com/wang123good/jarvis.git`；主分支 `main`；项目根目录由脚本位置解析。
 

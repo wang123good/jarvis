@@ -109,7 +109,7 @@ def resolve(source: str, target: str, path_index, stem_index, all_index) -> tupl
     raw = target.strip()
     if raw.startswith("!"):
         raw = raw[1:]
-    raw = raw.split("|", 1)[0].split("#", 1)[0].strip().lstrip("/")
+    raw = raw.split("|", 1)[0].split("#", 1)[0].strip().rstrip("\\").lstrip("/")
     if not raw:
         return "self", source
     no_ext = raw[:-3] if raw.lower().endswith(".md") else raw
@@ -132,6 +132,9 @@ def resolve(source: str, target: str, path_index, stem_index, all_index) -> tupl
         return "resolved-note", matches[0]
     if len(matches) > 1:
         return "ambiguous-note", None
+    exact_attachment = sorted(set(all_index.get(raw.casefold(), [])))
+    if len(exact_attachment) == 1:
+        return "resolved-attachment", exact_attachment[0]
     attachment_matches = sorted(
         set(all_index.get(raw.casefold(), [])) | set(all_index.get(Path(raw).name.casefold(), []))
     )
@@ -146,6 +149,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--vault", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--raw-assets-folder", default="99 附件", help="Preserve raw documents; validate their links but not Brain note properties")
     args = parser.parse_args()
     vault = Path(args.vault).resolve()
     output = Path(args.output).resolve()
@@ -175,18 +179,23 @@ def main() -> int:
             all_index[Path(rel).name.casefold()].append(rel)
 
     properties, missing_core, invalid_fields, expired = [], [], [], []
+    raw_asset_markdown = []
     links, outbound = [], defaultdict(set)
     today = date.today().isoformat()
     for path, rel in zip(markdown_paths, md_rels):
         text = path.read_text(encoding="utf-8-sig")
         fm, body = split_frontmatter(text)
-        properties.append({"path": rel, "frontmatter": fm})
-        for key in CORE_FIELDS:
+        raw_asset = rel.startswith(args.raw_assets_folder.rstrip("/") + "/")
+        if raw_asset:
+            raw_asset_markdown.append(rel)
+        else:
+            properties.append({"path": rel, "frontmatter": fm})
+        for key in (() if raw_asset else CORE_FIELDS):
             if not fm.get(key):
                 missing_core.append({"path": rel, "field": key})
-        if fm.get("type") not in VALID_TYPES:
+        if not raw_asset and fm.get("type") not in VALID_TYPES:
             invalid_fields.append({"path": rel, "field": "type", "value": fm.get("type")})
-        if fm.get("status") not in VALID_STATUS:
+        if not raw_asset and fm.get("status") not in VALID_STATUS:
             invalid_fields.append({"path": rel, "field": "status", "value": fm.get("status")})
         review_after = fm.get("review_after")
         if fm.get("status") == "active" and isinstance(review_after, str) and review_after < today:
@@ -225,6 +234,7 @@ def main() -> int:
         and fm.get("type") not in {"index", "template", "task-summary", "conversation", "draft"}
         and not fm.get("source")
         and not fm.get("evidence")
+        and fm.get("evidence_prompt_waived") not in (True, "true")
     ]
     business_orphans = [
         path
@@ -246,6 +256,10 @@ def main() -> int:
         "vault": str(vault),
         "generated_at": date.today().isoformat(),
         "markdown_count": len(markdown_paths),
+        "link_check_scope": "Wikilinks outside code only; use native Obsidian unresolved output to inspect Markdown relative links and protected source-document dependencies",
+        "brain_note_count": len(properties),
+        "raw_asset_markdown_count": len(raw_asset_markdown),
+        "raw_asset_markdown": raw_asset_markdown,
         "type_counts": dict(
             sorted(
                 Counter(fm.get("type") for fm in fm_by_path.values()).items(),
