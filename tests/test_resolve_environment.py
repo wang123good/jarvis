@@ -81,6 +81,20 @@ class PortableEnvironmentTests(unittest.TestCase):
             self.resolve()
         self.assertFalse(local.exists())
 
+    def test_cli_missing_configuration_returns_next_action(self):
+        with patch.object(
+            env,
+            'resolve_environment',
+            side_effect=env.EnvironmentConfigError(
+                'Missing .local/environment.json; run setup_environment.py'
+            ),
+        ), contextlib.redirect_stdout(io.StringIO()) as output:
+            code = env.main([])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 2)
+        self.assertEqual(payload['status'], 'configuration_required')
+        self.assertIn('setup_environment.py', payload['next_action'])
+
     def test_invalid_json_is_preserved(self):
         local = self.root / '.local/environment.json'
         local.write_bytes(b'{invalid')

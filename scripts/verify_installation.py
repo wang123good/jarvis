@@ -63,7 +63,7 @@ def run_checks(out, run_id, connector_vault=None, environment_only=False):
     spec.loader.exec_module(reader)
     resolved = reader.resolve_environment(ROOT, connector_vault)
     defaults = json.loads((ROOT / 'config/defaults.json').read_text(encoding='utf-8'))
-    resources = ['agents/worker.md', 'templates/worker-work-package.md', 'scripts/verify_installation.py', 'AGENTS.md', 'config/defaults.json', 'config/environment.example.json', 'scripts/resolve_environment.py', 'templates/task.md', 'docs/operations.md', defaults['knowledge_pointer'], '架构方案/JARVIS 管家Agent职责定义 v0.1.md', 'scripts/read_profile.py', 'scripts/init_vault.py', 'scripts/brain_health.py', 'scripts/brain_eval.py', 'scripts/brain_qa_eval.py', 'docs/archive-index.md']
+    resources = ['agents/worker.md', 'templates/worker-work-package.md', 'scripts/verify_installation.py', 'AGENTS.md', 'config/defaults.json', 'config/environment.example.json', 'scripts/setup_environment.py', 'scripts/resolve_environment.py', 'templates/task.md', 'docs/operations.md', defaults['knowledge_pointer'], '架构方案/JARVIS 管家Agent职责定义 v0.1.md', 'scripts/read_profile.py', 'scripts/init_vault.py', 'scripts/brain_health.py', 'scripts/brain_eval.py', 'scripts/brain_qa_eval.py', 'docs/archive-index.md']
     resources += ['templates/vault/' + name + '.md' for name in
                   ['规则', '草稿', '日报', '周报', '决策', '任务总结', '任务契约', '业务对话', 'wiki主题']]
     resources += [

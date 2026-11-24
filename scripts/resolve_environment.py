@@ -51,7 +51,10 @@ def resolve_environment(project_root=ROOT, connector_vault=None):
     if pointer.get('environment_file') != local_rel or 'vault' in pointer:
         raise EnvironmentConfigError('Shared knowledge pointer must reference environment_file, not an absolute vault')
     if not local_path.is_file():
-        raise EnvironmentConfigError('Missing .local/environment.json; copy config/environment.example.json and set vault_root')
+        raise EnvironmentConfigError(
+            'Missing .local/environment.json; run python scripts/setup_environment.py '
+            '--connector-vault "<actual Obsidian vault path>"'
+        )
     local = read_object(local_path)
     if local.get('version') != 1:
         raise EnvironmentConfigError('Unsupported local environment version; expected 1')
@@ -138,7 +141,20 @@ def main(argv=None):
         if args.write_runtime_pointer:
             resolved['runtime_pointer'] = str(write_runtime_pointer(resolved))
     except EnvironmentConfigError as exc:
-        print(json.dumps({'ok': False, 'error': str(exc)}, ensure_ascii=False))
+        message = str(exc)
+        result = {
+            'ok': False,
+            'status': 'configuration_required'
+            if 'Missing .local/environment.json' in message
+            else 'configuration_invalid',
+            'error': message,
+        }
+        if result['status'] == 'configuration_required':
+            result['next_action'] = (
+                'python scripts/setup_environment.py '
+                '--connector-vault "<actual Obsidian vault path>"'
+            )
+        print(json.dumps(result, ensure_ascii=False))
         return 2
     print(json.dumps(resolved, ensure_ascii=False, indent=2))
     return 0

@@ -23,7 +23,7 @@ JARVIS 在本项目主会话中理解意图、维护任务契约、组织执行�
 | `agents/worker.md`、`templates/worker-work-package.md` | 有明确委派收益且宿主支持时，定义角色与本次工作包 |
 | `agents/knowledge-administrator.md`、`templates/knowledge-run-request.json` | 手动整理或任务契约已批准的验收后收尾；限定来源、目标、读写范围及预算，占位模板不能执行 |
 | `docs/user-profile.md`、`up.example.json` | 画像读取和安全维护；实际数据仅在根目录 `up.json`，不提交 Git |
-| `.local/environment.json`、`config/environment.example.json` | 本机绝对路径与可分发示例；实际配置不提交 Git |
+| `.local/environment.json`、`config/environment.example.json`、`scripts/setup_environment.py` | 本机绝对路径、可分发示例与首次配置入口；实际配置不提交 Git |
 | `.codex/obsidian-kb.json`、`scripts/resolve_environment.py` | 共享知识层级、统一路径解析；写库前核对连接实际路径，规则见 I01 |
 | `docs/environment.md` | 环境准备、现行目录、命名、模板、初始化及迁移 |
 
@@ -43,7 +43,13 @@ JARVIS 在本项目主会话中理解意图、维护任务契约、组织执行�
 
 ## 接入检查与回退
 
-在完成本机路径、知识库及真实 Skill 配置后，运行：
+首次接入先由 Obsidian 连接工具读取实际库根目录，再运行：
+
+```powershell
+python scripts/setup_environment.py --connector-vault "工具报告的知识库绝对路径"
+```
+
+该入口只写本机环境文件和本地解析指针，不改画像或共享配置。随后运行：
 
 ```powershell
 python scripts/verify_installation.py --environment-only --connector-vault "工具报告的知识库绝对路径"

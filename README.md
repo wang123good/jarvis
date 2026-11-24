@@ -12,7 +12,7 @@ Obsidian 承担本地中长期记忆大脑：保存项目知识、主题笔记�
 
 ![JARVIS 工作闭环：管家组织任务，知识库管理员按需整理，Obsidian 保存本地中长期记忆](docs/images/jarvis-workflow.png)
 
-当前发布版本：**V1.2.10**（2026-11-23）。版本信息见 [发布规则](docs/rules/release.md)。
+当前发布版本：**V1.2.11**（2026-11-24）。版本信息见 [发布规则](docs/rules/release.md)。
 
 ## 快速试跑
 
@@ -119,7 +119,13 @@ cd jarvis
 
 ### 2. 对齐本机配置
 
-本机绝对路径统一放在不提交 Git 的 `.local/environment.json`。首次使用时复制 [本机配置示例](config/environment.example.json)，填写实际 `vault_root`；完整步骤及写前连接校验见 [环境说明](docs/environment.md#共享配置与本机路径)。换电脑只改本机配置及宿主连接，不改共享目录层级。
+本机绝对路径统一放在不提交 Git 的 `.local/environment.json`。先在 Obsidian 中打开或创建知识库，再把连接工具报告的实际路径交给首次配置入口：
+
+```powershell
+python scripts/setup_environment.py --connector-vault "工具报告的知识库绝对路径"
+```
+
+该脚本创建或校验本机环境文件、生成只读检索所需的本地解析指针，并且不修改 `up.json`。已有不同 vault 时默认拒绝覆盖，只有明确需要更换并传入 `--replace` 才更新。仍可参考 [本机配置示例](config/environment.example.json) 手工维护；完整步骤及写前连接校验见 [环境说明](docs/environment.md#共享配置与本机路径)。换电脑只改本机配置及宿主连接，不改共享目录层级。
 
 共享配置分工：
 

@@ -22,6 +22,7 @@
 
 ```powershell
 python scripts/read_profile.py
+python scripts/setup_environment.py --connector-vault "工具报告的知识库绝对路径"
 python scripts/resolve_environment.py
 python scripts/init_vault.py --connector-vault "工具报告的知识库绝对路径"
 python scripts/verify_installation.py --environment-only --connector-vault "工具报告的知识库绝对路径"

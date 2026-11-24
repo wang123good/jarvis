@@ -10,16 +10,15 @@
 
 ## 共享配置与本机路径
 
-唯一的本机路径入口为 `.local/environment.json`，整个 `.local/` 已被 Git 忽略。仓库分发 `config/environment.example.json`，示例中的占位值必须替换，不能直接用于执行。首次创建（已有配置不覆盖）：
+唯一的本机路径入口为 `.local/environment.json`，整个 `.local/` 已被 Git 忽略。先在 Obsidian 中打开或创建知识库，再使用当前连接工具实际报告的知识库根目录完成首次配置：
 
 ```powershell
-New-Item -ItemType Directory -Force .local | Out-Null
-if (-not (Test-Path -LiteralPath .local/environment.json)) {
-    Copy-Item config/environment.example.json .local/environment.json
-}
+python scripts/setup_environment.py --connector-vault "工具报告的知识库绝对路径"
 ```
 
-编辑本机文件的 `vault_root`，填写已创建并接入 Obsidian 的知识库绝对路径。以下路径仅为示例，不是默认位置：
+脚本会校验目录、共享层级与项目相对路径，原子写入 `.local/environment.json`，并生成 `.local/obsidian-kb.resolved.json`。它不修改 `up.json`；已有不同路径时拒绝覆盖，用户明确要求更换后再使用 `--replace`。成功结果中的 `next` 给出下一步安装检查命令。
+
+仓库同时分发 `config/environment.example.json`，供人工审查或无法运行脚本时使用。示例中的占位值必须替换，不能直接用于执行；以下路径仅为示例，不是默认位置：
 
 ```json
 {
@@ -45,7 +44,7 @@ python scripts/verify_installation.py --environment-only --connector-vault "工�
 
 第一条只解析配置，未核验连接时输出 `write_ready: false`。写库前须通过第二条；目标不存在或两侧路径不同会返回失败。校验只代表当次检查，写入前仍需核对目标；它不是系统锁，也不改变宿主工具权限。初始化命令内置同一校验；其他知识库工具由管家按 AGENTS.md I01 执行写前检查。
 
-需要旧版 `obsidian-kb` 格式时，可加 `--write-runtime-pointer`，在 `.local/obsidian-kb.resolved.json` 生成本机解析结果，不改共享配置。外部检索工具必须明确支持传入这份配置。
+需要旧版 `obsidian-kb` 格式时，可加 `--write-runtime-pointer`，在 `.local/obsidian-kb.resolved.json` 生成本机解析结果，不改共享配置。外部检索工具必须明确支持传入这份配置。当前这台机器的已安装 `obsidian-kb` Skill 已实测可解析 `.codex/obsidian-kb.json` 的 `environment_file` 引用；Skill 升级后若再次提示缺少 vault，先重新运行首次配置入口和 `doctor`，不要改把绝对路径写入共享配置或画像。
 
 完整接入检查使用仓库查询入口验证真实注册表及项目约定的检索：
 
