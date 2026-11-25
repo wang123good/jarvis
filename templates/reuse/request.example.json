@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "task_id": "REPLACE_WITH_TASK_ID",
+  "goal": "Describe the actual new deliverable",
+  "failure_condition": "Describe when actual reuse must be reported unproven",
+  "limitations": "Non-blind comparison; no causal or cost claim; human review pending",
+  "sources": [
+    {
+      "id": "S1",
+      "path": "project-relative-to-vault/source.md",
+      "status": "review",
+      "snapshot": {"file": "sources/source.md", "sha256": "REPLACE_WITH_SHA256"},
+      "revalidation": {"file": "checks/source-review.md", "sha256": "REPLACE_WITH_SHA256"},
+      "applicability": "Specific claim independently checked against current facts",
+      "invalid_if": "Conditions under which this claim stops applying"
+    }
+  ],
+  "actions": [
+    {
+      "source_id": "S1",
+      "decision_change": "Describe the check or decision changed by this source",
+      "outcome": "planned",
+      "evidence": {"file": "live-run/command.json", "sha256": "REPLACE_WITH_SHA256"},
+      "artifact": {"file": "live-run/diagnosis.md", "sha256": "REPLACE_WITH_SHA256"},
+      "result": "Replace with actual observation after execution"
+    }
+  ]
+}

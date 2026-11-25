@@ -12,7 +12,7 @@ Obsidian 承担本地中长期记忆大脑：保存项目知识、主题笔记�
 
 ![JARVIS 工作闭环：管家组织任务，知识库管理员按需整理，Obsidian 保存本地中长期记忆](docs/images/jarvis-workflow.png)
 
-当前发布版本：**V1.4.0**（2026-11-25）。版本信息见 [发布规则](docs/rules/release.md)。
+当前发布版本：**V1.4.1**（2026-11-25）。版本信息见 [发布规则](docs/rules/release.md)。
 
 ## 快速试跑
 
