@@ -52,28 +52,17 @@ def create_file_exclusive(source: Path, target: Path, created: list[str], preser
         preserved.append(str(target))
 
 
-def initialize(vault):
-    vault = Path(vault).expanduser().resolve()
-    vault.mkdir(parents=True, exist_ok=True)
+def planned_folders():
+    year = date.today().year
+    return [*FOLDERS, f'02 工作记录/日报/{year}', f'02 工作记录/周报/{year}']
 
-    created_dirs = []
-    folders = [*FOLDERS, f'02 工作记录/日报/{date.today().year}',
-               f'02 工作记录/周报/{date.today().year}']
-    for folder in folders:
-        target = vault / folder
-        if not target.exists():
-            created_dirs.append(str(target))
-        target.mkdir(parents=True, exist_ok=True)
 
-    created, preserved = [], []
+def seed_files():
     project_root = Path(__file__).resolve().parents[1]
     template_root = project_root / 'templates/vault'
     templates = sorted(template_root.glob('*.md'))
     if not templates:
         raise RuntimeError(f'No vault templates found in: {template_root}')
-    for source in templates:
-        create_file_exclusive(source, vault / '04 模板' / source.name, created, preserved)
-
     seed_root = project_root / 'templates/brain'
     if not seed_root.is_dir():
         raise RuntimeError(f'Missing Brain v1 seed directory: {seed_root}')
@@ -84,9 +73,26 @@ def initialize(vault):
     )
     if not seeds:
         raise RuntimeError(f'No Brain v1 seed files found in: {seed_root}')
-    for source in seeds:
-        relative = source.relative_to(seed_root)
-        create_file_exclusive(source, vault / relative, created, preserved)
+    return [(source, Path('04 模板') / source.name) for source in templates] + [
+        (source, source.relative_to(seed_root)) for source in seeds]
+
+
+def initialize(vault):
+    from resolve_environment import relative_to
+
+    vault = Path(vault).expanduser().resolve()
+    seeds = seed_files()
+    folders = [relative_to(vault, folder, 'Brain folder') for folder in planned_folders()]
+    files = [(source, relative_to(vault, str(relative), 'Brain seed')) for source, relative in seeds]
+    vault.mkdir(parents=True, exist_ok=True)
+    created_dirs = []
+    for target in folders:
+        if not target.exists():
+            created_dirs.append(str(target))
+        target.mkdir(parents=True, exist_ok=True)
+    created, preserved = [], []
+    for source, target in files:
+        create_file_exclusive(source, target, created, preserved)
 
     return {
         'vault': str(vault),

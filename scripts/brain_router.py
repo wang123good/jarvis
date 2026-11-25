@@ -188,6 +188,19 @@ def validate_registry(config: dict, vault: Path | None = None) -> dict:
     return config
 
 
+def vault_router_file(project_root: Path, vault: Path) -> Path:
+    import hashlib
+    import os
+
+    key = hashlib.sha256(os.path.normcase(str(vault)).encode()).hexdigest()
+    return project_root / ".local" / "brain-router" / (key + ".json")
+
+
+def router_config_path(environment: dict) -> Path:
+    local = vault_router_file(Path(environment["project_root"]), Path(environment["vault_root"]))
+    return local if local.is_file() else Path(environment["knowledge_pointer"])
+
+
 def load_registry(path: Path, vault: Path | None = None) -> dict:
     try:
         config = read_object(path)
@@ -942,7 +955,7 @@ def main(argv=None) -> int:
         if args.config:
             config_path = Path(args.config).expanduser().resolve()
         else:
-            config_path = Path(environment["knowledge_pointer"])
+            config_path = router_config_path(environment)
         config = load_registry(config_path, vault)
         if args.command == "project":
             pack = build_project_context(config, vault, args.query, args.limit)

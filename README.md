@@ -12,7 +12,7 @@ Obsidian 承担本地中长期记忆大脑：保存项目知识、主题笔记�
 
 ![JARVIS 工作闭环：管家组织任务，知识库管理员按需整理，Obsidian 保存本地中长期记忆](docs/images/jarvis-workflow.png)
 
-当前发布版本：**V1.4.1**（2026-11-25）。版本信息见 [发布规则](docs/rules/release.md)。
+当前发布版本：**V1.4.2**（2026-11-25）。版本信息见 [发布规则](docs/rules/release.md)。
 
 ## 快速试跑
 
@@ -115,6 +115,8 @@ Brain v1 是 JARVIS 的本地长期记忆。Markdown 正文与扁平属性（fro
 ### 1. 准备环境
 
 Windows 首次使用、环境依赖和知识库目录见 [环境说明](docs/environment.md)。
+
+在 Codex 中打开本项目后，JARVIS 会先引导称呼、选库、预览和批准配置改动，再展示用法并确认激活。详见 [首次对话引导](docs/onboarding.md)。
 
 需要能够读取项目指令和本地文件的 Codex 环境。使用知识记忆能力时，还需准备 Obsidian 知识库及实际可用的检索工具；使用临时 Worker 时，宿主需提供相应 Agent 工具。Python 用于运行仓库中的辅助检查脚本。
 
