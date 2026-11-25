@@ -1,0 +1,18 @@
+{
+  "target": "03 wiki/综合/已批准主题.md",
+  "title": "由模型阅读来源后填写",
+  "topic": "stable-topic-id",
+  "generator": "active-session-llm",
+  "model_run": "真实活动会话与轮次定位",
+  "origin": "qa",
+  "question": "有复用价值的实际问题",
+  "reuse_reason": "为何值得形成主题候选",
+  "claims": [
+    {"text": "模型跨来源综合结论", "basis": "synthesis", "evidence": [
+      {"source": "environment-guide", "quote": "替换为该来源的准确原文"},
+      {"source": "environment-code", "quote": "替换为该来源的准确原文"}
+    ]}
+  ],
+  "conflicts": ["逐条说明来源分歧及采用依据；没有则空数组"],
+  "gaps": ["尚未验证或无法由本次来源回答的内容"]
+}

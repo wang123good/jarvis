@@ -12,7 +12,7 @@ Obsidian 承担本地中长期记忆大脑：保存项目知识、主题笔记�
 
 ![JARVIS 工作闭环：管家组织任务，知识库管理员按需整理，Obsidian 保存本地中长期记忆](docs/images/jarvis-workflow.png)
 
-当前发布版本：**V1.3.1**（2026-11-25）。版本信息见 [发布规则](docs/rules/release.md)。
+当前发布版本：**V1.4.0**（2026-11-25）。版本信息见 [发布规则](docs/rules/release.md)。
 
 ## 快速试跑
 
@@ -64,6 +64,8 @@ Obsidian 承担本地中长期记忆大脑：保存项目知识、主题笔记�
 已批准的多步本地任务可采用 [长路径执行模式](docs/task-loop.md)。JARVIS 连续执行和修复，本地运行器记录每次尝试、验收证据和续作位置。
 
 ## Obsidian Brain v1
+
+本地增量能力 **Brain V1.1：LLM Wiki** 提供来源版本登记、由活动模型生成的证据主题候选、差异预览、基线保护应用及来源变化复审。[使用、架构与能力对照](docs/brain-wiki.md)。新综合保持 review，人工验收与技术自检分开；Brain 能力版本独立于项目发布号。
 
 Brain v1 是 JARVIS 的本地长期记忆。Markdown 正文与扁平属性（frontmatter）保存笔记、来源、状态和复审日期。Obsidian 提供浏览与编辑界面，首页、主题索引和 Bases 帮助定位同一批笔记。当前会话处理即时上下文，JARVIS 按任务需要检索跨会话知识。
 

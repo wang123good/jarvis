@@ -1,0 +1,11 @@
+{
+  "task_id": "APPROVED-TASK-ID",
+  "project": "jarvis",
+  "approval": "具体来源、目标、内容写入授权定位",
+  "vault_fingerprint": "REPLACE_WITH_RESOLVED_VAULT_FINGERPRINT",
+  "targets": ["03 wiki/综合/已批准主题.md"],
+  "sources": [
+    {"id": "environment-guide", "root": "repo", "path": "docs/environment.md", "kind": "original", "sha256": "REPLACE_WITH_FILE_SHA256"},
+    {"id": "environment-code", "root": "repo", "path": "scripts/resolve_environment.py", "kind": "original", "sha256": "REPLACE_WITH_FILE_SHA256"}
+  ]
+}
