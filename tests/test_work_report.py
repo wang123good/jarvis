@@ -10,6 +10,9 @@ from tempfile import TemporaryDirectory
 import unittest
 
 
+from environment_isolation import configure_fixture
+
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -17,8 +20,9 @@ class WorkReportTests(unittest.TestCase):
     def setUp(self):
         temp = TemporaryDirectory()
         self.addCleanup(temp.cleanup)
-        self.project = Path(temp.name)
-        self.vault = self.project / 'vault'
+        self.project = Path(temp.name) / 'project'
+        self.project.mkdir()
+        self.vault = Path(temp.name) / 'vault'
         self.summaries = self.vault / '02 工作记录/任务总结/JARVIS'
         self.summaries.mkdir(parents=True)
         for name in ('scripts', 'config', '.codex', '.local'):
@@ -27,9 +31,7 @@ class WorkReportTests(unittest.TestCase):
             shutil.copyfile(ROOT / f'scripts/{name}.py', self.project / f'scripts/{name}.py')
         for name in ('config/defaults.json', '.codex/obsidian-kb.json'):
             shutil.copyfile(ROOT / name, self.project / name)
-        (self.project / '.local/environment.json').write_text(
-            json.dumps({'version': 1, 'vault_root': str(self.vault)}), encoding='utf-8'
-        )
+        configure_fixture(self.project, self.vault)
 
     def note(self, name, dates, project='JARVIS', status='archived'):
         path = self.summaries / f'{name}.md'

@@ -193,7 +193,7 @@ def vault_router_file(project_root: Path, vault: Path) -> Path:
     import os
 
     key = hashlib.sha256(os.path.normcase(str(vault)).encode()).hexdigest()
-    return project_root / ".local" / "brain-router" / (key + ".json")
+    return relative_to(project_root, f".local/brain-router/{key}.json", "local Router registry")
 
 
 def router_config_path(environment: dict) -> Path:
@@ -914,6 +914,7 @@ def common_parser(name: str) -> argparse.ArgumentParser:
         default="",
         help="Explicit project pointer; defaults to the resolved project pointer.",
     )
+    parser.add_argument("--connector-vault", help="Actual vault root reported by an external connector.")
     parser.add_argument("--query", default="", help="Concise task goal and key terms.")
     parser.add_argument("--limit", type=int, help="Maximum Context Pack results.")
     return parser
@@ -924,6 +925,7 @@ def build_parser() -> argparse.ArgumentParser:
     commands = parser.add_subparsers(dest="command", required=True)
     check = commands.add_parser("check-config", help="Validate registry and policy.")
     check.add_argument("--config", default="")
+    check.add_argument("--connector-vault")
     commands.add_parser(
         "project",
         parents=[common_parser("project")],
@@ -950,7 +952,7 @@ def main(argv=None) -> int:
     try:
         from resolve_environment import resolve_environment
 
-        environment = resolve_environment()
+        environment = resolve_environment(connector_vault=args.connector_vault)
         vault = Path(environment["vault_root"])
         if args.config:
             config_path = Path(args.config).expanduser().resolve()

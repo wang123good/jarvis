@@ -75,7 +75,7 @@ class SetupEnvironmentTests(unittest.TestCase):
             (self.root / ".local/obsidian-kb.resolved.json").read_text(encoding="utf-8")
         )
         self.assertEqual(result["status"], "created")
-        self.assertEqual(Path(environment["vault_root"]), self.vault)
+        self.assertEqual(Path(environment["obsidian"]["vault_root"]), self.vault)
         self.assertEqual(Path(runtime["vault"]), self.vault)
         self.assertEqual(profile.read_bytes(), before)
         self.assertFalse(result["profile_modified"])
@@ -87,33 +87,26 @@ class SetupEnvironmentTests(unittest.TestCase):
         self.assertEqual(first["status"], "created")
         self.assertEqual(second["status"], "already_configured")
 
-    def test_environment_cli_needs_no_connector_and_stores_no_duplicate_vault(self):
+    def test_legacy_preview_and_confirmation_preserve_settings(self):
+        existing = {'version': 1, 'vault_root': 'old', 'persona': {'enabled': False}, 'custom': [1, 2]}
+        self.save('.local/environment.json', existing)
         with patch.dict(os.environ, {setup.reader.VAULT_ENV: str(self.vault)}):
-            with contextlib.redirect_stdout(io.StringIO()):
-                with patch.object(setup, 'initialize', side_effect=lambda root, dest, **kw: setup.configure(root, dest, **kw)):
-                    self.assertEqual(setup.main([], self.root), 0)
-            local = json.loads((self.root / '.local/environment.json').read_text())
-            self.assertNotIn('vault_root', local)
-            self.assertTrue(local['persona']['enabled'])
-            with self.assertRaisesRegex(setup.SetupError, 'another vault'):
-                setup.configure(self.root, str(self.base))
-
-    def test_environment_migrates_invalid_legacy_path_preserving_settings(self):
-        configured = {'version': 1, 'vault_root': 'invalid-relative-old',
-                      'skill_roots': [], 'persona': {'enabled': False}, 'custom': [1, 2]}
-        self.save('.local/environment.json', configured)
-        with patch.dict(os.environ, {setup.reader.VAULT_ENV: str(self.vault)}):
-            result = setup.configure(self.root, str(self.vault))
-        actual = json.loads((self.root / '.local/environment.json').read_text())
-        configured.pop('vault_root')
-        self.assertEqual(actual, configured)
+            preview = setup.preview_migration(self.root)
+        target = preview['vault_root']
+        token = preview['confirmation']
+        result = setup.configure(self.root, target, migration=token)
         self.assertEqual(result['status'], 'migrated')
+        actual = setup.reader.instance_settings(self.root)
+        self.assertEqual(actual['persona'], existing['persona'])
+        self.assertEqual(actual['custom'], existing['custom'])
+        self.assertEqual(setup.configure(self.root, target, migration=token)['instance_id'],
+                         result['instance_id'])
 
     def test_new_install_enables_persona_and_preserves_it_and_unknown_fields(self):
         setup.configure(self.root, str(self.vault))
         path = self.root / '.local/environment.json'
         configured = json.loads(path.read_text(encoding='utf-8'))
-        self.assertEqual(configured['persona'], {'enabled': True})
+        self.assertEqual(configured['persona'], {'enabled': True, 'module': 'steady'})
         configured['persona']['enabled'] = False
         configured['custom'] = {'keep': ['user setting']}
         path.write_text(json.dumps(configured), encoding='utf-8')
@@ -128,9 +121,10 @@ class SetupEnvironmentTests(unittest.TestCase):
         configured = {'version': 1, 'vault_root': str(self.vault), 'skill_roots': [],
                       'custom': {'keep': 1}}
         self.save('.local/environment.json', configured)
-        setup.configure(self.root, str(self.vault))
-        actual = json.loads((self.root / '.local/environment.json').read_text(encoding='utf-8'))
-        self.assertEqual(actual, configured)
+        preview = setup.preview_migration(self.root, str(self.vault))
+        setup.configure(self.root, str(self.vault), migration=preview['confirmation'])
+        actual = setup.reader.instance_settings(self.root)
+        self.assertEqual(actual['custom'], configured['custom'])
         self.assertFalse(setup.reader.resolve_environment(self.root)['persona']['enabled'])
 
     def test_invalid_persona_is_rejected_and_original_preserved(self):
@@ -139,8 +133,9 @@ class SetupEnvironmentTests(unittest.TestCase):
         self.save('.local/environment.json', configured)
         path = self.root / '.local/environment.json'
         before = path.read_bytes()
+        preview = setup.preview_migration(self.root, str(self.vault))
         with self.assertRaises(setup.reader.EnvironmentConfigError):
-            setup.configure(self.root, str(self.vault))
+            setup.configure(self.root, str(self.vault), migration=preview['confirmation'])
         self.assertEqual(path.read_bytes(), before)
 
     def test_different_path_requires_explicit_replace(self):
@@ -152,7 +147,7 @@ class SetupEnvironmentTests(unittest.TestCase):
         configured = json.loads(
             (self.root / ".local/environment.json").read_text(encoding="utf-8")
         )
-        self.assertEqual(Path(configured["vault_root"]), self.vault)
+        self.assertEqual(Path(configured["obsidian"]["vault_root"]), self.vault)
 
     def test_explicit_replace_preserves_skill_roots(self):
         setup.configure(self.root, str(self.vault))
@@ -167,7 +162,7 @@ class SetupEnvironmentTests(unittest.TestCase):
 
         configured = json.loads(environment_path.read_text(encoding="utf-8"))
         self.assertEqual(result["status"], "updated")
-        self.assertEqual(Path(configured["vault_root"]), other)
+        self.assertEqual(Path(configured["obsidian"]["vault_root"]), other)
         self.assertEqual(configured["skill_roots"], [str(self.base / "skills")])
 
     def test_missing_or_relative_vault_is_rejected_without_writes(self):
@@ -192,23 +187,18 @@ class SetupEnvironmentTests(unittest.TestCase):
                 "layers": {"project": ["project"]},
             },
         )
+        preview = setup.preview_migration(self.root, str(self.vault))
         with self.assertRaises(setup.reader.EnvironmentConfigError):
-            setup.configure(self.root, str(self.vault), replace=True)
+            setup.configure(self.root, str(self.vault), migration=preview['confirmation'])
         self.assertEqual(environment_path.read_bytes(), original)
 
-    def test_replace_can_rebuild_invalid_environment(self):
-        environment_path = self.root / ".local/environment.json"
-        environment_path.parent.mkdir(parents=True)
-        environment_path.write_bytes(b"{invalid")
-        with self.assertRaisesRegex(setup.SetupError, "--replace"):
-            setup.configure(self.root, str(self.vault))
-        self.assertEqual(environment_path.read_bytes(), b"{invalid")
-
-        result = setup.configure(self.root, str(self.vault), replace=True)
-
-        configured = json.loads(environment_path.read_text(encoding="utf-8"))
-        self.assertEqual(result["status"], "updated")
-        self.assertEqual(Path(configured["vault_root"]), self.vault)
+    def test_invalid_configuration_is_preserved(self):
+        path = self.root / ".local/environment.json"
+        path.parent.mkdir(parents=True)
+        path.write_bytes(b"{invalid")
+        with self.assertRaises(setup.reader.EnvironmentConfigError):
+            setup.configure(self.root, str(self.vault), replace=True)
+        self.assertEqual(path.read_bytes(), b"{invalid")
 
     def test_cli_returns_json_failure(self):
         with contextlib.redirect_stdout(io.StringIO()) as output:

@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "id": "enthusiastic",
-  "version": "1.0.0",
-  "name": "热情引路者",
+  "version": "2.0.0",
+  "name": "热情好事",
   "dimensions": {
     "direct": 0.7,
-    "warmth": 0.7,
-    "humor": 0.3,
-    "inquiry": 0.65,
-    "challenge": 0.4,
+    "warmth": 0.85,
+    "humor": 0.5,
+    "inquiry": 0.45,
+    "challenge": 0.45,
     "energy": 0.95,
     "initiative": 0.95,
     "guidance": 0.95

@@ -6,7 +6,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 import experience_registry as registry
 from task_knowledge import inspect_skill
-from environment_isolation import isolate_vault_environment
+from environment_isolation import configure_fixture, isolate_vault_environment
 
 
 class RegistryTests(unittest.TestCase):
@@ -16,16 +16,18 @@ class RegistryTests(unittest.TestCase):
     def test_registry_lifecycle(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp).resolve()
-            notes = root / 'notes'
+            vault = root / 'vault'
+            vault.mkdir()
+            root = root / 'project'
+            notes = vault / 'notes'
             notes.mkdir()
             evidence = notes / 'result.md'
             evidence.write_bytes(b'fixture evidence')
             skill = root / '.agents/skills/example/SKILL.md'
             skill.parent.mkdir(parents=True)
             skill.write_bytes(b'fixture skill')
-            path = root / 'registry/file.json'
-            env = {'project_root': str(root), 'vault_root': str(root), 'vault_exists': True,
-                   'connector_checked': True, 'registry': str(path), 'skill_roots': [],
+            path = vault / 'registry/file.json'
+            env = {**configure_fixture(root, vault), 'registry': str(path), 'skill_roots': [],
                    'project_knowledge_root': str(notes), 'agreement': str(notes / 'agreement.md'),
                    'resolved_pointer': {'project': {'id': 'fixture'}}}
 
@@ -34,7 +36,7 @@ class RegistryTests(unittest.TestCase):
 
             self.assertEqual(query()['status'], 'missing')
             with self.assertRaises(ValueError):
-                registry.initialize({**env, 'connector_checked': False})
+                registry.initialize({**env, 'write_ready': False})
             baseline = registry.initialize(env)['registry_sha256']
             self.assertEqual(query()['registered'], 0)
             with self.assertRaises(FileExistsError):

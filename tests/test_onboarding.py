@@ -25,21 +25,12 @@ class OnboardingTests(unittest.TestCase):
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / rel, target)
         self.vault = self.base / '个人知识库'
-        self.selected = None
         self.addCleanup(patch.stopall)
-        patch.object(onboarding.environment, 'vault_environment', side_effect=lambda: (
-            self.selected, 'user_environment' if self.selected else 'legacy_local_file')).start()
-        patch.object(onboarding.environment, 'user_vault_environment', side_effect=lambda: self.selected).start()
         patch.dict(onboarding.os.environ, {'APPDATA': str(self.base)}).start()
         onboarding.os.environ.pop(onboarding.environment.VAULT_ENV, None)
         patch.object(onboarding, 'fixed_drives', return_value=[]).start()
         patch.object(onboarding.Path, 'home', return_value=self.base).start()
         patch.object(onboarding, 'software', return_value={'executable': 'fixture/Obsidian.exe'}).start()
-        patch.object(onboarding.setup_environment, 'initialize', side_effect=self.configure).start()
-
-    def configure(self, root, destination):
-        self.selected = destination
-        return onboarding.setup_environment.configure(root, destination)
 
     def run_command(self, *args, expected=0):
         stream = io.StringIO()
@@ -165,7 +156,7 @@ class OnboardingTests(unittest.TestCase):
         self.assertEqual(list(self.vault.iterdir()), [])
         self.run_command('select', 'existing', str(self.vault), '--connector-vault',
                          str(self.base), expected=2)
-        self.assertIsNone(self.selected)
+        self.assertFalse((self.root / '.local/environment.json').exists())
 
 
 if __name__ == '__main__':

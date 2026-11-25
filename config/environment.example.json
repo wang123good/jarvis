@@ -1,7 +1,14 @@
 {
-  "version": 1,
+  "version": 2,
+  "instance_id": "<generated UUID>",
+  "project_root": "<absolute checkout path>",
+  "obsidian": {
+    "vault_root": "<absolute vault path>",
+    "connector": {"type": "filesystem"}
+  },
   "skill_roots": [],
   "persona": {
-    "enabled": true
+    "enabled": true,
+    "module": "steady"
   }
 }

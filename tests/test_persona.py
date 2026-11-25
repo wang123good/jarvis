@@ -81,18 +81,18 @@ class PersonaTests(unittest.TestCase):
         self.assertFalse(self.run_policy(persist=True)['enabled'])
         self.assertFalse(path.exists())
 
-    def test_six_real_modules_are_valid_and_replaceable(self):
+    def test_five_real_modules_are_valid_and_replaceable(self):
         modules, diagnostics = persona.load_modules(self.root)
-        self.assertEqual(len(modules), 6)
+        self.assertEqual(len(modules), 5)
         self.assertEqual(diagnostics, [])
-        changed = modules['witty']
+        changed = modules['enthusiastic']
         changed['version'] = '1.1.0'
         changed['dimensions']['humor'] = .75
         changed['dimensions']['guidance'] = .7
-        self.save('config/personas/witty.json', changed)
+        self.save('config/personas/enthusiastic.json', changed)
         self.profile([preference('适度幽默')])
         result = self.run_policy()
-        self.assertEqual(result['module_id'], 'witty')
+        self.assertEqual(result['module_id'], 'enthusiastic')
         self.assertEqual(result['module_version'], '1.1.0')
         self.assertEqual(result['behavior']['dimensions']['guidance'], .7)
 
@@ -114,9 +114,9 @@ class PersonaTests(unittest.TestCase):
         (self.root / 'config/personas/steady.json').unlink()
         self.assertTrue(persona.load_modules(self.root)[1])
 
-    def test_automatic_matching_all_six_without_a_questionnaire(self):
-        for statement, expected in [('语气沉稳', 'steady'), ('适度幽默', 'witty'),
-                                    ('温暖一点', 'warm'), ('挑战我的假设', 'candid'),
+    def test_automatic_matching_all_five_without_a_questionnaire(self):
+        for statement, expected in [('语气沉稳', 'steady'), ('直接简洁', 'professional'),
+                                    ('挑战我的假设', 'bold'),
                                     ('探索式提问', 'curious'), ('热情主动，多些引导', 'enthusiastic')]:
             with self.subTest(statement=statement):
                 self.profile([preference(statement)])
@@ -124,6 +124,21 @@ class PersonaTests(unittest.TestCase):
                 self.assertEqual(result['module_id'], expected)
                 self.assertTrue(result['reasons'])
                 self.assertEqual(result['reasons'][0]['preference_ids'], ['p1'])
+
+    def test_fixed_modules_have_distinct_styles_and_override_auto_matching(self):
+        self.profile([preference('挑战我的假设')])
+        styles = set()
+        for module_id in persona.NAMES:
+            self.save('.local/environment.json',
+                      {'version': 1, 'persona': {'enabled': True, 'module': module_id}})
+            result = self.run_policy(context='focused', persist=True)
+            self.assertEqual(result['module_id'], module_id)
+            self.assertEqual(result['selection'], module_id)
+            styles.add(result['behavior']['style'])
+            cautious = self.run_policy(context='cautious')['behavior']
+            self.assertNotEqual(result['behavior']['context_cue'], cautious['context_cue'])
+            self.assertEqual(result['behavior']['style'], cautious['style'])
+        self.assertEqual(len(styles), 5)
 
     def test_candidates_other_projects_paused_and_revoked_do_not_apply(self):
         self.profile([preference('热情主动', 'paused', status='paused'),
@@ -158,7 +173,7 @@ class PersonaTests(unittest.TestCase):
         result = self.run_policy(persist=True)
         self.assertEqual(result['adaptation']['dimensions']['energy'], .2)
         self.assertEqual(result['adaptation']['dimensions']['initiative'], .2)
-        self.assertEqual(result['module_id'], 'steady')
+        self.assertEqual(result['module_id'], 'professional')
 
     def test_explicit_same_day_approved_correction_takes_priority(self):
         self.profile([preference('热情主动')])

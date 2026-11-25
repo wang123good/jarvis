@@ -38,7 +38,7 @@ def proposal(environment, template_name, title, destination, source=None):
         raise ValueError('Choose a Markdown business-note destination inside the approved vault folders')
     if target.exists():
         raise ValueError('Target already exists; user content will not be overwritten')
-    template_path = vault / '04 模板' / (template_name + '.md')
+    template_path = relative_to(vault, f'04 模板/{template_name}.md', 'note template')
     raw = template_path.read_bytes()
     text = render_note(raw.decode('utf-8-sig'), title, KINDS[template_name], source)
     value = {'target': str(target), 'template': str(template_path),
@@ -63,7 +63,9 @@ def main(argv=None):
             require_write_ready(environment)
             if args.write != value['baseline']:
                 raise ValueError('Preview or template changed; request a new preview')
-            target = Path(value['target'])
+            target = relative_to(Path(environment['vault_root']), args.path, 'note destination')
+            if target != Path(value['target']):
+                raise ValueError('Note destination was redirected after preview')
             target.parent.mkdir(parents=True, exist_ok=True)
             with target.open('x', encoding='utf-8') as stream:
                 stream.write(value['markdown'])

@@ -14,22 +14,35 @@ import re
 from uuid import uuid4
 
 import read_profile
-from resolve_environment import validate_persona
+from resolve_environment import PERSONA_NAMES as NAMES, instance_settings, relative_to, validate_persona
 
 ROOT = Path(__file__).resolve().parents[1]
 ENGINE = '1.0.0'
 STATE_KEYS = {'schema_version', 'engine', 'module_id', 'dimensions', 'input_hash',
               'modules_hash', 'approved_at', 'preference_ids', 'pending', 'pending_count'}
 DIMENSIONS = ('direct', 'warmth', 'humor', 'inquiry', 'challenge', 'energy', 'initiative', 'guidance')
-NAMES = {'steady': '沉稳管家', 'witty': '机智搭档', 'warm': '温暖同行者',
-         'candid': '坦率参谋', 'curious': '好奇探索者', 'enthusiastic': '热情引路者'}
 VECTORS = {
-    'steady': (.8, .5, .1, .3, .4, .3, .6, .5),
-    'witty': (.8, .6, .9, .3, .4, .6, .6, .4),
-    'warm': (.5, .95, .1, .3, .2, .4, .6, .6),
-    'candid': (.95, .3, .1, .4, .95, .4, .7, .4),
-    'curious': (.6, .5, .2, .95, .6, .5, .8, .6),
-    'enthusiastic': (.7, .7, .3, .65, .4, .95, .95, .95),
+    'steady': (.8, .8, .1, .3, .4, .2, .5, .65),
+    'enthusiastic': (.7, .85, .5, .45, .45, .95, .95, .95),
+    'professional': (.95, .35, .05, .15, .6, .3, .2, .25),
+    'curious': (.65, .6, .3, .95, .55, .55, .8, .7),
+    'bold': (.9, .35, .15, .35, .99, .75, .85, .5),
+}
+# Response moves survive contextual tone adjustments.
+STYLES = {
+    'steady': '耐心说明现状，按顺序给步骤，解释先做哪一步及如何确认结果。适量展开。',
+    'enthusiastic': '像熟悉的同事一样自然接话，主动给出自己的判断，再给一个马上能试的主意。严肃时收敛熟络和玩笑。',
+    'professional': '结论先行，用准确的领域术语交代决定性依据和适用条件。短句优先，证据不足时点名缺项。',
+    'curious': '先给结论，再条理清楚地交代核对过程和疑点。认真碎碎念，偶尔顺口分享一个有用的小发现，可展开细节。',
+    'bold': '有依据时挑战默认方案，明确押注方向和取舍，提出快速验证办法及停止条件。',
+}
+CONTEXT_CUES = {
+    'calm': '平实表达。',
+    'focused': '围绕当前目标，给可执行步骤。',
+    'curious': '指出值得探究的未知点。',
+    'pleased': '用轻快语气回应已确认的进展。',
+    'concerned': '承接用户明确表达的困难，降低下一步负担。',
+    'cautious': '优先交代证据边界、风险与停止条件。',
 }
 CONTEXTS = {'calm': '平和', 'focused': '专注', 'curious': '好奇',
             'pleased': '欣喜', 'concerned': '关切', 'cautious': '审慎'}
@@ -187,8 +200,8 @@ def load_state(path):
         state = json.loads(before.decode('utf-8-sig'))
         if (not isinstance(state, dict) or set(state) != STATE_KEYS
                 or type(state.get('schema_version')) is not int or state.get('schema_version') != 1
-                or state.get('module_id') not in NAMES
-                or state.get('pending') not in (*NAMES, None)
+                or state.get('module_id') not in (*NAMES, 'witty', 'warm', 'candid')
+                or state.get('pending') not in (*NAMES, 'witty', 'warm', 'candid', None)
                 or type(state.get('pending_count')) is not int or not 0 <= state['pending_count'] <= 2
                 or any(not isinstance(state.get(k), str) for k in
                        ('engine', 'input_hash', 'modules_hash', 'approved_at'))):
@@ -212,7 +225,8 @@ def adapt(target, winner, items, modules, previous):
     modules_hash = digest(modules)
     newest = max((item['approved_at'] for item in items), default='')
     valid_previous = (previous and previous['engine'] == ENGINE
-                      and previous['modules_hash'] == modules_hash)
+                      and previous['modules_hash'] == modules_hash
+                      and previous['module_id'] in modules)
     chosen, applied, pending, count = winner, dict(target), None, 0
     if items and valid_previous and newest <= previous['approved_at']:
         applied = {key: round(previous['dimensions'][key] + max(-.15, min(.15,
@@ -298,9 +312,11 @@ def run(root=ROOT, *, persist=False, context='calm', quick=False, decided=False,
     root = Path(root).resolve()
     # This gate must precede every profile/module/state access, including locks.
     try:
-        environment = read_json(root / '.local/environment.json')
-        if not isinstance(environment, dict) or environment.get('version') != 1:
+        environment = read_json(relative_to(root, '.local/environment.json', 'environment file'))
+        if not isinstance(environment, dict) or environment.get('version') not in (1, 2):
             raise ValueError('Unsupported local environment')
+        if environment['version'] == 2:
+            instance_settings(root)
         policy = validate_persona(environment.get('persona'))
     except (ValueError, OSError) as exc:
         return {'enabled': False, 'reason': 'configuration_unavailable: ' + str(exc), 'state_write': 'skipped'}
@@ -310,8 +326,13 @@ def run(root=ROOT, *, persist=False, context='calm', quick=False, decided=False,
         raise ValueError('Unknown context')
     modules, diagnostics = load_modules(root)
     items, profile_status, collect = preferences(root)
-    target, winner, reasons, conflicts = match_preferences(items, modules)
-    state_path = root / '.local/persona-state.json'
+    selection = policy.get('module', 'auto')
+    if selection == 'auto':
+        target, winner, reasons, conflicts = match_preferences(items, modules)
+    else:
+        target, winner = modules[selection]['dimensions'], selection
+        items, reasons, conflicts = [], [], []
+    state_path = relative_to(root, '.local/persona-state.json', 'persona state')
     try:
         previous, before, state_error = load_state(state_path)
     except OSError as exc:
@@ -322,6 +343,11 @@ def run(root=ROOT, *, persist=False, context='calm', quick=False, decided=False,
         previous = None
     state = adapt(target, winner, items, modules, previous if items else None)
     behavior = compose(state['dimensions'], context, quick, decided, override)
+    if quick or decided:
+        behavior['style'] = '用最短篇幅回答所问，或落实已决定事项。'
+    else:
+        behavior['style'] = STYLES[state['module_id']]
+    behavior['context_cue'] = CONTEXT_CUES[context]
     write = 'read_only'
     if persist:
         if state_error:
@@ -335,7 +361,7 @@ def run(root=ROOT, *, persist=False, context='calm', quick=False, decided=False,
                 write = 'write_failed_preserved: ' + str(exc)
     return {'enabled': True, 'engine': ENGINE, 'module_id': state['module_id'],
             'module_version': modules[state['module_id']]['version'],
-            'name': NAMES[state['module_id']], 'profile_status': profile_status,
+            'name': NAMES[state['module_id']], 'selection': selection, 'profile_status': profile_status,
             'reasons': reasons, 'conflicts': conflicts, 'diagnostics': diagnostics,
             'state_error': state_error, 'state_write': write,
             'adaptation': state, 'behavior': behavior}

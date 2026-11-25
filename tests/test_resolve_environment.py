@@ -47,7 +47,8 @@ class PortableEnvironmentTests(unittest.TestCase):
             'project': {'id': 'jarvis', 'root': '02 工作记录/任务总结/JARVIS'},
             'layers': {'project': ['02 工作记录/任务总结', '05 规则']},
         }
-        self.local = {'version': 1, 'vault_root': str(self.vault), 'skill_roots': []}
+        self.local = {'version': 2, 'instance_id': str(env.uuid4()), 'project_root': str(self.root),
+                      'obsidian': {'vault_root': str(self.vault), 'connector': {'type': 'filesystem'}}, 'skill_roots': []}
         self.save('config/defaults.json', self.defaults)
         self.save('.codex/obsidian-kb.json', self.pointer)
         self.save('.local/environment.json', self.local)
@@ -65,60 +66,29 @@ class PortableEnvironmentTests(unittest.TestCase):
         self.assertEqual(Path(result['registry']), self.vault / self.defaults['registry'])
         self.assertEqual(Path(result['agreement']), self.vault / self.defaults['agreement'])
         self.assertEqual(Path(result['project_root']), self.root)
-        self.assertFalse(result['write_ready'])
-        self.assertIsNone(result['connector_matches'])
+        self.assertTrue(result['write_ready'])
+        self.assertTrue(result['connector_matches'])
 
-    def test_environment_selects_other_vault_without_touching_legacy(self):
-        other = self.base / 'other vault'
-        other.mkdir()
-        before = (self.root / '.local/environment.json').read_bytes()
-        with patch.dict(os.environ, {env.VAULT_ENV: str(other)}):
-            result = self.resolve()
-            env.require_write_ready(result)
-            self.assertEqual(Path(result['vault_root']), other)
-            self.assertEqual(result['vault_source'], 'process_environment')
-            with self.assertRaisesRegex(env.EnvironmentConfigError, 'mismatch'):
-                self.resolve(str(self.vault))
-            pointer = env.write_runtime_pointer(result)
-            self.assertEqual(Path(json.loads(pointer.read_text())['vault']), other)
-        self.assertEqual((self.root / '.local/environment.json').read_bytes(), before)
+    def test_legacy_environment_is_ignored(self):
+        with patch.dict(os.environ, {env.VAULT_ENV: 'invalid'}), \
+                patch.object(env, 'user_vault_environment', side_effect=AssertionError):
+            self.assertEqual(Path(self.resolve()['vault_root']), self.vault)
+            (self.root / '.local/environment.json').unlink()
+            with self.assertRaisesRegex(env.EnvironmentConfigError, 'Missing'):
+                self.resolve()
 
-    def test_environment_works_without_local_file(self):
-        (self.root / '.local/environment.json').unlink()
-        with patch.dict(os.environ, {env.VAULT_ENV: str(self.vault)}):
-            result = self.resolve()
-            self.assertTrue(result['write_ready'])
-            self.assertFalse(result['persona']['enabled'])
-
-    def test_bad_environment_never_falls_back_or_creates_directory(self):
-        for value in ['', '   ', 'relative/vault', str(self.base / 'missing')]:
-            with self.subTest(value=value), patch.dict(os.environ, {env.VAULT_ENV: value}):
-                with self.assertRaises(env.EnvironmentConfigError):
-                    self.resolve()
-        self.assertFalse((self.base / 'missing').exists())
-
-    def test_windows_user_selection_and_process_override(self):
-        with patch.object(env, 'user_vault_environment', return_value=str(self.vault)):
-            self.assertEqual(self.resolve()['vault_source'], 'user_environment')
-            with patch.dict(os.environ, {env.VAULT_ENV: 'invalid'}):
-                with self.assertRaises(env.EnvironmentConfigError):
-                    self.resolve()
-
-    def test_selection_drift_and_removal_block_write(self):
-        with patch.dict(os.environ, {env.VAULT_ENV: str(self.vault)}):
-            resolved = self.resolve()
-            os.environ[env.VAULT_ENV] = str(self.base)
-            with self.assertRaisesRegex(env.EnvironmentConfigError, 'changed'):
-                env.require_write_ready(resolved)
-            del os.environ[env.VAULT_ENV]
-            with self.assertRaisesRegex(env.EnvironmentConfigError, 'removed'):
-                env.require_write_ready(resolved)
+    def test_selection_drift_blocks_write(self):
+        old = self.resolve()
+        self.local['instance_id'] = str(env.uuid4())
+        self.save('.local/environment.json', self.local)
+        with self.assertRaisesRegex(env.EnvironmentConfigError, 'changed'):
+            env.require_write_ready(old)
 
     def test_second_machine_only_changes_ignored_file(self):
         shared = {p: (self.root / p).read_bytes() for p in ['config/defaults.json', '.codex/obsidian-kb.json']}
         other = self.base / 'another-vault'
         other.mkdir()
-        self.local['vault_root'] = str(other)
+        self.local['obsidian']['vault_root'] = str(other)
         self.save('.local/environment.json', self.local)
         self.assertEqual(Path(self.resolve(str(other))['vault_root']), other)
         for name, content in shared.items():
@@ -155,7 +125,7 @@ class PortableEnvironmentTests(unittest.TestCase):
     def test_local_root_must_be_absolute(self):
         for value in ['', 'REPLACE_WITH_ABSOLUTE_VAULT_PATH', 'relative/vault', None]:
             with self.subTest(value=value):
-                self.local['vault_root'] = value
+                self.local['obsidian']['vault_root'] = value
                 self.save('.local/environment.json', self.local)
                 with self.assertRaises(env.EnvironmentConfigError):
                     self.resolve()
@@ -202,19 +172,19 @@ class PortableEnvironmentTests(unittest.TestCase):
         env.require_write_ready(result)
         self.assertTrue(result['write_ready'])
 
-    def test_missing_connector_cannot_export_runtime_pointer(self):
+    def test_external_connector_requires_actual_root(self):
+        self.local['obsidian']['connector'] = {'type': 'external'}
+        self.save('.local/environment.json', self.local)
         with self.assertRaises(env.EnvironmentConfigError):
             env.write_runtime_pointer(self.resolve())
         self.assertFalse((self.root / '.local/obsidian-kb.resolved.json').exists())
 
     def test_nonexistent_vault_not_write_ready(self):
         missing = self.base / 'missing-vault'
-        self.local['vault_root'] = str(missing)
+        self.local['obsidian']['vault_root'] = str(missing)
         self.save('.local/environment.json', self.local)
-        result = self.resolve(str(missing))
-        self.assertFalse(result['write_ready'])
         with self.assertRaises(env.EnvironmentConfigError):
-            env.require_write_ready(result)
+            self.resolve(str(missing))
         self.assertFalse(missing.exists())
 
     def test_runtime_pointer_is_local_legacy_shape(self):
@@ -227,7 +197,7 @@ class PortableEnvironmentTests(unittest.TestCase):
         self.assertEqual(json.loads((self.root / '.codex/obsidian-kb.json').read_text(encoding='utf-8')), self.pointer)
 
     def test_initializer_never_called_on_missing_or_mismatched_connection(self):
-        for args in [[], ['--connector-vault', str(self.base / 'wrong')],
+        for args in [['--connector-vault', str(self.base / 'wrong')],
                      ['--connector-vault', str(self.vault), '--vault', str(self.base / 'override')]]:
             with self.subTest(args=args), patch.object(initializer, 'initialize') as write:
                 with contextlib.redirect_stdout(io.StringIO()):

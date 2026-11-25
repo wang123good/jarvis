@@ -9,6 +9,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 import brain_wiki as w
+from environment_isolation import configure_fixture
 
 
 class WikiTests(unittest.TestCase):
@@ -21,10 +22,7 @@ class WikiTests(unittest.TestCase):
         self.work = root / 'work'
         self.vault.mkdir()
         self.repo.mkdir()
-        self.env = {'vault_root': str(self.vault), 'project_root': str(self.repo),
-                    'vault_exists': True, 'write_ready': True,
-                    'resolved_pointer': {'project': {'id': 'jarvis', 'root': '02 工作记录/任务总结/JARVIS'},
-                       'research_policy': {'shared_layers': ['domain']}, 'layers': {'domain': ['03 wiki/主题']}}}
+        self.env = configure_fixture(self.repo, self.vault)
         self.req = {'task_id': 'test', 'project': 'jarvis', 'approval': 'explicit test',
                     'vault_fingerprint': w.digest(str(self.vault.resolve())),
                     'targets': ['03 wiki/综合/test.md'], 'sources': []}
@@ -167,9 +165,14 @@ class WikiTests(unittest.TestCase):
 
     def test_wrong_environment_and_external_lock(self):
         p = self.proposal()
-        with patch.dict(os.environ, {'JARVIS_VAULT_ROOT': str(self.repo)}):
-            with self.assertRaisesRegex(ValueError, 'changed'):
-                self.apply(p)
+        path = self.repo / '.local/environment.json'
+        baseline = path.read_bytes()
+        settings = json.loads(baseline)
+        settings['instance_id'] = 'e7929d93-4937-4adc-a36f-f002e7701368'
+        path.write_text(json.dumps(settings), encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'changed'):
+            self.apply(p)
+        path.write_bytes(baseline)
         self.work.mkdir()
         (self.work / 'writer.lock').write_text('other writer')
         with self.assertRaises(FileExistsError):

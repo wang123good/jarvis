@@ -34,7 +34,7 @@ def digest(value):
 
 
 def read_state(root):
-    path = root / '.local/onboarding.json'
+    path = environment.relative_to(root, '.local/onboarding.json', 'onboarding state')
     state = environment.read_object(path) if path.exists() else {}
     if state and state.get('version') != PROTOCOL:
         raise ValueError('Unsupported onboarding state')
@@ -42,14 +42,16 @@ def read_state(root):
 
 
 def local_settings(root):
-    path = root / setup_environment.ENVIRONMENT_REL
-    return environment.read_object(path) if path.exists() else {'version': 1}
+    path = environment.relative_to(root, str(setup_environment.ENVIRONMENT_REL), 'environment_file')
+    return environment.read_object(path) if path.exists() else {}
 
 
 def status(root):
     settings = local_settings(root)
-    if settings.get('version') != 1:
+    if settings and settings.get('version') not in (1, 2):
         raise ValueError('Unsupported local environment version')
+    if settings.get('version') == 2:
+        environment.instance_settings(root)
     activation = settings.get('onboarding', {})
     if not isinstance(activation, dict) or (
             'activated' in activation and type(activation['activated']) is not bool):
@@ -63,7 +65,7 @@ def status(root):
 
 
 def save(root, state):
-    setup_environment.atomic_write_bytes(root / '.local/onboarding.json',
+    setup_environment.atomic_write_bytes(environment.relative_to(root, '.local/onboarding.json', 'onboarding state'),
                                          setup_environment.json_bytes({'version': PROTOCOL, **state}))
 
 
@@ -149,17 +151,12 @@ def registered_vaults():
 
 
 def discovery(root):
-    selected, source = environment.vault_environment()
     locations = []
     diagnostics = []
-    if selected is not None:
-        path = environment.absolute_path(selected, environment.VAULT_ENV)
-        if not path.is_dir():
-            raise ValueError('Invalid JARVIS_VAULT_ROOT. Correct the selected path before onboarding.')
-        locations.append((path, source, True))
-    legacy = local_settings(root).get('vault_root')
-    if isinstance(legacy, str) and Path(legacy).is_absolute() and selected is None:
-        locations.append((Path(legacy), 'legacy_local_file', True))
+    configured = local_settings(root).get('obsidian', {}).get('vault_root')
+    if configured:
+        locations.append((environment.absolute_path(configured, 'obsidian.vault_root'),
+                          'local_instance', True))
     try:
         locations.extend((Path(path), 'obsidian_registry', True) for path in registered_vaults())
     except ValueError as exc:
@@ -184,7 +181,7 @@ def discovery(root):
         if path.is_dir() and (known or (path / '.obsidian').is_dir()):
             row = candidates.setdefault(path, {'name': path.name or path.anchor,
                                                'path': str(path), 'sources': [],
-                                               'changes': '预览缺项，获批后补齐并配置环境变量'})
+                                               'changes': '预览缺项，获批后补齐并配置当前实例'})
             if origin not in row['sources']:
                 row['sources'].append(origin)
     proposals = []
@@ -199,7 +196,7 @@ def discovery(root):
             'new_vault': {'name': '个人知识库', 'source': 'fixed_drive_free_space',
                           'default': next((item['path'] for item in proposals if item['available']), None),
                           'drives': proposals, 'custom_path': True,
-                          'changes': '新建目录、写入 Brain 种子和配置环境变量'},
+                          'changes': '新建目录、写入 Brain 种子和配置当前实例'},
             'obsidian': software()}
 
 
@@ -228,9 +225,9 @@ def change_plan(root, path, kind, actual, *, resuming=False):
         raise ValueError('Selected existing vault is unavailable.')
     if actual and environment.absolute_path(actual, 'connector_vault') != path:
         raise ValueError('Connected Obsidian vault differs from the selected vault.')
-    process = os.environ.get(environment.VAULT_ENV)
-    if process is not None and environment.absolute_path(process, environment.VAULT_ENV) != path:
-        raise ValueError('The process JARVIS_VAULT_ROOT points elsewhere. Reconcile the host override first.')
+    settings = local_settings(root)
+    if settings:
+        environment.instance_settings(root)
     shared, directories, files = managed_paths(root)
     required_dirs = [*directories, *(str(Path(rel).parent) for rel in files)]
     missing_dirs, missing_files = [], []
@@ -246,18 +243,20 @@ def change_plan(root, path, kind, actual, *, resuming=False):
             raise ValueError(f'Brain seed is redirected or obstructed: {rel}')
         if not item.is_file():
             missing_files.append(rel)
-    selection, source = environment.vault_environment()
+    selection = settings.get('obsidian', {}).get('vault_root')
+    if selection and environment.absolute_path(selection, 'obsidian.vault_root') != path:
+        raise ValueError('Change the configured instance vault before onboarding another vault')
     projects = [project['id'] for project in shared['project_registry']['projects']
                 if project['id'] == shared['project']['id'] or
                 environment.relative_to(path, project['root'], 'registered project').is_dir()]
     return {'path': str(path), 'kind': kind, 'connector': actual, 'directories_to_create': missing_dirs,
             'files_to_create': missing_files, 'projects': projects, 'configured_vault': selection,
-            'configured_source': source, 'environment_baseline': digest(local_settings(root)),
+            'environment_baseline': digest(local_settings(root)),
             'destination_identity': directory_identity(path) if path.is_dir() else None,
             'seed_baseline': digest({str(relative): hashlib.sha256(source.read_bytes()).hexdigest()
                                      for source, relative in init_vault.seed_files()}),
             'registry_baseline': digest(shared),
-            'actions': ['create missing paths only', 'persist JARVIS_VAULT_ROOT',
+            'actions': ['create missing paths only', 'save this instance environment',
                         'configure local environment and Brain Router']}
 
 
@@ -398,14 +397,10 @@ def execute(args, root):
             for field in ('directories_to_create', 'files_to_create', 'projects'):
                 if set(current[field]) - set(approved[field]):
                     raise ValueError('Remaining changes exceed approval. Re-preview the selection.')
-            selected, _ = environment.vault_environment()
-            if selected not in (approved['configured_vault'], str(path)):
-                raise ValueError('Vault selection changed. Re-preview the selection.')
-        registered = environment.user_vault_environment()
-        if registered is None or environment.absolute_path(registered, environment.VAULT_ENV) != path:
-            setup_environment.initialize(root, str(path))
-        else:
-            setup_environment.configure(root, str(path))
+            if (current['environment_baseline'] != approved['environment_baseline']
+                    and current['configured_vault'] != str(path)):
+                raise ValueError('Instance configuration changed. Re-preview the selection.')
+        setup_environment.configure(root, str(path))
         environment.require_write_ready(environment.resolve_environment(root, actual))
         init_brain(root, path)
         proof = verify_brain(root, path, actual)
@@ -470,7 +465,7 @@ def main(argv=None, root=ROOT):
     ack.add_argument('--reply', required=True)
     ack.add_argument('--connector-vault')
     args = parser.parse_args(argv)
-    lock = root / '.local/onboarding.lock'
+    lock = environment.relative_to(root, '.local/onboarding.lock', 'onboarding lock')
     try:
         if args.command in ('status', 'discover'):
             result = execute(args, root)

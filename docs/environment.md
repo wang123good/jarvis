@@ -6,53 +6,29 @@
 
 1. 下载并解压项目，或按 [README](../README.md#开始使用) 克隆仓库。在 Codex 中打开包含 `AGENTS.md` 的目录，然后呼叫「JARVIS」。
 2. Python 用于读取本地用户画像和运行安装检查。昵称保存在项目根目录的 `up.json`，首次交流可以跳过称呼设置。需要浏览和编辑知识库时，使用 [Obsidian](https://obsidian.md/download)。JARVIS 还需要可用的本地检索工具来查找笔记。临时 Worker 取决于宿主提供的 Agent 工具。
-3. 手动接入知识库时，按下节创建本机配置。仓库不保存活动知识库的绝对路径；目录层级和相对规则共享，本机位置单独保存。先检查环境，再按需检查注册表和检索接入。[共享层级](../.codex/obsidian-kb.json) · [本机配置示例](../config/environment.example.json) · [检查脚本](../scripts/verify_installation.py)
-
-## 共享配置与本机路径
-
-活动知识库根目录由环境变量 `JARVIS_VAULT_ROOT` 明确指定。多库环境只选择该变量指向的库，不扫描磁盘或跟随最近打开的Obsidian库；无需每次询问用户。
-
-Windows首次配置或切换库，用已确认的真实目录运行：
+3. 手动接入知识库时，按下节创建本机配置。仓库不保存每个 JARVIS 副本使用独立目录和独立的 Obsidian 库。新副本从干净的代码检出开始，在各自根目录运行以下命令。示例中的库目录须已存在。
 
 ```powershell
-python -X utf8 scripts/setup_environment.py --vault 'C:/path/to/your/vault'
+python -X utf8 scripts/setup_environment.py --vault 'C:/path/to/vault'
 python -X utf8 scripts/resolve_environment.py --require-write-ready
 ```
 
-上述目录是占位示例，不是默认库。请先选择一个已存在的知识库目录；若需新库，先明确创建该目录，再运行命令。统一初始化入口校验路径、保存并回读 Windows 用户环境变量、配置本机设置及检索指针；旧 `--connector-vault` 参数仍可完成同样流程。失败时恢复用户变量和本机设置。旧变量备份保存在 `.local/environment-backups/`。旧配置中的库路径在环境变量生效后移除，其他设置保留。单独持久化入口 `scripts/set_vault_environment.py --vault <路径>` 继续支持。当前进程存在不同目标时，命令在写入前拒绝：先更新或清除启动宿主的同名变量，再切换。不存在进程覆盖时，已打开的宿主可直接读取用户持久值，无需重启。初始化不搬迁笔记，也不自动安装 Obsidian。
+设置写入 Git 忽略的 `.local/environment.json`，包含实例 UUID、项目根、规范化库路径和连接器设置。日常检索与写入使用当前副本配置。配置复制到另一项目目录会被拒绝。新副本分别初始化画像、首启、任务和日志。
 
-也可在PowerShell当前进程显式设置：
+Codex 桌面 Obsidian 插件的接口连接单一宿主库，JARVIS 默认使用项目内置文件入口和 Brain Router。`filesystem` 连接器直接使用已校验的库根。若项目确实部署了独立外部连接器，可配置 `external` 并在支持该入口的命令上传入工具实际报告的 `--connector-vault`。配置错误、错绑及经目录联接跳出当前库的路径会被拒绝。隔离范围为 JARVIS 应用层，Windows 文件权限由系统账户和 ACL 管理。各副本独立配置，部署时应为各副本显式选择互不重叠的库根。
 
-```powershell
-$env:JARVIS_VAULT_ROOT = 'C:/path/to/your/vault'
-```
+### 逐实例迁移
 
-其他平台在shell配置中export同名变量。空值、相对路径、目录不存在或读取变量失败都会停止；不得静默回退旧库。两个有效目标同时存在时以当前进程明确选择为准，输出vault_source便于核对。修改变量不迁移原库内容。写入前再次检查变量未变化，预览指纹包含目标路径，切库后旧预览失效。
-
-`.local/environment.json`只需保留本机其他配置，例如：
-
-```json
-{
-  "version": 1,
-  "skill_roots": [],
-  "persona": {"enabled": true}
-}
-```
-
-setup保留未知字段及人格开关；使用环境变量时去掉旧vault_root副本。旧文件中的vault_root继续兼容，但优先级低于环境变量，且单靠旧文件不自动取得写入就绪；首次迁移可明确传 `--connector-vault`。未设置变量时才需要一次性配置引导，不能把历史记录或示例猜作目标。配置或变量异常不自动重建。
-
-共享 `.codex/obsidian-kb.json`仅保存项目/层级相对路径；config/defaults.json的registry、agreement相对于选定库，其他资源相对于项目根。实际绝对路径不提交Git，也不写up.json。
-
-环境变量有效且目录存在时，本地文件操作可以通过write_ready检查；这不等于Obsidian连接已验证。若提供 `--connector-vault`，必须是连接工具实际返回值并与环境选库一致，冲突时停止。设置变量只确定目标，不替代具体笔记、范围和内容的写入授权。
+进入待迁移副本运行预览。省略 `--vault` 时，预览依序读取旧进程变量、Windows 用户级变量和版本 1 配置中的旧库路径。发现旧变量指向另一副本的库时，使用 `--vault` 明确指定该副本应绑定的库。
 
 ```powershell
-python -X utf8 scripts/resolve_environment.py --require-write-ready --write-runtime-pointer
-python -X utf8 scripts/verify_installation.py --environment-only
+python -X utf8 scripts/setup_environment.py --preview-migration --vault 'C:/path/to/vault'
+python -X utf8 scripts/setup_environment.py --vault 'C:/path/to/vault' --confirm-migration '<confirmation>'
+python -X utf8 scripts/resolve_environment.py --require-write-ready
+python -X utf8 scripts/brain_router.py project --query 'Brain v1 运行规程'
 ```
 
-外部检索工具必须支持显式配置，使用本轮重新生成的 `.local/obsidian-kb.resolved.json`；切库后不得复用旧指针，也不能依赖仅读旧environment.json的全局工具自动选库。不支持显式配置时停止该接入，改用仓库Brain Router/task_knowledge入口。完整安装检查省略--environment-only，验证真实注册表和限定检索；环境通过不表示经验注册表存在或语义检索质量合格。
-
-旧索引与归档中的机器路径只作历史来源，不重新启用或批量改写。换电脑配置其用户环境变量和本机Skill/人格设置，不改共享层级、不自动搬迁笔记。
+确认前核对预览返回的项目根和库根。确认绑定目录、目标和原配置指纹。成功迁移保留人格、Skill、自定义字段及既有激活记录。配置变动时重新预览。同一目标可重跑完成回读。检查 Router 返回的原文路径位于该库。旧 Windows 变量可待所有依赖副本完成迁移后另行清理。
 
 ## 人格表达开关
 
@@ -90,7 +66,7 @@ python -X utf8 scripts/verify_installation.py --environment-only
 | `06 归档` | 仅可读业务对话 Markdown，直接放文件，不建项目、年份、会话 ID 或哈希子目录 |
 | `99 附件` | 笔记实际引用的附件；对话归档不自动复制附件 |
 
-明确配置环境变量选定目标库后，在仓库根目录执行：
+配置当前实例的目标库后，在仓库根目录执行：
 
 ```powershell
 python scripts/init_vault.py
@@ -117,7 +93,7 @@ python -X utf8 scripts/work_report.py weekly --date 2026-11-22
 
 日报按项目任务总结的业务日期汇总，优先使用 `completed_on`，其次使用 `date`。跨天任务在结束时补记 `completed_on`，格式为 `YYYY-MM-DD`。旧笔记缺少这两个字段时，仅兼容文件名开头的 `YYYY-MM-DD`；此类记录进入预览的 `date_fallbacks`，报表正文明确标注“日期取自文件名”。无法从字段或文件名确定日期的笔记进入 `undated`，不根据正文、目录名或文件修改时间猜测。周报也按 frontmatter 的 `period_start` 或 `date` 发现周期内同一项目的日报，兼容 `YYYY-MM-DD 日报.md` 等旧命名，并通过 `project` 或 `project/<项目名小写>` 标签核对项目。
 
-预览返回目标文件、来源、Markdown 和 `baseline`。取得该报表的写入授权后，确认环境变量选库未变，把预览的 `baseline` 传给 `--write`，并在写入后回读文件。
+预览返回目标文件、来源、Markdown 和 `baseline`。取得该报表的写入授权后，核对当前实例的库绑定，把预览的 `baseline` 传给 `--write`，并在写入后回读文件。
 
 ```powershell
 python -X utf8 scripts/work_report.py daily --date 2026-11-21 --write '<已批准预览的 baseline>'

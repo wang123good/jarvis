@@ -12,7 +12,7 @@
 - `ready`：自然使用昵称，根据当前任务筛选相关偏好。
 - `disabled`：不应用画像，也不自动启动初始化。用户要求重新启用时再修改。
 - 读取失败：保留原文件、说明异常，停止应用画像；不自动重建覆盖。
-- Obsidian vault、Skill 根目录和其他机器绝对路径不属于画像；库路径通过 `JARVIS_VAULT_ROOT` 环境变量选择，Skill等本机设置通过 `scripts/setup_environment.py` 写入 `.local/environment.json`。画像只需按已确认偏好引用知识库别名，不保存本机目录。
+- Obsidian vault、Skill 根目录和其他机器绝对路径不属于画像；库路径由当前副本环境配置选择，Skill等本机设置通过 `scripts/setup_environment.py` 写入 `.local/environment.json`。画像只需按已确认偏好引用知识库别名，不保存本机目录。
 
 ## 后续维护
 

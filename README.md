@@ -12,7 +12,7 @@ Obsidian 承担本地中长期记忆大脑：保存项目知识、主题笔记�
 
 ![JARVIS 工作闭环：管家组织任务，知识库管理员按需整理，Obsidian 保存本地中长期记忆](docs/images/jarvis-workflow.png)
 
-当前发布版本：**V1.4.2**（2026-11-25）。版本信息见 [发布规则](docs/rules/release.md)。
+当前发布版本：**V1.4.3**（2026-11-25）。版本信息见 [发布规则](docs/rules/release.md)。
 
 ## 快速试跑
 
@@ -30,7 +30,7 @@ Obsidian 承担本地中长期记忆大脑：保存项目知识、主题笔记�
 
 ## 人格表达与自动适配
 
-提供沉稳管家、机智搭档、温暖同行者、坦率参谋、好奇探索者、热情引路者六套可替换表达模块。新用户无需选型；按已确认互动偏好自动匹配，无相关信息时使用沉稳默认。本机 `.local/environment.json` 的 `persona.enabled` 统一启用/关闭；关闭后恢复基础 JARVIS，身份与任务规则继续有效。新环境默认启用，旧配置缺字段保守关闭。[使用与设计](docs/persona.md) · [行为示例](docs/persona-examples.md)
+提供沉稳管家、热情好事、专业干练、好奇话痨、激进大胆五套可替换表达模块。新环境默认选用沉稳管家，可在本机通过 `persona.module` 指定模块，或设为 `auto` 自动匹配。本机 `.local/environment.json` 的 `persona.enabled` 统一启用/关闭；关闭后恢复基础 JARVIS，身份与任务规则继续有效。新环境默认启用，旧配置缺字段保守关闭。[使用与设计](docs/persona.md) · [行为示例](docs/persona-examples.md)
 
 ## 为什么做 JARVIS
 
@@ -127,13 +127,13 @@ cd jarvis
 
 ### 2. 对齐本机配置
 
-知识库由环境变量 `JARVIS_VAULT_ROOT` 明确选择。Windows上先持久保存已确认的库路径，再初始化本机其他设置：
+每个 JARVIS 副本在自己的 `.local/environment.json` 保存 Obsidian 库和连接器设置。选择已存在的库后，在该副本的根目录执行以下命令。
 
 ```powershell
 python -X utf8 scripts/setup_environment.py --vault 'C:/path/to/your/vault'
 ```
 
-示例路径不是默认值，目录须已存在。该命令统一持久化变量并完成本机配置，旧 `--connector-vault` 参数兼容。多库切换时如有冲突的进程覆盖，先更新或清除宿主变量再运行；当前进程值优先，未继承时读取Windows用户持久值。有效时无需重复询问路径，非法值或连接器冲突停止操作。人格和Skill设置保存在忽略Git的 `.local/environment.json`，旧vault_root只作兼容。详细步骤见[环境说明](docs/environment.md#共享配置与本机路径)。
+已有安装先按实例预览和确认迁移。详细步骤见[环境说明](docs/environment.md#共享配置与本机路径)。
 
 共享配置分工：
 
@@ -164,7 +164,7 @@ python -X utf8 scripts/setup_environment.py --vault 'C:/path/to/your/vault'
 python scripts/verify_installation.py --environment-only
 ```
 
-先明确配置环境变量选库，再运行上述环境检查；脚本为每次运行生成独立证据目录。省略 `--environment-only` 才检查真实注册表及限定检索，另需支持显式 `--config` 的外部 Skill。环境检查不冒充完整接入验证。
+先配置当前实例的目标库，再运行上述环境检查；脚本为每次运行生成独立证据目录。省略 `--environment-only` 才检查真实注册表及限定检索，另需支持显式 `--config` 的外部 Skill。环境检查不冒充完整接入验证。
 
 源码、角色、模板和文档保留在仓库；任务附件、运行证据和个人画像仅在本地保存。历史文件已迁至库外，位置及路径映射见 [归档索引](docs/archive-index.md)。
 
@@ -191,7 +191,7 @@ python scripts/verify_installation.py --environment-only
 | [docs/user-profile.md](docs/user-profile.md) | 项目协作画像的读取、复核与版本规则 |
 | [.codex/obsidian-kb.json](.codex/obsidian-kb.json) | 共享知识层级与本机配置引用 |
 | [config/environment.example.json](config/environment.example.json) | 本机环境空白示例；实际 `.local/environment.json` 不提交 |
-| [scripts/resolve_environment.py](scripts/resolve_environment.py) | 环境变量选库与写前一致性检查 |
+| [scripts/resolve_environment.py](scripts/resolve_environment.py) | 实例配置解析与写前一致性检查 |
 | [架构方案](%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88/) | 架构设计与角色职责文档 |
 
 ## 当前实现与验证边界
