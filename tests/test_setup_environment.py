@@ -4,10 +4,12 @@ import contextlib
 import importlib.util
 import io
 import json
+import os
 from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,8 +26,11 @@ def load_script(name):
 setup = load_script("setup_environment")
 
 
+from environment_isolation import isolate_vault_environment
+
 class SetupEnvironmentTests(unittest.TestCase):
     def setUp(self):
+        isolate_vault_environment(self)
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.base = Path(self.temporary.name)
@@ -81,6 +86,28 @@ class SetupEnvironmentTests(unittest.TestCase):
         second = setup.configure(self.root, str(self.vault))
         self.assertEqual(first["status"], "created")
         self.assertEqual(second["status"], "already_configured")
+
+    def test_environment_cli_needs_no_connector_and_stores_no_duplicate_vault(self):
+        with patch.dict(os.environ, {setup.reader.VAULT_ENV: str(self.vault)}):
+            with contextlib.redirect_stdout(io.StringIO()):
+                with patch.object(setup, 'initialize', side_effect=lambda root, dest, **kw: setup.configure(root, dest, **kw)):
+                    self.assertEqual(setup.main([], self.root), 0)
+            local = json.loads((self.root / '.local/environment.json').read_text())
+            self.assertNotIn('vault_root', local)
+            self.assertTrue(local['persona']['enabled'])
+            with self.assertRaisesRegex(setup.SetupError, 'another vault'):
+                setup.configure(self.root, str(self.base))
+
+    def test_environment_migrates_invalid_legacy_path_preserving_settings(self):
+        configured = {'version': 1, 'vault_root': 'invalid-relative-old',
+                      'skill_roots': [], 'persona': {'enabled': False}, 'custom': [1, 2]}
+        self.save('.local/environment.json', configured)
+        with patch.dict(os.environ, {setup.reader.VAULT_ENV: str(self.vault)}):
+            result = setup.configure(self.root, str(self.vault))
+        actual = json.loads((self.root / '.local/environment.json').read_text())
+        configured.pop('vault_root')
+        self.assertEqual(actual, configured)
+        self.assertEqual(result['status'], 'migrated')
 
     def test_new_install_enables_persona_and_preserves_it_and_unknown_fields(self):
         setup.configure(self.root, str(self.vault))

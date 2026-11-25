@@ -7,10 +7,35 @@ from uuid import uuid4
 
 
 ROOT = Path(__file__).resolve().parents[1]
+VAULT_ENV = 'JARVIS_VAULT_ROOT'
 
 
 class EnvironmentConfigError(ValueError):
     """Configuration is incomplete, unsafe, or points at another connected vault."""
+
+
+def user_vault_environment():
+    """Read the persisted Windows user value even in an already running host."""
+    if os.name != 'nt':
+        return None
+    import winreg
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, 'Environment') as key:
+            value, kind = winreg.QueryValueEx(key, VAULT_ENV)
+    except FileNotFoundError:
+        return None
+    except OSError as exc:
+        raise EnvironmentConfigError(f'Cannot read user {VAULT_ENV}: {exc}') from exc
+    if kind != winreg.REG_SZ:
+        raise EnvironmentConfigError(f'{VAULT_ENV} must be a literal string, not an expandable path')
+    return value
+
+
+def vault_environment():
+    if VAULT_ENV in os.environ:
+        return os.environ[VAULT_ENV], 'process_environment'
+    value = user_vault_environment()
+    return value, 'user_environment' if value is not None else 'legacy_local_file'
 
 
 def validate_persona(value):
@@ -60,19 +85,23 @@ def resolve_environment(project_root=ROOT, connector_vault=None):
     pointer = read_object(pointer_path)
     if pointer.get('environment_file') != local_rel or 'vault' in pointer:
         raise EnvironmentConfigError('Shared knowledge pointer must reference environment_file, not an absolute vault')
-    if not local_path.is_file():
+    selected, vault_source = vault_environment()
+    if not local_path.is_file() and selected is None:
         raise EnvironmentConfigError(
-            'Missing .local/environment.json; run python scripts/setup_environment.py '
-            '--connector-vault "<actual Obsidian vault path>"'
+            'Missing .local/environment.json and JARVIS_VAULT_ROOT; set JARVIS_VAULT_ROOT '
+            'to your explicitly selected vault, then run python scripts/setup_environment.py'
         )
-    local = read_object(local_path)
+    local = read_object(local_path) if local_path.is_file() else {'version': 1}
     if local.get('version') != 1:
         raise EnvironmentConfigError('Unsupported local environment version; expected 1')
     try:
         persona = validate_persona(local.get('persona'))
     except ValueError as exc:
         raise EnvironmentConfigError(str(exc)) from exc
-    vault = absolute_path(local.get('vault_root'), 'vault_root')
+    vault = absolute_path(selected if selected is not None else local.get('vault_root'),
+                          VAULT_ENV if selected is not None else 'vault_root')
+    if selected is not None and not vault.is_dir():
+        raise EnvironmentConfigError(f'{VAULT_ENV} directory does not exist: {vault}; no fallback allowed')
     project = pointer.get('project')
     if not isinstance(project, dict):
         raise EnvironmentConfigError('knowledge pointer project must be an object')
@@ -107,6 +136,8 @@ def resolve_environment(project_root=ROOT, connector_vault=None):
         'environment_file': str(local_path),
         'knowledge_pointer': str(pointer_path),
         'vault_root': str(vault),
+        'vault_source': vault_source,
+        'vault_environment_variable': VAULT_ENV,
         'vault_exists': vault.is_dir(),
         'project_knowledge_root': str(project_path),
         'registry': str(registry),
@@ -114,16 +145,23 @@ def resolve_environment(project_root=ROOT, connector_vault=None):
         'skill_roots': [str(path.resolve()) for path in skill_roots],
         'connector_checked': checked,
         'connector_matches': True if checked else None,
-        'write_ready': checked and vault.is_dir(),
+        'write_ready': (checked or selected is not None) and vault.is_dir(),
         'resolved_pointer': resolved_pointer,
         'persona': persona,
     }
 
 
 def require_write_ready(resolved):
-    if not resolved['connector_checked']:
-        raise EnvironmentConfigError('Provide --connector-vault from the connected tool; a configured path alone does not authorize vault writes')
-    if not resolved['vault_exists']:
+    selected, _ = vault_environment()
+    if selected is not None:
+        if absolute_path(selected, VAULT_ENV) != Path(resolved['vault_root']):
+            raise EnvironmentConfigError('Vault environment changed after resolution; resolve again before writing')
+    elif resolved.get('vault_source') in ('process_environment', 'user_environment'):
+        raise EnvironmentConfigError('Vault environment was removed after resolution; no writes allowed')
+    if not resolved.get('write_ready', resolved.get('connector_checked', False)
+                        and resolved.get('vault_exists', False)):
+        raise EnvironmentConfigError(f'Set {VAULT_ENV} or provide --connector-vault; no authorized destination configured')
+    if not resolved['vault_exists'] or not Path(resolved['vault_root']).is_dir():
         raise EnvironmentConfigError('Configured vault does not exist; create/open it in Obsidian and verify the connection first')
 
 
@@ -166,8 +204,7 @@ def main(argv=None):
         }
         if result['status'] == 'configuration_required':
             result['next_action'] = (
-                'python scripts/setup_environment.py '
-                '--connector-vault "<actual Obsidian vault path>"'
+                'Set JARVIS_VAULT_ROOT to your selected vault, then run python scripts/setup_environment.py'
             )
         print(json.dumps(result, ensure_ascii=False))
         return 2

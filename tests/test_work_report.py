@@ -1,6 +1,7 @@
 """Exercise report generation from the command line against an isolated vault."""
 
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -43,6 +44,7 @@ class WorkReportTests(unittest.TestCase):
         result = subprocess.run(
             [sys.executable, '-X', 'utf8', str(self.project / 'scripts/work_report.py'), *args],
             capture_output=True, encoding='utf-8', check=False,
+            env=dict(os.environ, JARVIS_VAULT_ROOT=str(self.vault)),
         )
         self.assertEqual(result.returncode, code, result.stderr or result.stdout)
         return json.loads(result.stdout)
@@ -61,11 +63,11 @@ class WorkReportTests(unittest.TestCase):
         self.assertFalse(report.exists())
         self.assertIn('核对通过。', preview['markdown'])
         writer = ('--write', preview['baseline'])
-        self.assertEqual(self.run_report(*options, *writer, code=2)['status'], 'error')
+        self.assertEqual(self.run_report(*options, '--write', 'outdated-baseline', code=2)['status'], 'error')
         self.assertEqual(self.run_report(*options, '--connector-vault', str(self.project),
                                          *writer, code=2)['status'], 'error')
         connected = ('--connector-vault', str(self.vault))
-        self.assertEqual(self.run_report(*options, *connected, *writer)['status'], 'created')
+        self.assertEqual(self.run_report(*options, *writer)['status'], 'created')
         self.assertEqual(report.read_text(encoding='utf-8'), preview['markdown'])
         report.write_text('人工修改', encoding='utf-8')
         self.assertEqual(self.run_report(*options, *connected, *writer)['status'], 'exists')

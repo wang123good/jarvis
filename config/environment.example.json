@@ -1,6 +1,7 @@
 {
   "version": 1,
-  "vault_root": "REPLACE_WITH_ABSOLUTE_VAULT_PATH",
   "skill_roots": [],
-  "persona": {"enabled": true}
+  "persona": {
+    "enabled": true
+  }
 }

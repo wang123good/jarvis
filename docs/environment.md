@@ -10,55 +10,55 @@
 
 ## 共享配置与本机路径
 
-唯一的本机路径入口为 `.local/environment.json`，整个 `.local/` 已被 Git 忽略。先在 Obsidian 中打开或创建知识库，再使用当前连接工具实际报告的知识库根目录完成首次配置：
+活动知识库根目录由环境变量 `JARVIS_VAULT_ROOT` 明确指定。多库环境只选择该变量指向的库，不扫描磁盘或跟随最近打开的Obsidian库；无需每次询问用户。
+
+Windows首次配置或切换库，用已确认的真实目录运行：
 
 ```powershell
-python scripts/setup_environment.py --connector-vault "工具报告的知识库绝对路径"
+python -X utf8 scripts/setup_environment.py --vault 'C:/path/to/your/vault'
+python -X utf8 scripts/resolve_environment.py --require-write-ready
 ```
 
-脚本会校验目录、共享层级与项目相对路径，原子写入 `.local/environment.json`，并生成 `.local/obsidian-kb.resolved.json`。它不修改 `up.json`；已有不同路径时拒绝覆盖，用户明确要求更换后再使用 `--replace`。成功结果中的 `next` 给出下一步安装检查命令。
+上述目录是占位示例，不是默认库。请先选择一个已存在的知识库目录；若需新库，先明确创建该目录，再运行命令。统一初始化入口校验路径、保存并回读 Windows 用户环境变量、配置本机设置及检索指针；旧 `--connector-vault` 参数仍可完成同样流程。失败时恢复用户变量和本机设置。旧变量备份保存在 `.local/environment-backups/`。旧配置中的库路径在环境变量生效后移除，其他设置保留。单独持久化入口 `scripts/set_vault_environment.py --vault <路径>` 继续支持。当前进程存在不同目标时，命令在写入前拒绝：先更新或清除启动宿主的同名变量，再切换。不存在进程覆盖时，已打开的宿主可直接读取用户持久值，无需重启。初始化不搬迁笔记，也不自动安装 Obsidian。
 
-仓库同时分发 `config/environment.example.json`，供人工审查或无法运行脚本时使用。示例中的占位值必须替换，不能直接用于执行；以下路径仅为示例，不是默认位置：
+也可在PowerShell当前进程显式设置：
+
+```powershell
+$env:JARVIS_VAULT_ROOT = 'C:/path/to/your/vault'
+```
+
+其他平台在shell配置中export同名变量。空值、相对路径、目录不存在或读取变量失败都会停止；不得静默回退旧库。两个有效目标同时存在时以当前进程明确选择为准，输出vault_source便于核对。修改变量不迁移原库内容。写入前再次检查变量未变化，预览指纹包含目标路径，切库后旧预览失效。
+
+`.local/environment.json`只需保留本机其他配置，例如：
 
 ```json
 {
   "version": 1,
-  "vault_root": "C:/path/to/your/vault",
-  "skill_roots": []
+  "skill_roots": [],
+  "persona": {"enabled": true}
 }
 ```
 
-`skill_roots` 留空时从当前用户目录推导 `.codex/skills`、`.agents/skills`；有实际安装在其他位置的 Skill 时，只在本机文件填写其绝对目录。项目根目录由脚本自身位置确定，不依赖终端当前目录。
+setup保留未知字段及人格开关；使用环境变量时去掉旧vault_root副本。旧文件中的vault_root继续兼容，但优先级低于环境变量，且单靠旧文件不自动取得写入就绪；首次迁移可明确传 `--connector-vault`。未设置变量时才需要一次性配置引导，不能把历史记录或示例猜作目标。配置或变量异常不自动重建。
 
-- `.codex/obsidian-kb.json`：共享项目目录和知识分层，库内路径相对于 `vault_root`。
-- `config/defaults.json`：`registry`、`agreement` 相对于知识库；其他项目资源路径相对于仓库根。
-- `scripts/resolve_environment.py`：读取共享和本机配置，拼接实际路径，校验库内路径不越界；缺失或无效配置不猜测、不自动覆盖。
+共享 `.codex/obsidian-kb.json`仅保存项目/层级相对路径；config/defaults.json的registry、agreement相对于选定库，其他资源相对于项目根。实际绝对路径不提交Git，也不写up.json。
 
-先由当前 Obsidian 连接工具读取实际库根目录（例如 `obsidian_info` 返回的 `vaultRoot`），再将该值传入校验。不能从本机配置抄出一个值冒充连接结果：
+环境变量有效且目录存在时，本地文件操作可以通过write_ready检查；这不等于Obsidian连接已验证。若提供 `--connector-vault`，必须是连接工具实际返回值并与环境选库一致，冲突时停止。设置变量只确定目标，不替代具体笔记、范围和内容的写入授权。
 
 ```powershell
-python scripts/resolve_environment.py
-python scripts/resolve_environment.py --connector-vault "工具报告的知识库绝对路径" --require-write-ready
-python scripts/verify_installation.py --environment-only --connector-vault "工具报告的知识库绝对路径"
+python -X utf8 scripts/resolve_environment.py --require-write-ready --write-runtime-pointer
+python -X utf8 scripts/verify_installation.py --environment-only
 ```
 
-第一条只解析配置，未核验连接时输出 `write_ready: false`。写库前须通过第二条；目标不存在或两侧路径不同会返回失败。校验只代表当次检查，写入前仍需核对目标；它不是系统锁，也不改变宿主工具权限。初始化命令内置同一校验；其他知识库工具由管家按 AGENTS.md I01 执行写前检查。
+外部检索工具必须支持显式配置，使用本轮重新生成的 `.local/obsidian-kb.resolved.json`；切库后不得复用旧指针，也不能依赖仅读旧environment.json的全局工具自动选库。不支持显式配置时停止该接入，改用仓库Brain Router/task_knowledge入口。完整安装检查省略--environment-only，验证真实注册表和限定检索；环境通过不表示经验注册表存在或语义检索质量合格。
 
-需要旧版 `obsidian-kb` 格式时，可加 `--write-runtime-pointer`，在 `.local/obsidian-kb.resolved.json` 生成本机解析结果，不改共享配置。外部检索工具必须明确支持传入这份配置。当前这台机器的已安装 `obsidian-kb` Skill 已实测可解析 `.codex/obsidian-kb.json` 的 `environment_file` 引用；Skill 升级后若再次提示缺少 vault，先重新运行首次配置入口和 `doctor`，不要改把绝对路径写入共享配置或画像。
-
-完整接入检查使用仓库查询入口验证真实注册表及项目约定的检索：
-
-```powershell
-python scripts/verify_installation.py --connector-vault "工具报告的知识库绝对路径"
-```
-
-环境检查通过不表示经验注册表存在或完整检索可用。`.codex/obsidian-links.json`、`.codex/knowledge-index.md` 及归档文档中的旧绝对路径是已停用的历史来源记录，不作为本机配置，不批量改写或重新启用其操作文字。换电脑只需配置新机器的 `.local/environment.json` 及宿主连接；无需修改共享目录规划，也不自动搬迁笔记。
+旧索引与归档中的机器路径只作历史来源，不重新启用或批量改写。换电脑配置其用户环境变量和本机Skill/人格设置，不改共享层级、不自动搬迁笔记。
 
 ## 人格表达开关
 
 同一 `.local/environment.json` 可增加 `"persona": {"enabled": true}`。这是整个人格功能唯一开关；false 时在装载模块、匹配和读写适配状态之前返回，基础身份和任务治理继续生效。新建环境配置默认 true；已有配置缺字段保持关闭，重复 setup 不擅自启用。setup 保留其他用户字段和已有开关，resolver 校验严格布尔值。
 
-人格入口不依赖 vault 连接；尚未配置环境时保守关闭，不为启用人格伪造知识库路径。正常环境可手动只增加 persona 字段；关闭后不删除画像或适配记录。运行 `python -X utf8 scripts/persona.py --persist` 可装载当前策略，新用户不需要选型；模块、状态、防抖、故障和恢复细节见[人格规程](persona.md)。
+人格入口不依赖 vault 连接；未配置人格本机文件时保守关闭，不为启用人格伪造知识库路径。正常环境可手动只增加 persona 字段；关闭后不删除画像或适配记录。运行 `python -X utf8 scripts/persona.py --persist` 可装载当前策略，新用户不需要选型；模块、状态、防抖、故障和恢复细节见[人格规程](persona.md)。
 
 ## 首次呼叫与自动准备（设计）
 
@@ -90,13 +90,13 @@ python scripts/verify_installation.py --connector-vault "工具报告的知识�
 | `06 归档` | 仅可读业务对话 Markdown，直接放文件，不建项目、年份、会话 ID 或哈希子目录 |
 | `99 附件` | 笔记实际引用的附件；对话归档不自动复制附件 |
 
-先在 Obsidian 创建或接入目标库，完成本机配置并取得连接工具报告的路径后，在仓库根目录执行：
+明确配置环境变量选定目标库后，在仓库根目录执行：
 
 ```powershell
-python scripts/init_vault.py --connector-vault "工具报告的知识库绝对路径"
+python scripts/init_vault.py
 ```
 
-模板源位于 [templates/vault](../templates/vault/)，Brain v1 的首页、索引、运行规则、日志和 Bases 种子位于 [templates/brain](../templates/brain/)，随 ZIP 或仓库一起分发。脚本校验本机与连接路径一致后，只补缺失目录、Markdown 种子、模板和 `.base` 文件；使用排他创建保护已有同名文件，重复运行报告保留项，不自动迁移已有库、不改插件配置、不生成假日报。初始化出的空库不虚构业务主题或结论。Obsidian 内可将核心模板功能的模板目录设为 `04 模板`；不依赖第三方模板插件。模板中的日期、标题可由核心模板替换，其余说明按实际任务填写。
+模板源位于 [templates/vault](../templates/vault/)，Brain v1 的首页、索引、运行规则、日志和 Bases 种子位于 [templates/brain](../templates/brain/)，随 ZIP 或仓库一起分发。脚本校验环境选库与可选连接路径一致后，只补缺失目录、Markdown 种子、模板和 `.base` 文件；使用排他创建保护已有同名文件，重复运行报告保留项，不自动迁移已有库、不改插件配置、不生成假日报。初始化出的空库不虚构业务主题或结论。Obsidian 内可将核心模板功能的模板目录设为 `04 模板`；不依赖第三方模板插件。模板中的日期、标题可由核心模板替换，其余说明按实际任务填写。
 
 任务跨天时更新同一篇总结，记录完成日期；日报按北京时间命名 `YYYY-MM-DD_日报.md`，没有工作记录时不生成空日报。周报按周一至周日，使用 ISO 周所属年与周号 `YYYY-Www_周报.md`，正文必须标具体起止日期；跨年归入 ISO 周所属年目录。日报、周报均由用户明确触发，不自动设置定时任务或扫描其他项目。
 
@@ -117,10 +117,10 @@ python -X utf8 scripts/work_report.py weekly --date 2026-11-22
 
 日报按项目任务总结的业务日期汇总，优先使用 `completed_on`，其次使用 `date`。跨天任务在结束时补记 `completed_on`，格式为 `YYYY-MM-DD`。旧笔记缺少这两个字段时，仅兼容文件名开头的 `YYYY-MM-DD`；此类记录进入预览的 `date_fallbacks`，报表正文明确标注“日期取自文件名”。无法从字段或文件名确定日期的笔记进入 `undated`，不根据正文、目录名或文件修改时间猜测。周报也按 frontmatter 的 `period_start` 或 `date` 发现周期内同一项目的日报，兼容 `YYYY-MM-DD 日报.md` 等旧命名，并通过 `project` 或 `project/<项目名小写>` 标签核对项目。
 
-预览返回目标文件、来源、Markdown 和 `baseline`。取得该报表的写入授权后，从连接工具确认实际 Obsidian 库根路径，把预览的 `baseline` 传给 `--write`，并在写入后回读文件。
+预览返回目标文件、来源、Markdown 和 `baseline`。取得该报表的写入授权后，确认环境变量选库未变，把预览的 `baseline` 传给 `--write`，并在写入后回读文件。
 
 ```powershell
-python -X utf8 scripts/work_report.py daily --date 2026-11-21 --connector-vault '<连接工具报告的实际库路径>' --write '<已批准预览的 baseline>'
+python -X utf8 scripts/work_report.py daily --date 2026-11-21 --write '<已批准预览的 baseline>'
 ```
 
 已有同名报表时保留原件，返回 `exists`。周期无可用记录时预览返回 `no_records`。来源或预览变化后需重新预览。

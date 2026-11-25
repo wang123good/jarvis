@@ -40,6 +40,9 @@ def configure(project_root: Path, connector_vault: str, *, replace: bool = False
     vault = reader.absolute_path(connector_vault, "connector_vault")
     if not vault.is_dir():
         raise SetupError(f"Connected vault directory does not exist: {vault}")
+    selected, _ = reader.vault_environment()
+    if selected is not None and reader.absolute_path(selected, reader.VAULT_ENV) != vault:
+        raise SetupError(f'{reader.VAULT_ENV} selects another vault; update the environment variable first')
 
     environment_path = root / ENVIRONMENT_REL
     original = environment_path.read_bytes() if environment_path.is_file() else None
@@ -64,13 +67,16 @@ def configure(project_root: Path, connector_vault: str, *, replace: bool = False
             existing = None
             status = "updated"
     if existing is not None:
-        current = reader.absolute_path(existing.get("vault_root"), "vault_root")
+        current = vault if selected is not None else reader.absolute_path(existing.get("vault_root", str(vault)), "vault_root")
+        if selected is not None and "vault_root" in existing:
+            status = "migrated"
         roots = existing.get("skill_roots", [])
         if not isinstance(roots, list):
             raise SetupError("skill_roots must be a list")
         skill_roots = roots
         if current == vault:
-            status = "already_configured"
+            if status != "migrated":
+                status = "already_configured"
         elif not replace:
             raise SetupError(
                 f"Local vault is already configured as {current}; use --replace to change it"
@@ -83,9 +89,11 @@ def configure(project_root: Path, connector_vault: str, *, replace: bool = False
     new_environment = dict(existing) if existing is not None else {'persona': {'enabled': True}}
     new_environment.update({
         "version": 1,
-        "vault_root": existing['vault_root'] if existing is not None and current == vault else vault.as_posix(),
+        "vault_root": existing.get('vault_root', vault.as_posix()) if existing is not None and current == vault else vault.as_posix(),
         "skill_roots": skill_roots,
     })
+    if selected is not None:
+        new_environment.pop('vault_root', None)
 
     changed = original != json_bytes(new_environment)
     try:
@@ -112,10 +120,36 @@ def configure(project_root: Path, connector_vault: str, *, replace: bool = False
         "vault_root": str(vault),
         "runtime_pointer": str(runtime_pointer),
         "profile_modified": False,
-        "next": 'python scripts/verify_installation.py --environment-only --connector-vault "'
-        + str(vault)
-        + '"',
+        "next": 'python scripts/verify_installation.py --environment-only'
+        if selected is not None else 'python scripts/verify_installation.py --environment-only --connector-vault "'
+        + str(vault) + '"',
     }
+
+
+def initialize(project_root, destination, *, replace=False):
+    """Public Windows setup: persist selection and configure as one transaction."""
+    if os.name != 'nt':
+        selected, _ = reader.vault_environment()
+        if selected is None:
+            raise SetupError('Export JARVIS_VAULT_ROOT in your shell profile before setup')
+        return configure(project_root, destination, replace=replace)
+    from set_vault_environment import persist_user_vault
+    root = Path(project_root)
+    paths = [root / ENVIRONMENT_REL, root / '.local/obsidian-kb.resolved.json']
+    before = {p: p.read_bytes() if p.exists() else None for p in paths}
+    configured = {}
+    def apply():
+        configured.update(configure(root, destination, replace=replace))
+    try:
+        persisted = persist_user_vault(destination, root, configure_local=apply)
+    except Exception:
+        for path, data in before.items():
+            if data is None:
+                path.unlink(missing_ok=True)
+            elif not path.exists() or path.read_bytes() != data:
+                atomic_write_bytes(path, data)
+        raise
+    return {**configured, 'persistence': persisted}
 
 
 def main(argv=None, project_root=ROOT) -> int:
@@ -124,14 +158,17 @@ def main(argv=None, project_root=ROOT) -> int:
         "--connector-vault",
         "--vault",
         dest="connector_vault",
-        required=True,
-        help="Actual vault root reported by the connected Obsidian tool",
+        help="Optional actual connector path; must match JARVIS_VAULT_ROOT when configured",
     )
     parser.add_argument("--replace", action="store_true", help="Replace a different existing vault path")
     args = parser.parse_args(argv)
     try:
-        result = configure(project_root, args.connector_vault, replace=args.replace)
-    except (OSError, SetupError, reader.EnvironmentConfigError) as exc:
+        selected, _ = reader.vault_environment()
+        destination = args.connector_vault if args.connector_vault is not None else selected
+        if destination is None:
+            raise SetupError(f'Set {reader.VAULT_ENV} or provide --connector-vault for first setup')
+        result = initialize(project_root, destination, replace=args.replace)
+    except (OSError, ValueError) as exc:
         print(json.dumps({"ok": False, "error": str(exc)}, ensure_ascii=False))
         return 2
     print(json.dumps(result, ensure_ascii=False, indent=2))

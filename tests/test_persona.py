@@ -23,8 +23,11 @@ def preference(statement, identifier='p1', date='2026-11-20', **changes):
     return item
 
 
+from environment_isolation import isolate_vault_environment
+
 class PersonaTests(unittest.TestCase):
     def setUp(self):
+        isolate_vault_environment(self)
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)

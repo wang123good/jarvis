@@ -3,6 +3,7 @@ import contextlib
 import importlib.util
 import io
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -24,8 +25,11 @@ initializer = load_script('init_vault')
 verifier = load_script('verify_installation')
 
 
+from environment_isolation import isolate_vault_environment
+
 class PortableEnvironmentTests(unittest.TestCase):
     def setUp(self):
+        isolate_vault_environment(self)
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.base = Path(self.temporary.name)
@@ -63,6 +67,52 @@ class PortableEnvironmentTests(unittest.TestCase):
         self.assertEqual(Path(result['project_root']), self.root)
         self.assertFalse(result['write_ready'])
         self.assertIsNone(result['connector_matches'])
+
+    def test_environment_selects_other_vault_without_touching_legacy(self):
+        other = self.base / 'other vault'
+        other.mkdir()
+        before = (self.root / '.local/environment.json').read_bytes()
+        with patch.dict(os.environ, {env.VAULT_ENV: str(other)}):
+            result = self.resolve()
+            env.require_write_ready(result)
+            self.assertEqual(Path(result['vault_root']), other)
+            self.assertEqual(result['vault_source'], 'process_environment')
+            with self.assertRaisesRegex(env.EnvironmentConfigError, 'mismatch'):
+                self.resolve(str(self.vault))
+            pointer = env.write_runtime_pointer(result)
+            self.assertEqual(Path(json.loads(pointer.read_text())['vault']), other)
+        self.assertEqual((self.root / '.local/environment.json').read_bytes(), before)
+
+    def test_environment_works_without_local_file(self):
+        (self.root / '.local/environment.json').unlink()
+        with patch.dict(os.environ, {env.VAULT_ENV: str(self.vault)}):
+            result = self.resolve()
+            self.assertTrue(result['write_ready'])
+            self.assertFalse(result['persona']['enabled'])
+
+    def test_bad_environment_never_falls_back_or_creates_directory(self):
+        for value in ['', '   ', 'relative/vault', str(self.base / 'missing')]:
+            with self.subTest(value=value), patch.dict(os.environ, {env.VAULT_ENV: value}):
+                with self.assertRaises(env.EnvironmentConfigError):
+                    self.resolve()
+        self.assertFalse((self.base / 'missing').exists())
+
+    def test_windows_user_selection_and_process_override(self):
+        with patch.object(env, 'user_vault_environment', return_value=str(self.vault)):
+            self.assertEqual(self.resolve()['vault_source'], 'user_environment')
+            with patch.dict(os.environ, {env.VAULT_ENV: 'invalid'}):
+                with self.assertRaises(env.EnvironmentConfigError):
+                    self.resolve()
+
+    def test_selection_drift_and_removal_block_write(self):
+        with patch.dict(os.environ, {env.VAULT_ENV: str(self.vault)}):
+            resolved = self.resolve()
+            os.environ[env.VAULT_ENV] = str(self.base)
+            with self.assertRaisesRegex(env.EnvironmentConfigError, 'changed'):
+                env.require_write_ready(resolved)
+            del os.environ[env.VAULT_ENV]
+            with self.assertRaisesRegex(env.EnvironmentConfigError, 'removed'):
+                env.require_write_ready(resolved)
 
     def test_second_machine_only_changes_ignored_file(self):
         shared = {p: (self.root / p).read_bytes() for p in ['config/defaults.json', '.codex/obsidian-kb.json']}

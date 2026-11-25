@@ -127,11 +127,11 @@ def main(argv=None, project_root=ROOT):
     experience.add_argument('terms', nargs='*')
     experience.add_argument('--limit', type=int, choices=range(1, 21), default=5)
     initialize = operations.add_parser('experience-init')
-    initialize.add_argument('--connector-vault', required=True)
+    initialize.add_argument('--connector-vault')
     register = operations.add_parser('experience-register')
     register.add_argument('entry', type=Path)
     register.add_argument('--baseline', required=True)
-    register.add_argument('--connector-vault', required=True)
+    register.add_argument('--connector-vault')
     args = parser.parse_args(argv)
     try:
         environment = resolve_environment(project_root, getattr(args, 'connector_vault', None))

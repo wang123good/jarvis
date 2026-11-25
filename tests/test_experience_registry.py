@@ -6,9 +6,13 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 import experience_registry as registry
 from task_knowledge import inspect_skill
+from environment_isolation import isolate_vault_environment
 
 
 class RegistryTests(unittest.TestCase):
+    def setUp(self):
+        isolate_vault_environment(self)
+
     def test_registry_lifecycle(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp).resolve()

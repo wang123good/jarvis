@@ -12,7 +12,7 @@ Obsidian 承担本地中长期记忆大脑：保存项目知识、主题笔记�
 
 ![JARVIS 工作闭环：管家组织任务，知识库管理员按需整理，Obsidian 保存本地中长期记忆](docs/images/jarvis-workflow.png)
 
-当前发布版本：**V1.3.0**（2026-11-25）。版本信息见 [发布规则](docs/rules/release.md)。
+当前发布版本：**V1.3.1**（2026-11-25）。版本信息见 [发布规则](docs/rules/release.md)。
 
 ## 快速试跑
 
@@ -123,13 +123,13 @@ cd jarvis
 
 ### 2. 对齐本机配置
 
-本机绝对路径统一放在不提交 Git 的 `.local/environment.json`。先在 Obsidian 中打开或创建知识库，再把连接工具报告的实际路径交给首次配置入口：
+知识库由环境变量 `JARVIS_VAULT_ROOT` 明确选择。Windows上先持久保存已确认的库路径，再初始化本机其他设置：
 
 ```powershell
-python scripts/setup_environment.py --connector-vault "工具报告的知识库绝对路径"
+python -X utf8 scripts/setup_environment.py --vault 'C:/path/to/your/vault'
 ```
 
-该脚本创建或校验本机环境文件、生成只读检索所需的本地解析指针，并且不修改 `up.json`。已有不同 vault 时默认拒绝覆盖，只有明确需要更换并传入 `--replace` 才更新。仍可参考 [本机配置示例](config/environment.example.json) 手工维护；完整步骤及写前连接校验见 [环境说明](docs/environment.md#共享配置与本机路径)。换电脑只改本机配置及宿主连接，不改共享目录层级。
+示例路径不是默认值，目录须已存在。该命令统一持久化变量并完成本机配置，旧 `--connector-vault` 参数兼容。多库切换时如有冲突的进程覆盖，先更新或清除宿主变量再运行；当前进程值优先，未继承时读取Windows用户持久值。有效时无需重复询问路径，非法值或连接器冲突停止操作。人格和Skill设置保存在忽略Git的 `.local/environment.json`，旧vault_root只作兼容。详细步骤见[环境说明](docs/environment.md#共享配置与本机路径)。
 
 共享配置分工：
 
@@ -157,10 +157,10 @@ python scripts/setup_environment.py --connector-vault "工具报告的知识库�
 完成本机路径与工具配置后，可在仓库根目录运行：
 
 ```bash
-python scripts/verify_installation.py --environment-only --connector-vault "工具报告的知识库绝对路径"
+python scripts/verify_installation.py --environment-only
 ```
 
-先由连接工具读取实际库路径，再运行上述环境检查；脚本为每次运行生成独立证据目录。省略 `--environment-only` 才检查真实注册表及限定检索，另需支持显式 `--config` 的外部 Skill。环境检查不冒充完整接入验证。
+先明确配置环境变量选库，再运行上述环境检查；脚本为每次运行生成独立证据目录。省略 `--environment-only` 才检查真实注册表及限定检索，另需支持显式 `--config` 的外部 Skill。环境检查不冒充完整接入验证。
 
 源码、角色、模板和文档保留在仓库；任务附件、运行证据和个人画像仅在本地保存。历史文件已迁至库外，位置及路径映射见 [归档索引](docs/archive-index.md)。
 
@@ -187,7 +187,7 @@ python scripts/verify_installation.py --environment-only --connector-vault "工�
 | [docs/user-profile.md](docs/user-profile.md) | 项目协作画像的读取、复核与版本规则 |
 | [.codex/obsidian-kb.json](.codex/obsidian-kb.json) | 共享知识层级与本机配置引用 |
 | [config/environment.example.json](config/environment.example.json) | 本机环境空白示例；实际 `.local/environment.json` 不提交 |
-| [scripts/resolve_environment.py](scripts/resolve_environment.py) | 统一路径解析与写前连接核验 |
+| [scripts/resolve_environment.py](scripts/resolve_environment.py) | 环境变量选库与写前一致性检查 |
 | [架构方案](%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88/) | 架构设计与角色职责文档 |
 
 ## 当前实现与验证边界
