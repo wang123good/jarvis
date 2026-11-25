@@ -24,6 +24,7 @@ ROUTES = {
     'cleanup': ('docs/rules/cleanup.md',),
     'retention': ('docs/rules/retention.md', LIFECYCLE, 'docs/environment.md'),
     'profile': ('docs/rules/profile.md', 'docs/user-profile.md'),
+    'persona': ('docs/rules/persona.md', 'docs/persona.md'),
 }
 
 

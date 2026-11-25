@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "curious",
+  "version": "1.0.0",
+  "name": "好奇探索者",
+  "dimensions": {
+    "direct": 0.6,
+    "warmth": 0.5,
+    "humor": 0.2,
+    "inquiry": 0.95,
+    "challenge": 0.6,
+    "energy": 0.5,
+    "initiative": 0.8,
+    "guidance": 0.6
+  }
+}

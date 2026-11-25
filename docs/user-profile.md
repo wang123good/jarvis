@@ -16,6 +16,8 @@
 
 ## 后续维护
 
+人格表达另由 `python -X utf8 scripts/persona.py --persist` 接入：新会话、昵称初始化后和已批准互动偏好纠正后重算，每轮按 AGENTS.md P01 选择情境。它不增加初始化问卷或人格选择，不修改 up.json；画像缺失、停用、异常或无相关偏好时使用沉稳默认。collect_candidates=false 时只应用已有正式偏好并冻结派生状态写入。人格总开关关闭时跳过该适配路径，原画像初始化/确认流程保持不变。详见 [人格规程](persona.md)。
+
 1. “以后叫我……”直接更新昵称；“请记住……”等明确长期保存指令可直接写入已确认偏好，并简短告知。当前任务的临时要求不自动变成长期偏好。
 2. 观察到的倾向仅记录为 `candidates`，集中呈现具体内容及适用范围；用户确认后移入 `preferences`。候选不参与行为指导，不因出现次数多而自动批准。
 3. 偏好字段：`id`、`statement`、`scope`（当前仅 JARVIS）、`source`（简短原话和当前任务/会话定位，不依赖外部绝对路径）、`recorded_at`、`status`；正式条目另含 `approved_at`。日期采用 Asia/Shanghai 的 ISO 日期。`status` 为 approved / paused / revoked；候选为 candidate。

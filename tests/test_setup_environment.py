@@ -82,6 +82,40 @@ class SetupEnvironmentTests(unittest.TestCase):
         self.assertEqual(first["status"], "created")
         self.assertEqual(second["status"], "already_configured")
 
+    def test_new_install_enables_persona_and_preserves_it_and_unknown_fields(self):
+        setup.configure(self.root, str(self.vault))
+        path = self.root / '.local/environment.json'
+        configured = json.loads(path.read_text(encoding='utf-8'))
+        self.assertEqual(configured['persona'], {'enabled': True})
+        configured['persona']['enabled'] = False
+        configured['custom'] = {'keep': ['user setting']}
+        path.write_text(json.dumps(configured), encoding='utf-8')
+        before = path.read_bytes()
+        setup.configure(self.root, str(self.vault))
+        after = path.read_bytes()
+        setup.configure(self.root, str(self.vault))
+        self.assertEqual(path.read_bytes(), after)
+        self.assertEqual(json.loads(before), json.loads(after))
+
+    def test_old_environment_is_not_silently_enabled(self):
+        configured = {'version': 1, 'vault_root': str(self.vault), 'skill_roots': [],
+                      'custom': {'keep': 1}}
+        self.save('.local/environment.json', configured)
+        setup.configure(self.root, str(self.vault))
+        actual = json.loads((self.root / '.local/environment.json').read_text(encoding='utf-8'))
+        self.assertEqual(actual, configured)
+        self.assertFalse(setup.reader.resolve_environment(self.root)['persona']['enabled'])
+
+    def test_invalid_persona_is_rejected_and_original_preserved(self):
+        configured = {'version': 1, 'vault_root': str(self.vault), 'skill_roots': [],
+                      'persona': {'enabled': 'yes'}}
+        self.save('.local/environment.json', configured)
+        path = self.root / '.local/environment.json'
+        before = path.read_bytes()
+        with self.assertRaises(setup.reader.EnvironmentConfigError):
+            setup.configure(self.root, str(self.vault))
+        self.assertEqual(path.read_bytes(), before)
+
     def test_different_path_requires_explicit_replace(self):
         setup.configure(self.root, str(self.vault))
         other = self.base / "other-vault"

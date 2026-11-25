@@ -13,6 +13,16 @@ class EnvironmentConfigError(ValueError):
     """Configuration is incomplete, unsafe, or points at another connected vault."""
 
 
+def validate_persona(value):
+    """Validate the single expression switch; old environments stay disabled."""
+    if value is None:
+        return {'enabled': False}
+    if (not isinstance(value, dict) or set(value) != {'enabled'}
+            or type(value['enabled']) is not bool):
+        raise ValueError('persona must contain only enabled: true/false')
+    return dict(value)
+
+
 def read_object(path):
     try:
         value = json.loads(Path(path).read_text(encoding='utf-8-sig'))
@@ -58,6 +68,10 @@ def resolve_environment(project_root=ROOT, connector_vault=None):
     local = read_object(local_path)
     if local.get('version') != 1:
         raise EnvironmentConfigError('Unsupported local environment version; expected 1')
+    try:
+        persona = validate_persona(local.get('persona'))
+    except ValueError as exc:
+        raise EnvironmentConfigError(str(exc)) from exc
     vault = absolute_path(local.get('vault_root'), 'vault_root')
     project = pointer.get('project')
     if not isinstance(project, dict):
@@ -102,6 +116,7 @@ def resolve_environment(project_root=ROOT, connector_vault=None):
         'connector_matches': True if checked else None,
         'write_ready': checked and vault.is_dir(),
         'resolved_pointer': resolved_pointer,
+        'persona': persona,
     }
 
 

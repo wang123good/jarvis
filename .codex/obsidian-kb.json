@@ -7,6 +7,116 @@
     "aliases": [],
     "root": "02 工作记录/任务总结/JARVIS"
   },
+  "project_registry": {
+    "current_project_id": "jarvis",
+    "projects": [
+      {
+        "id": "jarvis",
+        "name": "JARVIS",
+        "root": "02 工作记录/任务总结/JARVIS",
+        "aliases": [],
+        "researchable": false
+      },
+      {
+        "id": "algorithm-human-map",
+        "name": "算法人力图谱",
+        "root": "02 工作记录/任务总结/算法人力图谱",
+        "aliases": [
+          "algorithm-graph",
+          "algorithm-human-map"
+        ],
+        "researchable": true
+      },
+      {
+        "id": "algorithm-technical-graph",
+        "name": "算法技术图谱",
+        "root": "02 工作记录/任务总结/算法技术图谱",
+        "aliases": [
+          "algorithm-knowledge-graph"
+        ],
+        "researchable": true
+      },
+      {
+        "id": "analysis",
+        "name": "Analysis",
+        "root": "02 工作记录/任务总结/Analysis",
+        "aliases": [],
+        "researchable": true
+      },
+      {
+        "id": "transition-motion",
+        "name": "转场动效",
+        "root": "02 工作记录/任务总结/转场动效",
+        "aliases": [],
+        "researchable": true
+      },
+      {
+        "id": "front-camera-ap",
+        "name": "前摄AP任务汇报",
+        "root": "02 工作记录/任务总结/前摄AP任务汇报",
+        "aliases": [
+          "front-camera"
+        ],
+        "researchable": true
+      },
+      {
+        "id": "knowledge-administrator",
+        "name": "知识库管理员",
+        "root": "02 工作记录/任务总结/知识库管理员",
+        "aliases": [],
+        "researchable": true
+      },
+      {
+        "id": "intelligent-agent-training",
+        "name": "智能体技术培训",
+        "root": "02 工作记录/任务总结/智能体技术培训",
+        "aliases": [],
+        "researchable": true
+      }
+    ]
+  },
+  "research_policy": {
+    "default_mode": "project",
+    "shared_layers": [
+      "domain",
+      "resource"
+    ],
+    "current_statuses": [
+      "active",
+      "reviewed",
+      "trusted"
+    ],
+    "draft_statuses": [
+      "draft",
+      "inbox",
+      "review"
+    ],
+    "non_current_statuses": [
+      "archived",
+      "superseded",
+      "rejected",
+      "deprecated",
+      "expired"
+    ],
+    "explicit_status_options": {
+      "archived": [
+        "archived"
+      ],
+      "superseded": [
+        "superseded"
+      ],
+      "draft": [
+        "draft",
+        "inbox",
+        "review"
+      ]
+    },
+    "max_results": 8,
+    "max_linked_results": 2,
+    "allow_inbox_by_default": false,
+    "allow_archive_by_default": false,
+    "write_allowed": false
+  },
   "layers": {
     "project": [
       "02 工作记录/任务总结",

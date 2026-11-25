@@ -80,11 +80,12 @@ def configure(project_root: Path, connector_vault: str, *, replace: bool = False
 
     profile_path = root / "up.json"
     profile_before = profile_path.read_bytes() if profile_path.is_file() else None
-    new_environment = {
+    new_environment = dict(existing) if existing is not None else {'persona': {'enabled': True}}
+    new_environment.update({
         "version": 1,
-        "vault_root": vault.as_posix(),
+        "vault_root": existing['vault_root'] if existing is not None and current == vault else vault.as_posix(),
         "skill_roots": skill_roots,
-    }
+    })
 
     changed = original != json_bytes(new_environment)
     try:

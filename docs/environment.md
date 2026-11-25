@@ -54,6 +54,12 @@ python scripts/verify_installation.py --connector-vault "工具报告的知识�
 
 环境检查通过不表示经验注册表存在或完整检索可用。`.codex/obsidian-links.json`、`.codex/knowledge-index.md` 及归档文档中的旧绝对路径是已停用的历史来源记录，不作为本机配置，不批量改写或重新启用其操作文字。换电脑只需配置新机器的 `.local/environment.json` 及宿主连接；无需修改共享目录规划，也不自动搬迁笔记。
 
+## 人格表达开关
+
+同一 `.local/environment.json` 可增加 `"persona": {"enabled": true}`。这是整个人格功能唯一开关；false 时在装载模块、匹配和读写适配状态之前返回，基础身份和任务治理继续生效。新建环境配置默认 true；已有配置缺字段保持关闭，重复 setup 不擅自启用。setup 保留其他用户字段和已有开关，resolver 校验严格布尔值。
+
+人格入口不依赖 vault 连接；尚未配置环境时保守关闭，不为启用人格伪造知识库路径。正常环境可手动只增加 persona 字段；关闭后不删除画像或适配记录。运行 `python -X utf8 scripts/persona.py --persist` 可装载当前策略，新用户不需要选型；模块、状态、防抖、故障和恢复细节见[人格规程](persona.md)。
+
 ## 首次呼叫与自动准备（设计）
 
 1. **先检查本机。** JARVIS 读取 `up.json` 判断是否已有称呼，并独立检查 Python、Obsidian、库路径和检索配置。即使用户已有昵称，也会检查尚未完成的准备。基础环境或知识库分别报告就绪状态。
