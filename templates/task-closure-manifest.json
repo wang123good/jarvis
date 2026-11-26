@@ -1,0 +1,16 @@
+{
+  "template_only": true,
+  "schema_version": 1,
+  "task_id": "FILL-TASK-ID",
+  "contract": {"file": "contract.md", "sha256": "FILL-CURRENT-CONTRACT-SHA256"},
+  "business": {"status": "pending"},
+  "notes": {"status": "pending"},
+  "sources": [{"file": "FILL-TASK-RELATIVE-EVIDENCE", "sha256": "FILL-SHA256"}],
+  "coverage": "FILL-SOURCE-COVERAGE-AND-OMISSIONS",
+  "layers": {
+    "summary": {"disposition": "candidate", "file": "closure/task-summary.md", "sha256": "FILL-SHA256"},
+    "wiki": {"disposition": "candidate", "file": "closure/wiki-candidate.md", "sha256": "FILL-SHA256"},
+    "archive": {"disposition": "candidate", "file": "closure/process-archive.md", "sha256": "FILL-SHA256"}
+  },
+  "risk_review": {"file": "closure/review.md", "sha256": "FILL-SHA256"}
+}

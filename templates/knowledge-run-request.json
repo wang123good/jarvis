@@ -3,7 +3,7 @@
   "run_id": "FILL-UNIQUE-RUN-ID",
   "project_id": "jarvis",
   "project_root": "FILL-ABSOLUTE-PROJECT-ROOT",
-  "trigger": "FILL-explicit-user-request-OR-approved-task-closure",
+  "trigger": "FILL-explicit-user-request-OR-task-delivery-local-candidates-OR-approved-task-closure",
   "user_instruction": "FILL-EXACT-USER-REQUEST",
   "mode": "curate",
   "objective": "FILL-ORGANIZATION-GOAL-AND-TOPICS",
@@ -44,6 +44,11 @@
     "allowed_fields_or_create_only": null,
     "conflict_policy": "stop-on-existing-target-or-baseline-drift",
     "vault_writes_allowed": false,
-    "skip_if_user_declined_notes": true
+    "skip_if_user_declined_notes": true,
+    "local_policy": "three-layer-local-awaiting-review",
+    "business_acceptance_status": "pending",
+    "note_review_status": "pending",
+    "note_review_does_not_authorize_vault_write": true,
+    "risk_review_path": null
   }
 }

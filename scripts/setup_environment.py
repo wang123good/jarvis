@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -35,7 +36,7 @@ def json_bytes(value: dict) -> bytes:
     return (json.dumps(value, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
 
 
-def configure(project_root, destination, *, replace=False, migration=None):
+def configure(project_root, destination, *, replace=False, migration=None, connector_vault=None):
     root = Path(project_root).resolve()
     destination = reader.absolute_path(destination, 'vault')
     if not destination.is_dir() or destination.is_relative_to(root) or root.is_relative_to(destination):
@@ -46,12 +47,13 @@ def configure(project_root, destination, *, replace=False, migration=None):
     with lock.open('x', encoding='utf-8') as stream:
         stream.write(str(os.getpid()))
     try:
-        return configure_locked(root, destination, path, replace=replace, migration=migration)
+        return configure_locked(root, destination, path, replace=replace, migration=migration,
+                                connector_vault=connector_vault)
     finally:
         lock.unlink()
 
 
-def configure_locked(root, vault, path, *, replace, migration):
+def configure_locked(root, vault, path, *, replace, migration, connector_vault=None):
     original = path.read_bytes() if path.is_file() else None
     existing = reader.read_object(path) if original is not None else None
     if existing is not None and existing.get('version') == 2:
@@ -86,7 +88,7 @@ def configure_locked(root, vault, path, *, replace, migration):
             raise SetupError('Instance configuration changed during setup')
         atomic_write_bytes(path, data)
     try:
-        resolved = reader.resolve_environment(root)
+        resolved = reader.resolve_environment(root, connector_vault)
         runtime = reader.write_runtime_pointer(resolved)
     except Exception:
         if original != data and path.is_file() and path.read_bytes() == data:
@@ -101,7 +103,9 @@ def configure_locked(root, vault, path, *, replace, migration):
 
 def fingerprint(root, vault, original):
     from hashlib import sha256
+    identity = vault.stat()
     return sha256(json_bytes({'root': str(root), 'vault': str(vault),
+                              'vault_identity': [identity.st_dev, identity.st_ino],
                               'baseline': None if original is None else sha256(original).hexdigest()})).hexdigest()
 
 
@@ -121,12 +125,15 @@ def preview_migration(root, destination=None):
     if not vault.is_dir() or vault.is_relative_to(root) or root.is_relative_to(vault):
         raise SetupError('Select an existing vault outside the project directory')
     return {'ok': True, 'project_root': str(root), 'vault_root': str(vault),
-            'source': source, 'confirmation': fingerprint(root, vault, original)}
+            'source': source, 'runtime_source': 'local_instance_after_confirmation',
+            'baseline_sha256': None if original is None else hashlib.sha256(original).hexdigest(),
+            'confirmation': fingerprint(root, vault, original)}
 
 
 def main(argv=None, project_root=ROOT):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--vault', '--connector-vault')
+    parser.add_argument('--vault', help='Explicitly selected instance vault')
+    parser.add_argument('--connector-vault', help='Actual root reported by an external connector')
     parser.add_argument('--replace', action='store_true')
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument('--preview-migration', action='store_true')
@@ -137,7 +144,7 @@ def main(argv=None, project_root=ROOT):
             result = preview_migration(project_root, args.vault)
         else:
             result = configure(project_root, args.vault, replace=args.replace,
-                               migration=args.confirm_migration)
+                               migration=args.confirm_migration, connector_vault=args.connector_vault)
     except (OSError, ValueError) as exc:
         print(json.dumps({'ok': False, 'error': str(exc)}, ensure_ascii=False))
         return 2

@@ -68,6 +68,8 @@ def run_checks(out, run_id, connector_vault=None, environment_only=False):
                   ['规则', '草稿', '日报', '周报', '决策', '任务总结', '任务契约', '业务对话', 'wiki主题']]
     resources += ['scripts/onboarding.py', 'docs/onboarding.md', 'scripts/brain_wiki.py', 'docs/brain-wiki.md',
                   'templates/wiki/request.example.json', 'templates/wiki/candidate.example.json']
+    resources += ['scripts/task_closure.py', 'templates/task-closure-review.md',
+                  'templates/task-closure-manifest.json']
     resources += [
         'templates/brain/README.md',
         'templates/brain/首页.md',

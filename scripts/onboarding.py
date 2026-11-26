@@ -14,6 +14,7 @@ import brain_router
 import init_vault
 import resolve_environment as environment
 import setup_environment
+import obsidian_cli
 from read_profile import load as load_profile
 
 ROOT = environment.ROOT
@@ -98,7 +99,8 @@ def software():
                 except OSError:
                     continue
     executable = which('Obsidian.exe') or next((str(p) for p in locations if p.is_file()), None)
-    return {'executable': executable, 'official_download': 'https://obsidian.md/download'}
+    return {'executable': executable, 'official_download': 'https://obsidian.md/download',
+            'cli': obsidian_cli.discover()}
 
 
 def fixed_drives():

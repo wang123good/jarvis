@@ -34,6 +34,7 @@ def user_vault_environment():
 
 
 def vault_environment():
+    """Legacy migration candidates only; never consulted by runtime resolution."""
     if VAULT_ENV in os.environ:
         return os.environ[VAULT_ENV], 'process_environment'
     value = user_vault_environment()
@@ -92,7 +93,7 @@ def instance_settings(root, path=None):
     except (ValueError, TypeError, AttributeError) as exc:
         raise EnvironmentConfigError('Invalid instance_id') from exc
     absolute_path(local.get('project_root'), 'project_root')
-    if Path(local['project_root']) != root:
+    if Path(local['project_root']) != root or absolute_path(local['project_root'], 'project_root') != root:
         raise EnvironmentConfigError('Configuration belongs to a different project directory')
     obsidian = local.get('obsidian')
     connector = obsidian.get('connector') if isinstance(obsidian, dict) else None

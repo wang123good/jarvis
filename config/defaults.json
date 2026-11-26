@@ -56,7 +56,7 @@
     "max_concurrent_writers": 1,
     "concurrency_enforcement": "instruction-only-no-system-lock",
     "close_after_handoff": true,
-    "task_closure_trigger": "explicit-acceptance-and-approved-task-policy"
+    "task_closure_trigger": "task-delivery-local-candidates-formal-write-separate-approval"
   },
   "never_infer": [
     "hard-cost-enforcement",
@@ -75,7 +75,7 @@
     "template": "up.example.json",
     "initialization": "ask-nickname-on-first-use"
   },
-  "control_plane_revision": "2026-11-20-task-lifecycle-1",
+  "control_plane_revision": "2026-11-26-default-loop-1",
   "verification_directory": ".local/verification-runs",
   "preflight_review": {
     "enabled": true,
@@ -85,7 +85,8 @@
     "human_review_before_dependent_execution": true,
     "silence_is_approval": false,
     "worker_selection": "separate-benefit-based-decision",
-    "enforcement": "instruction-only-not-host-approval"
+    "enforcement": "instruction-only-not-host-approval",
+    "explicit_current_execution_can_satisfy_review": true
   },
   "task_lifecycle": {
     "instructions": "docs/task-lifecycle.md",
@@ -100,8 +101,8 @@
     "state_storage": "task-card-and-append-only-key-events",
     "enforcement": "instructions-and-local-files-not-runtime-engine",
     "closure": {
-      "trigger": "explicit-user-acceptance",
-      "default_mode": "ask-note-choice-after-acceptance",
+      "trigger": "task-delivery-local-candidates",
+      "default_mode": "three-layer-local-awaiting-review",
       "local_directory": ".local/tasks/<task_id>/closure",
       "vault_writes_require_task_allowlist_approval": true,
       "formal_changes_require_approved_diff": true,
@@ -114,9 +115,22 @@
         "local-summary",
         "knowledge-vault"
       ],
-      "unanswered_note_choice": "await-choice-no-note-generation",
+      "unanswered_note_choice": "use-local-default-for-new-task-not-review-approval",
       "existing_explicit_task_choice": "reuse-without-reasking",
-      "execution_evidence_requires_note_opt_in": false
+      "execution_evidence_requires_note_opt_in": false,
+      "local_layers": [
+        "summary",
+        "wiki",
+        "archive"
+      ],
+      "review_template": "templates/task-closure-review.md",
+      "manifest_template": "templates/task-closure-manifest.json",
+      "validator": "scripts/task_closure.py",
+      "business_acceptance_and_note_review_separate": true,
+      "note_review_does_not_authorize_vault_write": true,
+      "wiki_without_new_knowledge": "record-no-candidate-with-reason",
+      "default_note_review": "pending",
+      "legacy_task_policy": "honor-existing-contract-no-retroactive-generation"
     },
     "session_binding": {
       "trigger": "explicit-real-new-task-first-card",
@@ -137,7 +151,14 @@
       "unknown_creation_result": "reconcile-before-any-retry",
       "repair_existing_thread_before_recreate": true,
       "source_thread_auto_archive": false,
-      "enforcement": "instruction-and-native-tools-not-background-service"
-    }
+      "enforcement": "instruction-and-native-tools-not-background-service",
+      "requires_explicit_new_chat_authorization": true,
+      "missing_chat_authorization": "record-and-continue-authorized-work-in-current-chat"
+    },
+    "persistent_card_default": true,
+    "complete_loop_default": true,
+    "loop_runner_required": false,
+    "authorized_execution": "continue-check-repair-without-reasking",
+    "default_applies_to": "clear-substantive-execution-intent-and-boundary"
   }
 }

@@ -6,16 +6,30 @@
 
 1. 下载并解压项目，或按 [README](../README.md#开始使用) 克隆仓库。在 Codex 中打开包含 `AGENTS.md` 的目录，然后呼叫「JARVIS」。
 2. Python 用于读取本地用户画像和运行安装检查。昵称保存在项目根目录的 `up.json`，首次交流可以跳过称呼设置。需要浏览和编辑知识库时，使用 [Obsidian](https://obsidian.md/download)。JARVIS 还需要可用的本地检索工具来查找笔记。临时 Worker 取决于宿主提供的 Agent 工具。
-3. 手动接入知识库时，按下节创建本机配置。仓库不保存每个 JARVIS 副本使用独立目录和独立的 Obsidian 库。新副本从干净的代码检出开始，在各自根目录运行以下命令。示例中的库目录须已存在。
+3. 手动接入知识库时，按下节创建本机配置。每个 JARVIS 副本使用独立项目目录，在各自根目录选择知识库；多个副本可以选择不同库，也可以选择同一个库。仓库跟踪文件不保存本机库路径或应用安装路径。新副本从干净的代码检出开始，示例中的库目录须已存在。
 
 ```powershell
 python -X utf8 scripts/setup_environment.py --vault 'C:/path/to/vault'
 python -X utf8 scripts/resolve_environment.py --require-write-ready
 ```
 
-设置写入 Git 忽略的 `.local/environment.json`，包含实例 UUID、项目根、规范化库路径和连接器设置。日常检索与写入使用当前副本配置。配置复制到另一项目目录会被拒绝。新副本分别初始化画像、首启、任务和日志。
+设置写入 Git 忽略的 `.local/environment.json`，包含实例 UUID、项目根、规范化库路径和连接器设置。日常检索与写入只使用当前副本 version 2 配置，不读取环境变量选库。缺配置时明确初始化，不扫描磁盘猜库；首启 discover 是另行展示候选的步骤。配置复制到另一项目目录会被拒绝。新副本分别初始化画像、首启及本地任务记录；共享库中的正文和日志仍是共享数据。
 
-Codex 桌面 Obsidian 插件的接口连接单一宿主库，JARVIS 默认使用项目内置文件入口和 Brain Router。`filesystem` 连接器直接使用已校验的库根。若项目确实部署了独立外部连接器，可配置 `external` 并在支持该入口的命令上传入工具实际报告的 `--connector-vault`。配置错误、错绑及经目录联接跳出当前库的路径会被拒绝。隔离范围为 JARVIS 应用层，Windows 文件权限由系统账户和 ACL 管理。各副本独立配置，部署时应为各副本显式选择互不重叠的库根。
+JARVIS 默认使用项目内置文件入口和 Brain Router。`filesystem` 连接器直接使用已校验的库根。若项目确实部署了独立外部连接器，可配置 `external` 并在支持该入口的命令上传入工具实际报告的 `--connector-vault`；此参数核对连接，不代替 `--vault` 选择实例目标。配置错误、错绑及经目录联接跳出当前库的路径会被拒绝。隔离范围为 JARVIS 应用层，Windows 文件权限由系统账户和 ACL 管理。
+
+共享库不等于写入并发安全。现有新增笔记使用排他创建；wiki 更新检查来源与目标基线、替换前再次检查并回读。不同实例独立日志目录的锁不能互相串行化，基线检查到替换之间仍有竞态窗口。共享目标应安排单一写入流程；发生漂移时拒绝覆盖并重新预览，不宣称全库锁或跨进程事务。
+
+### Obsidian CLI 与文件入口
+
+普通 Markdown 访问直接使用配置路径，不要求 CLI。依据官方 `https://help.obsidian.md/cli`，Windows CLI 使用与应用同目录的 `Obsidian.com` 终端入口；用户在 Obsidian「设置 → 常规 → Command line interface」启用并注册后，由应用管理用户 PATH。注册后需要刷新终端或宿主进程环境。JARVIS 只用当前进程 PATH 查找 `Obsidian.com`，不保存安装绝对路径，不自动安装、升级或修改系统 PATH。首启的 GUI 安装检测与 CLI 发现分别报告，找到 GUI 不代表 CLI 可用。
+
+```powershell
+python -X utf8 scripts/obsidian_cli.py
+```
+
+这个入口只做目标检查：配置解析 → PATH 发现 → 应用运行状态 → 从 Obsidian 用户注册表按配置完整路径找到唯一 vault ID → `obsidian vault=<id> vault info=path` → 核对真实路径及配置回读。同名库通过 ID 区分，缺注册项、多个 ID 指向同一路径、返回名称或多行诊断、路径不匹配时拒绝。它不使用当前窗口或库名作为证明，不提供通用 CLI 写入转发。
+
+CLI 的 `cli_not_on_path`、`app_not_running`、`target_unregistered`、`target_ambiguous`、`target_mismatch`、超时等与文件入口的可用状态分开。PATH 缺失只能证明当前宿主找不到入口，不能据此宣称未安装应用。官方 CLI 在应用停止时可能自动启动应用，本入口先检查运行状态并在已停止时返回；检查后应用退出仍存在竞态，不能承诺 CLI 调用绝无应用启动副作用。校验仅对当次探测成立，后续动作须再次核对，正文写入仍需具体授权。
 
 ### 逐实例迁移
 
@@ -28,7 +42,9 @@ python -X utf8 scripts/resolve_environment.py --require-write-ready
 python -X utf8 scripts/brain_router.py project --query 'Brain v1 运行规程'
 ```
 
-确认前核对预览返回的项目根和库根。确认绑定目录、目标和原配置指纹。成功迁移保留人格、Skill、自定义字段及既有激活记录。配置变动时重新预览。同一目标可重跑完成回读。检查 Router 返回的原文路径位于该库。旧 Windows 变量可待所有依赖副本完成迁移后另行清理。
+确认前核对预览返回的项目根、库根、来源及原配置哈希，在库外备份原配置和已有本地运行指针。确认绑定目录、目标目录身份和原配置指纹，目标目录被替换或配置变动时重新预览。成功迁移保留人格、Skill、自定义字段及既有激活记录。同一目标可重跑完成回读。检查 Router 返回的原文路径位于该库。旧 Windows 变量只用于这个显式预览，不成为运行默认值；待所有依赖副本完成迁移后可另行授权清理。
+
+恢复旧配置前先保存迁移后配置哈希，确认当前文件仍与本次输出一致，才恢复库外备份；如有后续人工修改，停止覆盖并人工合并。配置与本地运行指针无跨文件事务，异常后须逐项核对；恢复 version 1 后运行解析会要求重新迁移，不自动回退到环境变量。
 
 ## 人格表达开关
 

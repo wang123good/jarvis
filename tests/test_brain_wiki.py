@@ -179,6 +179,29 @@ class WikiTests(unittest.TestCase):
             self.apply(p)
         self.assertEqual((self.work / 'writer.lock').read_text(), 'other writer')
 
+    def test_shared_vault_other_instance_baseline_conflict_and_readback(self):
+        second_repo = self.repo.parent / 'second-repo'
+        second_repo.mkdir()
+        second_env = configure_fixture(second_repo, self.vault)
+        second_req = copy.deepcopy(self.req)
+        for item in self.req['sources']:
+            (second_repo / item['path']).write_bytes((self.repo / item['path']).read_bytes())
+        first = self.proposal()
+        stale = w.prepare(second_env, second_req, self.candidate)
+        result = self.apply(first)
+        target = self.vault / first['target']
+        expected = target.read_bytes()
+        self.assertEqual(w.digest(expected), result['output_hash'])
+        with self.assertRaisesRegex(ValueError, 'baseline'):
+            w.apply(second_env, second_req, stale, stale['proposal_hash'], self.work.parent / 'second-work')
+        self.assertEqual(target.read_bytes(), expected)
+        self.candidate['gaps'].append('prepared update')
+        update = w.prepare(second_env, second_req, self.candidate)
+        target.write_text('human edit after update preview', encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'baseline'):
+            w.apply(second_env, second_req, update, update['proposal_hash'], self.work.parent / 'second-work')
+        self.assertEqual(target.read_text(encoding='utf-8'), 'human edit after update preview')
+
 
 if __name__ == '__main__':
     unittest.main()

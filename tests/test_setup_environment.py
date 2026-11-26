@@ -210,6 +210,37 @@ class SetupEnvironmentTests(unittest.TestCase):
         self.assertEqual(code, 2)
         self.assertFalse(payload["ok"])
 
+    def test_two_instances_can_share_a_vault_without_sharing_identity(self):
+        from environment_isolation import configure_fixture
+        first = setup.configure(self.root, str(self.vault))
+        second_root = self.base / 'second-checkout'
+        second = configure_fixture(second_root, self.vault)
+        self.assertNotEqual(first['instance_id'], second['instance_id'])
+        with patch.dict(os.environ, {setup.reader.VAULT_ENV: 'invalid'}), \
+                patch.object(setup.reader, 'user_vault_environment', side_effect=AssertionError):
+            for root in (self.root, second_root):
+                self.assertEqual(Path(setup.reader.resolve_environment(root)['vault_root']), self.vault)
+
+    def test_external_connector_actual_root_is_not_a_vault_selection_alias(self):
+        setup.configure(self.root, str(self.vault))
+        path = self.root / '.local/environment.json'
+        settings = json.loads(path.read_text(encoding='utf-8'))
+        settings['obsidian']['connector'] = {'type': 'external'}
+        path.write_text(json.dumps(settings), encoding='utf-8')
+        before = path.read_bytes()
+        with self.assertRaises(setup.reader.EnvironmentConfigError):
+            setup.configure(self.root, str(self.vault), connector_vault=str(self.base / 'wrong'))
+        self.assertEqual(path.read_bytes(), before)
+        self.assertTrue(setup.configure(self.root, str(self.vault), connector_vault=str(self.vault))['ok'])
+
+    def test_migration_confirmation_rejects_recreated_target_directory(self):
+        self.save('.local/environment.json', {'version': 1})
+        preview = setup.preview_migration(self.root, str(self.vault))
+        self.vault.rename(self.base / 'original-vault')
+        self.vault.mkdir()
+        with self.assertRaisesRegex(setup.SetupError, 'confirmation'):
+            setup.configure(self.root, str(self.vault), migration=preview['confirmation'])
+
 
 if __name__ == "__main__":
     unittest.main()
