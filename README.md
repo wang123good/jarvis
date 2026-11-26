@@ -113,6 +113,10 @@ Brain v1 是 JARVIS 的本地长期记忆。Markdown 正文与扁平属性（fro
 ## 开始使用
 
 ### 1. 下载项目并启动激活引导
+最简单的方式是先在codex里创建一个空的project，指向本地一个空的目录，然后在该project里发起一次对话，输入如下提示词
+```text
+从https://github.com/wang123good/jarvis，下载jarvis项目到本地，然后激活 JARVIS：请先完整读取当前项目根目录的 AGENTS.md，执行其中的初始化状态检查，并按 docs/onboarding.md 启动或续接激活引导。
+```
 
 需要 Windows、Git、Python，以及能够读取项目指令和本地文件的 Codex 环境。首次引导会检查 Obsidian；缺少软件时会说明并等待具体安装授权，不会自动安装。使用临时 Worker 时，宿主还需提供相应 Agent 工具。详见 [环境说明](docs/environment.md)。
 
