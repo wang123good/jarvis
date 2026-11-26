@@ -52,8 +52,7 @@ class InstanceIsolationTests(unittest.TestCase):
                 run('onboarding', 'prepare', '--approved', preview['approval_code'])
                 self.assertTrue(run('persona', '--persist')['enabled'])
                 if index == 0:
-                    displayed = run('onboarding', 'display')
-                    run('onboarding', 'acknowledge', '--reply', displayed['reply'])
+                    self.assertEqual(run('onboarding', 'display')['stage'], 'activated')
                 self.assertEqual(run('onboarding', 'status')['stage'],
                                  'activated' if index == 0 else 'verified')
                 settings = run('resolve_environment', '--require-write-ready')

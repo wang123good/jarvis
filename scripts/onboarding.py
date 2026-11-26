@@ -7,7 +7,6 @@ import json
 import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from secrets import token_hex
 from shutil import disk_usage, which
 
 import brain_router
@@ -325,6 +324,9 @@ def execute(args, root):
         save(root, {'stage': 'start'})
         return {'stage': 'start'}
     if status(root)['stage'] == 'activated':
+        if command == 'display':
+            return {'stage': 'activated', 'message': DISPLAY,
+                    'resume_request': local_settings(root)['onboarding'].get('request_ref')}
         return {'stage': 'activated'}
     if command == 'pause':
         save(root, state | {'paused': True})
@@ -412,11 +414,22 @@ def execute(args, root):
     if command == 'display':
         if state.get('stage') not in ('verified', 'display'):
             raise ValueError('Verify the selected vault before displaying examples')
-        if state['stage'] == 'verified':
-            state.update(stage='display', receipt=token_hex(4))
-            save(root, state)
-        return {'stage': 'display', 'message': DISPLAY,
-                'reply': '已看到 ' + state['receipt']}
+        plan = state['change_plan']
+        if args.connector_vault != plan['connector']:
+            raise ValueError('Connector changed. Re-preview the selection.')
+        current_proof = verify_brain(root, Path(plan['path']), args.connector_vault)
+        if current_proof['source_sha256'] != state['proof']['source_sha256']:
+            raise ValueError('Retrieved source changed. Verify again before activation.')
+        settings = local_settings(root)
+        settings['onboarding'] = {'activated': True, 'flow_version': PROTOCOL,
+                                  'completed_at': datetime.now(ZONE).isoformat(),
+                                  'progress': 'verified', 'request_ref': state['request_ref']}
+        local_path = root / setup_environment.ENVIRONMENT_REL
+        setup_environment.atomic_write_bytes(local_path, setup_environment.json_bytes(settings))
+        if local_settings(root) != settings:
+            raise ValueError('Activation readback failed')
+        return {'stage': 'activated', 'message': DISPLAY,
+                'resume_request': state['request_ref']}
     if command == 'verify':
         if state.get('stage') not in ('verified', 'display'):
             raise ValueError('Prepare the approved vault first')
@@ -428,29 +441,13 @@ def execute(args, root):
         state.pop('receipt', None)
         save(root, state)
         return {'stage': 'verified', 'proof': proof}
-    if command == 'acknowledge':
-        if state.get('stage') != 'display' or args.reply != '已看到 ' + state['receipt']:
-            raise ValueError('A new user turn must contain the displayed receipt phrase')
-        plan = state['change_plan']
-        current_proof = verify_brain(root, Path(plan['path']), args.connector_vault)
-        if args.connector_vault != plan['connector'] or current_proof['source_sha256'] != state['proof']['source_sha256']:
-            raise ValueError('Connector or retrieved source changed. Verify again before activation.')
-        settings = local_settings(root)
-        settings['onboarding'] = {'activated': True, 'flow_version': PROTOCOL,
-                                  'completed_at': datetime.now(ZONE).isoformat(),
-                                  'progress': 'display_confirmed', 'request_ref': state['request_ref']}
-        local_path = root / setup_environment.ENVIRONMENT_REL
-        setup_environment.atomic_write_bytes(local_path, setup_environment.json_bytes(settings))
-        if local_settings(root) != settings:
-            raise ValueError('Activation readback failed')
-        return {'stage': 'activated', 'resume_request': state['request_ref']}
     raise ValueError('Unsupported command')
 
 
 def main(argv=None, root=ROOT):
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='command', required=True)
-    for name in ('status', 'discover', 'display', 'pause', 'resume'):
+    for name in ('status', 'discover', 'pause', 'resume'):
         commands.add_parser(name)
     commands.add_parser('start').add_argument('--request-ref', required=True)
     commands.add_parser('nickname').add_argument('--skip', action='store_true')
@@ -463,9 +460,7 @@ def main(argv=None, root=ROOT):
     prepare.add_argument('--approved', required=True)
     prepare.add_argument('--connector-vault')
     commands.add_parser('verify').add_argument('--connector-vault')
-    ack = commands.add_parser('acknowledge')
-    ack.add_argument('--reply', required=True)
-    ack.add_argument('--connector-vault')
+    commands.add_parser('display').add_argument('--connector-vault')
     args = parser.parse_args(argv)
     lock = environment.relative_to(root, '.local/onboarding.lock', 'onboarding lock')
     try:

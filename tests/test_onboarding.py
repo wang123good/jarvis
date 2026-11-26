@@ -118,21 +118,49 @@ class OnboardingTests(unittest.TestCase):
                 ['project', '--query', 'Brain v1 运行规程']), 0)
         self.assertIn(verified['proof']['path'], [item['path'] for item in
                                                  json.loads(router_output.getvalue())['results']])
-        displayed = self.run_command('display')
-        self.assertEqual(displayed, self.run_command('display'))
-        self.run_command('acknowledge', '--reply', '已看到 bad', expected=2)
-        self.assertEqual(self.run_command('status')['stage'], 'display')
+        self.assertEqual(self.run_command('status')['stage'], 'verified')
+        self.run_command('display', '--connector-vault', str(self.base), expected=2)
+        self.assertEqual(self.run_command('status')['stage'], 'verified')
         with source.open('a', encoding='utf-8') as stream:
             stream.write('\n补充验证。\n')
-        self.run_command('acknowledge', '--reply', displayed['reply'], expected=2)
+        self.run_command('display', expected=2)
+        self.assertEqual(self.run_command('status')['stage'], 'verified')
         self.run_command('verify')
-        displayed = self.run_command('display')
-        activated = self.run_command('acknowledge', '--reply', displayed['reply'])
+        activated = self.run_command('display')
+        self.assertEqual(activated['stage'], 'activated')
+        self.assertEqual(activated['message'], onboarding.DISPLAY)
+        self.assertNotIn('reply', activated)
+        self.assertNotIn('receipt', onboarding.read_state(self.root))
         self.assertEqual(activated['resume_request'], 'fixture-turn-1')
-        self.selected = str(self.base / 'offline')
-        self.assertEqual(self.run_command('status')['stage'], 'activated')
+        settings_path = self.root / '.local/environment.json'
+        baseline = settings_path.read_bytes()
+        self.assertEqual(json.loads(baseline)['onboarding']['progress'], 'verified')
+        with patch.object(onboarding, 'verify_brain', side_effect=ValueError('offline')):
+            self.assertEqual(self.run_command('display'), activated)
+            self.assertEqual(self.run_command('status')['stage'], 'activated')
+        self.assertEqual(settings_path.read_bytes(), baseline)
         self.run_command('restart', '--confirm', 'restart')
         self.assertEqual(self.run_command('status')['stage'], 'start')
+
+    def test_legacy_display_checkpoint_activates_without_receipt(self):
+        selection = self.preview()
+        self.run_command('prepare', '--approved', selection['approval_code'])
+        state = onboarding.read_state(self.root)
+        state.update(stage='display', receipt='legacy-code')
+        onboarding.save(self.root, state)
+        result = self.run_command('display')
+        self.assertEqual(result['stage'], 'activated')
+        self.assertNotIn('reply', result)
+        self.assertEqual(self.run_command('status')['stage'], 'activated')
+
+    def test_failed_final_verification_does_not_activate(self):
+        selection = self.preview()
+        self.run_command('prepare', '--approved', selection['approval_code'])
+        with patch.object(onboarding, 'verify_brain', side_effect=ValueError('offline')):
+            self.run_command('display', expected=2)
+        self.assertEqual(self.run_command('status')['stage'], 'verified')
+        self.assertNotIn('onboarding', onboarding.local_settings(self.root))
+        self.assertEqual(self.run_command('display')['stage'], 'activated')
 
     def test_existing_vault_write_and_retry_preserve_existing_seed(self):
         (self.vault / '.obsidian').mkdir(parents=True)
