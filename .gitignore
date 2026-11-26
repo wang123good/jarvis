@@ -24,3 +24,6 @@ __pycache__/
 /AWB/
 /workspace/
 /*.zip
+
+# Local business analysis
+/竞品分析/
